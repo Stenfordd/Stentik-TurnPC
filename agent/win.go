@@ -37,7 +37,9 @@ func yesNo(msg string) bool { return box(msg, 0x04|0x20) == 6 }
 func ps(script string) string {
 	c := exec.Command("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
 		"[Console]::OutputEncoding=[Text.Encoding]::UTF8; "+script)
-	hide(c)
+	// no console window, but NOT HideWindow: that would also hide the dialog itself (SW_HIDE applies
+	// to the first window the process shows)
+	c.SysProcAttr = &syscall.SysProcAttr{CreationFlags: createNoWindow}
 	out, err := c.Output()
 	if err != nil {
 		log.Printf("powershell dialog: %v", err)
