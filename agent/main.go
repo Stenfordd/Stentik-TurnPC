@@ -162,6 +162,7 @@ func setup() {
 	cfg.Servers = chosen
 
 	pw := ""
+	log.Printf("setup: asking for the password")
 	for {
 		pw = strings.TrimSpace(inputBox("Choose the password for the web panel.\nGive it only to friends who may start and stop the servers.", "Server panel password", ""))
 		if pw == "" {

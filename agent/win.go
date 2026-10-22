@@ -3,6 +3,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -37,14 +38,26 @@ func ps(script string) string {
 	c := exec.Command("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
 		"[Console]::OutputEncoding=[Text.Encoding]::UTF8; "+script)
 	hide(c)
-	out, _ := c.Output()
+	out, err := c.Output()
+	if err != nil {
+		log.Printf("powershell dialog: %v", err)
+	}
 	return strings.TrimSpace(string(out))
 }
 
 func q(s string) string { return "'" + strings.ReplaceAll(s, "'", "''") + "'" }
 
+// inputBox shows a small always-on-top Windows Forms dialog (the VB InputBox could open behind other windows).
 func inputBox(prompt, title, def string) string {
-	return ps("Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.Interaction]::InputBox(" + q(prompt) + "," + q(title) + "," + q(def) + ")")
+	return ps(`Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing;
+$f = New-Object System.Windows.Forms.Form; $f.Text = ` + q(title) + `; $f.TopMost = $true; $f.StartPosition = 'CenterScreen';
+$f.FormBorderStyle = 'FixedDialog'; $f.MaximizeBox = $false; $f.MinimizeBox = $false; $f.ClientSize = New-Object System.Drawing.Size(420,150);
+$l = New-Object System.Windows.Forms.Label; $l.Text = ` + q(prompt) + `; $l.SetBounds(14,12,392,48); $f.Controls.Add($l);
+$t = New-Object System.Windows.Forms.TextBox; $t.Text = ` + q(def) + `; $t.SetBounds(14,66,392,24); $f.Controls.Add($t);
+$ok = New-Object System.Windows.Forms.Button; $ok.Text = 'OK'; $ok.SetBounds(236,106,80,28); $ok.DialogResult = 'OK'; $f.Controls.Add($ok); $f.AcceptButton = $ok;
+$c = New-Object System.Windows.Forms.Button; $c.Text = 'Cancel'; $c.SetBounds(326,106,80,28); $c.DialogResult = 'Cancel'; $f.Controls.Add($c); $f.CancelButton = $c;
+$f.Add_Shown({ $f.Activate(); $t.Focus() });
+if ($f.ShowDialog() -eq 'OK') { $t.Text }`)
 }
 
 func pickFolder(title string) string {
