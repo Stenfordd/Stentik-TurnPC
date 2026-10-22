@@ -76,6 +76,7 @@ func main() {
 		log.SetOutput(lf)
 	}
 	background := len(os.Args) > 1 && os.Args[1] == "--background"
+	log.Printf("agent %s run (background=%v)", version, background)
 	if background {
 		runLoop()
 		return
@@ -127,6 +128,7 @@ func setup() {
 	}
 
 	found := scanServers()
+	log.Printf("setup: found %d server folders", len(found))
 	var chosen []serverCfg
 	if len(found) > 0 {
 		lines := []string{}
@@ -166,7 +168,8 @@ func setup() {
 			if have {
 				break // keep the old password
 			}
-			msgBox("Setup cancelled.")
+			log.Printf("setup: cancelled at password")
+		msgBox("Setup cancelled.")
 			return
 		}
 		if len(pw) >= 4 {
@@ -174,8 +177,10 @@ func setup() {
 		}
 		msgBox("Use at least 4 characters.")
 	}
+	log.Printf("setup: %d servers chosen, password entered: %v", len(cfg.Servers), pw != "")
 	if pw != "" {
 		if err := register(pw); err != nil {
+			log.Printf("setup: register failed: %v", err)
 			msgBox("Could not connect the panel:\n\n" + err.Error() + "\n\nCheck the internet connection and that the Apps Script is deployed for \"Anyone\".")
 			return
 		}
@@ -189,6 +194,7 @@ func setup() {
 		msgBox("Could not save the settings: " + err.Error())
 		return
 	}
+	log.Printf("setup: paired and saved")
 	ensureRunning()
 	msgBox("Done! The agent now runs in the background and starts with Windows.\n\nPanel: " + panelURL +
 		"\n\nIf a server is running right now, restart it once so the panel can see its players.")
