@@ -169,7 +169,7 @@ func setup() {
 				break // keep the old password
 			}
 			log.Printf("setup: cancelled at password")
-		msgBox("Setup cancelled.")
+			msgBox("Setup cancelled.")
 			return
 		}
 		if len(pw) >= 4 {
