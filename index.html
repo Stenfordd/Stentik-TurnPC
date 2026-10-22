@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stentik Servers</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #0b1020; --panel: #141b2e; --panel2: #1b2440; --line: #2a3556;
+    --text: #e8ecf5; --muted: #8e98b3; --brass: #e3ad4b; --brass2: #b9772a;
+    --ok: #4fd08a; --warn: #f0c45c; --bad: #ef6b6b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: radial-gradient(1100px 560px at 75% -10%, #23305a 0%, transparent 60%), var(--bg); }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 40px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  header img { width: 52px; height: 52px; }
+  header h1 { margin: 0; font-size: 21px; } header h1 b { color: var(--brass); }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 14px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .state { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .big { font-size: 18px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.ok { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+  .dot.warn { background: var(--warn); box-shadow: 0 0 10px var(--warn); animation: pulse 1.2s infinite; }
+  .dot.bad { background: var(--bad); }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .muted { color: var(--muted); font-size: 13px; }
+  .server { border-top: 1px solid var(--line); padding: 14px 0 4px; }
+  .server:first-of-type { border-top: 0; padding-top: 6px; }
+  .server h3 { margin: 0; font-size: 16px; }
+  .players { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+  .chip { background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 13px; }
+  .buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 8px; }
+  button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 6px; cursor: pointer; color: #1a1206;
+           background: linear-gradient(#f2c46c, var(--brass2)); }
+  button.ghost { background: var(--panel2); color: var(--text); border: 1px solid var(--line); }
+  button.danger { background: linear-gradient(#f48a8a, #c44848); color: #200; }
+  button:disabled { opacity: .35; cursor: not-allowed; }
+  input { font: inherit; width: 100%; background: #0e1426; color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; }
+  input:focus { outline: 2px solid var(--brass2); border-color: transparent; }
+  .login { display: grid; gap: 10px; margin-top: 10px; }
+  .msg { min-height: 18px; font-size: 13px; margin-top: 8px; }
+  .msg.err { color: var(--bad); } .msg.ok { color: var(--ok); }
+  ul.log { list-style: none; margin: 8px 0 0; padding: 0; }
+  ul.log li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  ul.log li span { color: var(--muted); white-space: nowrap; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 16px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.svg" alt="">
+    <div>
+      <h1><b>Stentik</b> Servers</h1>
+      <p>Start and stop the Minecraft servers on Stentik's PC</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="label">PC</div>
+        <div class="state big"><span class="dot" id="pcDot"></span><span id="pcText">…</span></div>
+      </div>
+      <div class="muted" id="pcSeen" style="text-align:right;white-space:pre-line"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="loginCard">
+    <div class="label">Log in to control the servers</div>
+    <div class="login">
+      <input id="name" placeholder="Your name" maxlength="24" autocomplete="nickname">
+      <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+      <button id="loginBtn">Log in</button>
+    </div>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="label">Servers</div>
+      <div class="muted hidden" id="whoBox">as <b id="who"></b> · <a href="#" id="logout" style="color:var(--muted)">log out</a></div>
+    </div>
+    <div id="servers"><div class="muted" style="margin-top:8px">Loading…</div></div>
+    <div class="msg" id="ctrlMsg"></div>
+  </div>
+
+  <div class="card">
+    <div class="label">Recent activity</div>
+    <ul class="log" id="log"></ul>
+  </div>
+
+  <footer>Only one server runs at a time: starting another one stops the current one first.<br>
+    Stop warns players 10 seconds before and saves the world.</footer>
+</div>
+
+<script src="config.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let session = null, last = null;
+try { session = JSON.parse(localStorage.getItem('stentik-session') || 'null'); } catch (e) {}
+
+async function api(body) {
+  const r = await fetch(window.PANEL_API, { method: 'POST', body: JSON.stringify(body) }); // text/plain: no CORS preflight
+  return r.json();
+}
+function ago(t) {
+  if (!t) return '';
+  const s = Math.round((Date.now() - t) / 1000);
+  if (s < 60) return s + ' s ago';
+  if (s < 3600) return Math.round(s / 60) + ' min ago';
+  if (s < 86400) return Math.round(s / 3600) + ' h ago';
+  return Math.round(s / 86400) + ' d ago';
+}
+const ST = { running: ['ok', 'Running'], starting: ['warn', 'Starting…'], stopping: ['warn', 'Stopping…'],
+             stopped: ['bad', 'Stopped'], unknown: ['', 'Unknown'] };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function render(s) {
+  last = s;
+  const pcOn = s.pc === 'online';
+  $('pcDot').className = 'dot ' + (pcOn ? 'ok' : 'bad');
+  $('pcText').textContent = !s.paired ? 'Not set up yet' : pcOn ? 'Online' : 'Offline';
+  $('pcSeen').textContent = s.lastSeen ? 'last signal\n' + ago(s.lastSeen) : '';
+  const box = $('servers');
+  box.innerHTML = '';
+  if (!s.servers || !s.servers.length) box.innerHTML = '<div class="muted" style="margin-top:8px">No servers yet. Run the agent on the PC.</div>';
+  const anyBusy = !!s.pending || (s.servers || []).some(x => x.state === 'starting' || x.state === 'stopping');
+  const running = (s.servers || []).find(x => x.state === 'running' || x.state === 'starting');
+  (s.servers || []).forEach(x => {
+    let key = x.state in ST ? x.state : 'unknown';
+    if (s.pending && s.pending.server === x.id) key = s.pending.cmd === 'stop' ? 'stopping' : 'starting';
+    const [cls, txt] = ST[key];
+    const p = x.players || [];
+    const el = document.createElement('div');
+    el.className = 'server';
+    el.innerHTML = `
+      <div class="row"><h3>${esc(x.name)}</h3>
+        <div class="state"><span class="dot ${cls}"></span><span>${txt}</span>
+        <span class="muted">${key === 'running' ? p.length + (x.max ? ' / ' + x.max : '') : ''}</span></div></div>
+      <div class="players">${p.map(n => '<span class="chip">' + esc(n) + '</span>').join('')}</div>
+      ${x.detail ? '<div class="muted">' + esc(x.detail) + '</div>' : ''}
+      <div class="buttons ${session ? '' : 'hidden'}">
+        <button data-c="start">Start</button><button class="ghost" data-c="restart">Restart</button><button class="danger" data-c="stop">Stop</button>
+      </div>`;
+    const [bStart, bRestart, bStop] = el.querySelectorAll('button');
+    bStart.disabled = !pcOn || anyBusy || key === 'running' || key === 'starting';
+    bStop.disabled = !pcOn || anyBusy || key !== 'running';
+    bRestart.disabled = bStop.disabled;
+    bStart.onclick = () => send('start', x, running && running.id !== x.id ? running : null);
+    bRestart.onclick = () => send('restart', x);
+    bStop.onclick = () => send('stop', x);
+    box.appendChild(el);
+  });
+  $('log').innerHTML = '';
+  (s.log || []).forEach(l => {
+    const li = document.createElement('li');
+    li.textContent = l.text;
+    const sp = document.createElement('span'); sp.textContent = ago(l.t); li.appendChild(sp);
+    $('log').appendChild(li);
+  });
+  if (!(s.log || []).length) $('log').innerHTML = '<li class="muted">nothing yet</li>';
+}
+
+function showAuth() {
+  $('loginCard').classList.toggle('hidden', !!session);
+  $('whoBox').classList.toggle('hidden', !session);
+  if (session) $('who').textContent = session.name;
+  if (last) render(last);
+}
+
+async function poll() {
+  try { render(await api({ action: 'status' })); }
+  catch (e) { $('pcText').textContent = 'No connection'; }
+}
+
+$('loginBtn').onclick = async () => {
+  const name = $('name').value.trim() || 'someone', password = $('pw').value;
+  $('loginMsg').className = 'msg'; $('loginMsg').textContent = 'Checking…';
+  try {
+    const r = await api({ action: 'login', password });
+    if (!r.ok) { $('loginMsg').className = 'msg err'; $('loginMsg').textContent = r.error; return; }
+    session = { name, password };
+    localStorage.setItem('stentik-session', JSON.stringify(session));
+    $('loginMsg').textContent = ''; showAuth();
+  } catch (e) { $('loginMsg').className = 'msg err'; $('loginMsg').textContent = 'Cannot reach the panel API.'; }
+};
+$('pw').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+$('logout').onclick = e => { e.preventDefault(); session = null; localStorage.removeItem('stentik-session'); showAuth(); };
+
+async function send(cmd, server, other) {
+  if (cmd === 'stop' && !confirm('Stop ' + server.name + '? Players get a 10 second warning.')) return;
+  if (other && !confirm(other.name + ' is running. Stop it and start ' + server.name + '?')) return;
+  $('ctrlMsg').className = 'msg'; $('ctrlMsg').textContent = 'Sending…';
+  try {
+    const r = await api({ action: 'command', cmd, server: server.id, password: session.password, by: session.name });
+    if (!r.ok) {
+      $('ctrlMsg').className = 'msg err'; $('ctrlMsg').textContent = r.error;
+      if (/password/i.test(r.error)) { session = null; localStorage.removeItem('stentik-session'); showAuth(); }
+      return;
+    }
+    $('ctrlMsg').className = 'msg ok'; $('ctrlMsg').textContent = 'Sent. The PC picks it up within ~10 seconds.';
+    poll();
+  } catch (e) { $('ctrlMsg').className = 'msg err'; $('ctrlMsg').textContent = 'Cannot reach the panel API.'; }
+}
+
+showAuth();
+poll();
+setInterval(poll, 5000);
+</script>
+</body>
+</html>
