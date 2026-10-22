@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	version    = "2.0"
+	version    = "2.1"
 	defaultAPI = "https://script.google.com/macros/s/AKfycbx4XO5fIneyf4_Zb8sal9cAHtoVXo8vMankC1wGpRP39US6x7d4t4j2fzIDwwsMKX-C/exec"
 	panelURL   = "https://stenfordd.github.io/Stentik-TurnPC/"
 )
@@ -58,9 +58,11 @@ type srv struct {
 	stdin     io.WriteCloser
 	lastList  time.Time
 	wantStart string // start once the port is free (switching servers / restart)
+	con       tail
 }
 
 var (
+	watch   string // server id someone is watching on the web console
 	dataDir string
 	cfg     config
 	servers []*srv
@@ -414,7 +416,9 @@ func runLoop() {
 				busy = true
 			}
 		}
-		if busy || time.Now().Before(fast) {
+		if watch != "" {
+			time.Sleep(2 * time.Second)
+		} else if busy || time.Now().Before(fast) {
 			time.Sleep(3 * time.Second)
 		} else {
 			time.Sleep(10 * time.Second)
@@ -594,8 +598,21 @@ func report() *command {
 		OK    bool     `json:"ok"`
 		Error string   `json:"error"`
 		Cmd   *command `json:"cmd"`
+		Watch string   `json:"watch"`
+		Conq  []struct {
+			Server string `json:"server"`
+			Line   string `json:"line"`
+			By     string `json:"by"`
+		} `json:"conq"`
 	}
-	err := post(map[string]any{"action": "agent", "key": cfg.Key, "ack": ack, "status": map[string]any{"servers": list, "agent": version}}, &r)
+	body := map[string]any{"action": "agent", "key": cfg.Key, "ack": ack, "status": map[string]any{"servers": list, "agent": version}}
+	for _, s := range servers {
+		if s.ID == watch {
+			s.con.poll(s.Dir)
+			body["console"] = map[string]any{"server": s.ID, "lines": s.con.lines}
+		}
+	}
+	err := post(body, &r)
 	if err != nil {
 		log.Printf("api: %v", err)
 		return nil
@@ -605,6 +622,15 @@ func report() *command {
 		return nil
 	}
 	ack = ""
+	watch = r.Watch
+	for _, c := range r.Conq {
+		for _, s := range servers {
+			if s.ID == c.Server {
+				s.con.poll(s.Dir)
+				consoleCmd(s, c.Line, c.By)
+			}
+		}
+	}
 	if r.Cmd != nil && r.Cmd.ID != "" {
 		return r.Cmd
 	}

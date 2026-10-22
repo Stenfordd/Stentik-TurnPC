@@ -65,3 +65,27 @@ func TestRegister(t *testing.T) {
 		t.Fatalf("%v %v", err, got)
 	}
 }
+
+func TestTail(t *testing.T) {
+	d := t.TempDir()
+	os.MkdirAll(filepath.Join(d, "logs"), 0o755)
+	p := filepath.Join(d, "logs", "latest.log")
+	os.WriteFile(p, []byte("a\r\nb\nhalf"), 0o644)
+	var tl tail
+	tl.poll(d)
+	if strings.Join(tl.lines, "|") != "a|b" {
+		t.Fatalf("got %v", tl.lines)
+	}
+	f, _ := os.OpenFile(p, os.O_APPEND|os.O_WRONLY, 0)
+	f.WriteString(" line\nc\n")
+	f.Close()
+	tl.poll(d)
+	if strings.Join(tl.lines, "|") != "a|b|half line|c" {
+		t.Fatalf("got %v", tl.lines)
+	}
+	os.WriteFile(p, []byte("new\n"), 0o644) // restart: log truncated
+	tl.poll(d)
+	if strings.Join(tl.lines, "|") != "new" {
+		t.Fatalf("after rotate %v", tl.lines)
+	}
+}

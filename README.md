@@ -2,7 +2,7 @@
 
 Stránka: **https://stenfordd.github.io/Stentik-TurnPC/**
 
-Kamarádi se tam přihlásí heslem a můžou spustit / restartovat / zastavit Minecraft servery
+Kamarádi se tam přihlásí heslem a můžou spustit / restartovat / zastavit Minecraft servery a používat živou konzoli
 na Stentikově PC (CREATE: Cogs to Cosmos, ATM10, …). Běží vždy jen jeden server.
 
 ## Jak to funguje

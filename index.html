@@ -51,6 +51,12 @@
   ul.log li span { color: var(--muted); white-space: nowrap; }
   footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 16px; }
   .hidden { display: none !important; }
+  .console { background: #070a14; border: 1px solid var(--line); border-radius: 10px; height: 300px; overflow-y: auto; margin-top: 10px;
+             padding: 8px 10px; font: 12px/1.45 ui-monospace, Consolas, "Cascadia Mono", monospace; white-space: pre-wrap; word-break: break-word; }
+  .console .w { color: var(--warn); } .console .e { color: var(--bad); } .console .p { color: var(--brass); } .console .c { color: #9fd3ff; }
+  .conrow { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
+  .conrow input { font-family: ui-monospace, Consolas, monospace; }
+  select { font: inherit; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; }
 </style>
 </head>
 <body>
@@ -92,6 +98,19 @@
     <div class="msg" id="ctrlMsg"></div>
   </div>
 
+  <div class="card hidden" id="conCard">
+    <div class="row">
+      <div class="label">Console</div>
+      <select id="conServer"></select>
+    </div>
+    <div class="console" id="con"><span class="muted">connecting…</span></div>
+    <div class="conrow">
+      <input id="conInput" placeholder="e.g. say hi" autocomplete="off">
+      <button id="conSend">Send</button>
+    </div>
+    <div class="msg" id="conMsg"></div>
+  </div>
+
   <div class="card">
     <div class="label">Recent activity</div>
     <ul class="log" id="log"></ul>
@@ -123,7 +142,7 @@ const ST = { running: ['ok', 'Running'], starting: ['warn', 'Starting…'], stop
              stopped: ['bad', 'Stopped'], unknown: ['', 'Unknown'] };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-function render(s) {
+let render = function (s) {
   last = s;
   const pcOn = s.pc === 'online';
   $('pcDot').className = 'dot ' + (pcOn ? 'ok' : 'bad');
@@ -210,6 +229,65 @@ async function send(cmd, server, other) {
     poll();
   } catch (e) { $('ctrlMsg').className = 'msg err'; $('ctrlMsg').textContent = 'Cannot reach the panel API.'; }
 }
+
+// ---------- live console ----------
+let conTimer = null, conSel = '', conSig = '';
+function conTargets() {
+  return (last && last.servers || []).filter(x => x.state === 'running' || x.state === 'starting' || x.state === 'stopping');
+}
+function updateConsoleCard() {
+  const t = conTargets();
+  const show = !!session && last && last.pc === 'online' && t.length > 0;
+  $('conCard').classList.toggle('hidden', !show);
+  const sig = t.map(x => x.id).join(',');
+  if (sig !== conSig) {
+    conSig = sig;
+    $('conServer').innerHTML = t.map(x => '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>').join('');
+    if (!t.find(x => x.id === conSel)) conSel = t.length ? t[0].id : '';
+    $('conServer').value = conSel;
+  }
+  if (show && !conTimer) { conPoll(); conTimer = setInterval(conPoll, 2500); }
+  if (!show && conTimer) { clearInterval(conTimer); conTimer = null; }
+}
+$('conServer').onchange = () => { conSel = $('conServer').value; $('con').innerHTML = '<span class="muted">connecting…</span>'; conPoll(); };
+function lineClass(l) {
+  if (l.startsWith('[panel]') || l.startsWith('[rcon]')) return 'p';
+  if (/\/(WARN|WARNING)\]/.test(l)) return 'w';
+  if (/\/(ERROR|FATAL)\]/.test(l)) return 'e';
+  if (/<[^>]+>/.test(l) || /joined the game|left the game/.test(l)) return 'c';
+  return '';
+}
+// "[20:41:02] [Server thread/INFO] [minecraft/DedicatedServer]: Done" -> "20:41:02 Done"
+function shortLine(l) {
+  const m = l.match(/^\[(\d\d:\d\d:\d\d)\] \[[^\]]*\/(\w+)\](?: \[[^\]]*\])?:? ?(.*)$/);
+  if (!m) return l;
+  return m[1] + ' ' + (m[2] === 'INFO' ? '' : m[2] + ' ') + m[3];
+}
+async function conPoll(line) {
+  if (!session || !conSel) return;
+  try {
+    const r = await api({ action: 'console', password: session.password, server: conSel, line: line || '', by: session.name });
+    if (!r.ok) { $('conMsg').className = 'msg err'; $('conMsg').textContent = r.error; return; }
+    const box = $('con');
+    const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
+    if (!r.lines.length) { box.innerHTML = '<span class="muted">waiting for the PC… (a few seconds)</span>'; return; }
+    box.innerHTML = r.lines.map(l => '<div class="' + lineClass(l) + '">' + esc(shortLine(l)) + '</div>').join('');
+    if (atBottom) box.scrollTop = box.scrollHeight;
+  } catch (e) { $('conMsg').className = 'msg err'; $('conMsg').textContent = 'Cannot reach the panel API.'; }
+}
+async function conSend() {
+  const line = $('conInput').value.trim();
+  if (!line) return;
+  $('conInput').value = '';
+  $('conMsg').className = 'msg'; $('conMsg').textContent = 'Sent: /' + line.replace(/^\//, '');
+  await conPoll(line);
+  setTimeout(() => { $('con').scrollTop = $('con').scrollHeight; }, 50);
+}
+$('conSend').onclick = conSend;
+$('conInput').addEventListener('keydown', e => { if (e.key === 'Enter') conSend(); });
+
+const _render = render;
+render = s => { _render(s); updateConsoleCard(); };
 
 showAuth();
 poll();

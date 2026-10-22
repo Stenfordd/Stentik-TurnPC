@@ -32,6 +32,7 @@ function doPost(e) {
       case 'command': return json_(command_(req));
       case 'agent': return json_(agent_(req));
       case 'register': return json_(register_(req));
+      case 'console': return json_(console_(req));
     }
     return json_({ ok: false, error: 'unknown action' });
   } finally {
@@ -98,6 +99,24 @@ function command_(req) {
   return { ok: true, pending: p };
 }
 
+// Live console: only for logged-in users (the log contains player IPs).
+function console_(req) {
+  var err = checkPassword_(req.password);
+  if (err) return { ok: false, error: err };
+  var server = String(req.server || '');
+  CACHE.put('watch', server, 30); // the agent sends the console while someone is watching
+  var line = String(req.line || '').trim().replace(/^\//, '').slice(0, 300);
+  if (line) {
+    var by = String(req.by || 'someone').replace(/[^\w .\-]/g, '').slice(0, 24) || 'someone';
+    var q = getJson_('conq') || [];
+    q.push({ server: server, line: line, by: by });
+    putJson_('conq', q.slice(-20), 300);
+    addLog_(by + ': /' + line);
+  }
+  var c = getJson_('console') || {};
+  return { ok: true, server: c.server || '', lines: c.server === server ? (c.lines || []) : [], at: c.at || 0 };
+}
+
 // ---------- PC agent ----------
 
 function register_(req) {
@@ -124,12 +143,17 @@ function agent_(req) {
   (st.servers || []).forEach(function (s) {
     if (before[s.id] && before[s.id] !== s.state && (s.state === 'running' || s.state === 'stopped')) addLog_(s.name + ' ' + s.state);
   });
+  if (req.console && req.console.server) {
+    putJson_('console', { server: req.console.server, lines: req.console.lines || [], at: Date.now() }, 120);
+  }
   var p = getJson_('pending');
   if (p && req.ack && req.ack === p.id) {
     CACHE.remove('pending');
     p = null;
   }
-  return { ok: true, cmd: p };
+  var q = getJson_('conq') || [];
+  if (q.length) CACHE.remove('conq');
+  return { ok: true, cmd: p, watch: CACHE.get('watch') || '', conq: q };
 }
 
 // ---------- helpers ----------
