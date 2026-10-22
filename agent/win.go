@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -92,8 +93,9 @@ func agentRunning() bool {
 	return false
 }
 
+// stopOldAgent ends a running background copy, but never this process (the downloaded file has the same name).
 func stopOldAgent() {
-	c := exec.Command("taskkill", "/F", "/IM", "stentik-agent.exe")
+	c := exec.Command("taskkill", "/F", "/IM", "stentik-agent.exe", "/FI", "PID ne "+strconv.Itoa(os.Getpid()))
 	hide(c)
 	c.Run()
 }

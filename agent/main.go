@@ -233,7 +233,11 @@ func ensureRunning() {
 		c := exec.Command(target, "--background")
 		c.Dir = dataDir
 		detach(c)
-		c.Start()
+		if err := c.Start(); err != nil {
+			log.Printf("could not start the background agent: %v", err)
+		} else {
+			log.Printf("background agent started (pid %d)", c.Process.Pid)
+		}
 	}
 }
 
