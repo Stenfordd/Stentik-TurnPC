@@ -89,3 +89,17 @@ func TestTail(t *testing.T) {
 		t.Fatalf("after rotate %v", tl.lines)
 	}
 }
+
+func TestTrackPlayers(t *testing.T) {
+	s := &srv{}
+	s.con.lines = []string{
+		"[21:00:00] [Server thread/INFO] [minecraft/MinecraftServer]: Tarzan joined the game",
+		"[21:00:05] [Server thread/INFO] [minecraft/MinecraftServer]: KingStentik joined the game",
+	}
+	s.trackPlayers()
+	s.con.add("[21:01:00] [Server thread/INFO] [minecraft/MinecraftServer]: Tarzan left the game")
+	s.trackPlayers()
+	if strings.Join(s.players, ",") != "KingStentik" {
+		t.Fatalf("players %v", s.players)
+	}
+}

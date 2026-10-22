@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	version    = "2.1"
+	version    = "2.2"
 	defaultAPI = "https://script.google.com/macros/s/AKfycbx4XO5fIneyf4_Zb8sal9cAHtoVXo8vMankC1wGpRP39US6x7d4t4j2fzIDwwsMKX-C/exec"
 	panelURL   = "https://stenfordd.github.io/Stentik-TurnPC/"
 )
@@ -59,15 +59,17 @@ type srv struct {
 	lastList  time.Time
 	wantStart string // start once the port is free (switching servers / restart)
 	con       tail
+	seen      int // console lines already scanned for joins/leaves
 }
 
 var (
-	watch   string // server id someone is watching on the web console
-	dataDir string
-	cfg     config
-	servers []*srv
-	cfgTime time.Time
-	ack     string
+	portOwner = map[string]*srv{}
+	watch     string // server id someone is watching on the web console
+	dataDir   string
+	cfg       config
+	servers   []*srv
+	cfgTime   time.Time
+	ack       string
 )
 
 func main() {
@@ -453,6 +455,50 @@ func portUp(p string) bool {
 
 func (s *srv) alive() bool { return s.proc != nil && s.proc.ProcessState == nil }
 
+var joinRe = regexp.MustCompile(`: ([A-Za-z0-9_]{1,16}) (joined|left) the game$`)
+
+// trackPlayers follows joins and leaves in the log, so the panel does not need to ask the server.
+func (s *srv) trackPlayers() {
+	s.seen -= s.con.drop
+	s.con.drop = 0
+	if s.seen < 0 || s.seen > len(s.con.lines) {
+		s.seen = 0
+	}
+	for _, l := range s.con.lines[s.seen:] {
+		if m := joinRe.FindStringSubmatch(l); m != nil {
+			var keep []string
+			for _, p := range s.players {
+				if p != m[1] {
+					keep = append(keep, p)
+				}
+			}
+			if m[2] == "joined" {
+				keep = append(keep, m[1])
+			}
+			s.players = keep
+		}
+	}
+	s.seen = len(s.con.lines)
+}
+
+func (s *srv) rconList() {
+	r, err := rconDial("127.0.0.1:"+s.rconPort, s.rconPass)
+	if err != nil {
+		return
+	}
+	out, err := r.cmd("list")
+	r.Close()
+	if m := listRe.FindStringSubmatch(out); err == nil && m != nil {
+		fmt.Sscan(m[2], &s.max)
+		s.players = nil
+		for _, n := range strings.Split(m[3], ",") {
+			if n = strings.TrimSpace(n); n != "" {
+				s.players = append(s.players, n)
+			}
+		}
+	}
+}
+
 func (s *srv) set(st string) {
 	if st != s.state {
 		log.Printf("%s: %s -> %s", s.Name, s.state, st)
@@ -505,10 +551,17 @@ func refreshAll() {
 	}
 	owners := map[*srv]bool{}
 	for p := range ports {
-		if portUp(p) {
-			if o := owner(p); o != nil {
-				owners[o] = true
-			}
+		if !portUp(p) {
+			delete(portOwner, p)
+			continue
+		}
+		o := portOwner[p]
+		if o == nil || (o.state == "stopped" && !o.alive()) {
+			o = owner(p) // may open one RCON connection; the result is kept while the port stays up
+			portOwner[p] = o
+		}
+		if o != nil {
+			owners[o] = true
 		}
 	}
 	for _, s := range servers {
@@ -530,21 +583,15 @@ func refreshAll() {
 		case !up && s.state == "running":
 			s.set("stopped")
 		}
-		if s.state == "running" && s.rconPass != "" && time.Since(s.lastList) > 20*time.Second {
-			s.lastList = time.Now()
-			if r, err := rconDial("127.0.0.1:"+s.rconPort, s.rconPass); err == nil {
-				out, err := r.cmd("list")
-				r.Close()
-				if m := listRe.FindStringSubmatch(out); err == nil && m != nil {
-					fmt.Sscan(m[2], &s.max)
-					s.players = nil
-					for _, n := range strings.Split(m[3], ",") {
-						if n = strings.TrimSpace(n); n != "" {
-							s.players = append(s.players, n)
-						}
-					}
-				}
+		if s.state == "running" {
+			s.con.poll(s.Dir)
+			s.trackPlayers()
+			if s.rconPass != "" && time.Since(s.lastList) > 5*time.Minute {
+				s.lastList = time.Now()
+				s.rconList()
 			}
+		} else {
+			s.lastList = time.Time{}
 		}
 	}
 	// queued starts (switching servers / restart) once nothing else uses the port

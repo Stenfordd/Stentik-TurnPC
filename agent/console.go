@@ -17,6 +17,7 @@ type tail struct {
 	off   int64
 	part  string
 	lines []string
+	drop  int // lines dropped from the front since the last scan
 }
 
 func (t *tail) poll(dir string) {
@@ -34,7 +35,7 @@ func (t *tail) poll(dir string) {
 		return
 	}
 	if st.Size() < t.off || (t.info != nil && !os.SameFile(t.info, st)) { // new log after a restart
-		t.off, t.part, t.lines = 0, "", nil
+		t.off, t.part, t.lines, t.drop = 0, "", nil, 0
 	}
 	t.info = st
 	if t.off == 0 && st.Size() > 64*1024 {
@@ -57,6 +58,7 @@ func (t *tail) add(l string) {
 	}
 	t.lines = append(t.lines, l)
 	if len(t.lines) > consoleLines {
+		t.drop += len(t.lines) - consoleLines
 		t.lines = t.lines[len(t.lines)-consoleLines:]
 	}
 }
