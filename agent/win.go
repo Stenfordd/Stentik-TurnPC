@@ -99,3 +99,10 @@ func stopOldAgent() {
 	hide(c)
 	c.Run()
 }
+
+// powerOff shuts Windows down normally (apps get a chance to close).
+func powerOff() {
+	c := exec.Command("shutdown", "/s", "/t", "10", "/c", "Stentik panel: shutting down the PC")
+	hide(c)
+	c.Run()
+}

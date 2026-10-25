@@ -86,9 +86,16 @@ function command_(req) {
   var err = checkPassword_(req.password);
   if (err) return { ok: false, error: err };
   var cmd = String(req.cmd || '');
-  if (['start', 'stop', 'restart'].indexOf(cmd) < 0) return { ok: false, error: 'unknown command' };
+  if (['start', 'stop', 'restart', 'shutdown'].indexOf(cmd) < 0) return { ok: false, error: 'unknown command' };
   var st = status_();
   if (st.pc !== 'online') return { ok: false, error: 'The PC is offline right now.' };
+  var by0 = String(req.by || 'someone').replace(/[^\w .\-]/g, '').slice(0, 24) || 'someone';
+  if (cmd === 'shutdown') {
+    var sp = { id: Utilities.getUuid().slice(0, 8), cmd: 'shutdown', server: '', name: 'PC', by: by0, at: Date.now() };
+    putJson_('pending', sp, PENDING_SECONDS);
+    addLog_(by0 + ': shut down the PC');
+    return { ok: true, pending: sp };
+  }
   var srv = null;
   st.servers.forEach(function (s) { if (s.id === req.server) srv = s; });
   if (!srv) return { ok: false, error: 'unknown server' };

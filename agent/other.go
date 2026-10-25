@@ -18,3 +18,4 @@ func installAutostart(exe string) error         { return nil }
 func singleInstance() bool                      { return true }
 func agentRunning() bool                        { return false }
 func stopOldAgent()                             {}
+func powerOff()                                 {}

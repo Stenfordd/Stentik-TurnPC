@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	version    = "2.2"
+	version    = "2.3"
 	defaultAPI = "https://script.google.com/macros/s/AKfycbx4XO5fIneyf4_Zb8sal9cAHtoVXo8vMankC1wGpRP39US6x7d4t4j2fzIDwwsMKX-C/exec"
 	panelURL   = "https://stenfordd.github.io/Stentik-TurnPC/"
 )
@@ -63,13 +63,14 @@ type srv struct {
 }
 
 var (
-	portOwner = map[string]*srv{}
-	watch     string // server id someone is watching on the web console
-	dataDir   string
-	cfg       config
-	servers   []*srv
-	cfgTime   time.Time
-	ack       string
+	shuttingDown bool
+	portOwner    = map[string]*srv{}
+	watch        string // server id someone is watching on the web console
+	dataDir      string
+	cfg          config
+	servers      []*srv
+	cfgTime      time.Time
+	ack          string
 )
 
 func main() {
@@ -671,6 +672,10 @@ func report() *command {
 	ack = ""
 	watch = r.Watch
 	for _, c := range r.Conq {
+		if c.Server == "__pc" && c.Line == "shutdown" { // sent through the console queue (works with the old Apps Script too)
+			run(&command{Cmd: "shutdown", By: c.By})
+			continue
+		}
 		for _, s := range servers {
 			if s.ID == c.Server {
 				s.con.poll(s.Dir)
@@ -686,6 +691,36 @@ func report() *command {
 
 func run(c *command) {
 	ack = c.ID
+	if c.Cmd == "shutdown" {
+		if shuttingDown {
+			return
+		}
+		shuttingDown = true
+		log.Printf("command shutdown PC by %s", c.By)
+		// in the background, so the loop keeps reporting (and acks the command before Windows goes down)
+		go func() {
+			for _, o := range servers {
+				if o.state == "running" || o.state == "starting" {
+					stop(o, "PC shutting down")
+				}
+			}
+			for i := 0; i < 120; i++ {
+				busy := false
+				for _, o := range servers {
+					if o.alive() || (o.gamePort != "" && portUp(o.gamePort)) {
+						busy = true
+					}
+				}
+				if !busy {
+					break
+				}
+				time.Sleep(time.Second)
+			}
+			time.Sleep(5 * time.Second)
+			powerOff()
+		}()
+		return
+	}
 	var s *srv
 	for _, x := range servers {
 		if x.ID == c.Server {

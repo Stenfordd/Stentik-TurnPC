@@ -77,6 +77,7 @@
       </div>
       <div class="muted" id="pcSeen" style="text-align:right;white-space:pre-line"></div>
     </div>
+    <button class="danger hidden" id="btnPcOff" style="width:100%;margin-top:12px">Shut down PC</button>
   </div>
 
   <div class="card hidden" id="loginCard">
@@ -147,6 +148,8 @@ let render = function (s) {
   const pcOn = s.pc === 'online';
   $('pcDot').className = 'dot ' + (pcOn ? 'ok' : 'bad');
   $('pcText').textContent = !s.paired ? 'Not set up yet' : pcOn ? 'Online' : 'Offline';
+  $('btnPcOff').classList.toggle('hidden', !session || !pcOn);
+  $('btnPcOff').disabled = false;
   $('pcSeen').textContent = s.lastSeen ? 'last signal\n' + ago(s.lastSeen) : '';
   const box = $('servers');
   box.innerHTML = '';
@@ -213,6 +216,16 @@ $('loginBtn').onclick = async () => {
 };
 $('pw').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
 $('logout').onclick = e => { e.preventDefault(); session = null; localStorage.removeItem('stentik-session'); showAuth(); };
+
+$('btnPcOff').onclick = async () => {
+  if (!confirm('Shut down the whole PC? Running servers are stopped and saved first.')) return;
+  $('btnPcOff').disabled = true;
+  try {
+    const r = await api({ action: 'console', server: '__pc', line: 'shutdown', password: session.password, by: session.name });
+    alert(r.ok ? 'Sent. Servers stop first, then the PC turns off (about 1 minute).' : r.error);
+    poll();
+  } catch (e) { alert('Cannot reach the panel API.'); }
+};
 
 async function send(cmd, server, other) {
   if (cmd === 'stop' && !confirm('Stop ' + server.name + '? Players get a 10 second warning.')) return;
