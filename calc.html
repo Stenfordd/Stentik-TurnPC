@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stentik Kalkulačka</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #0b1020; --panel: #141b2e; --panel2: #1b2440; --line: #2a3556;
+    --text: #e8ecf5; --muted: #8e98b3; --brass: #e3ad4b; --brass2: #b9772a;
+    --ok: #4fd08a; --warn: #f0c45c; --bad: #ef6b6b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: radial-gradient(1100px 560px at 75% -10%, #23305a 0%, transparent 60%), var(--bg); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  header img { width: 52px; height: 52px; }
+  header h1 { margin: 0; font-size: 21px; } header h1 b { color: var(--brass); }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  nav { display: flex; gap: 6px; margin-bottom: 16px; }
+  nav a { color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; }
+  nav a.on { color: #1a1206; background: linear-gradient(#f2c46c, var(--brass2)); border-color: transparent; font-weight: 600; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 14px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .muted { color: var(--muted); font-size: 13px; }
+  button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 9px 12px; cursor: pointer; color: #1a1206;
+           background: linear-gradient(#f2c46c, var(--brass2)); }
+  button.ghost { background: var(--panel2); color: var(--text); border: 1px solid var(--line); }
+  button.danger { background: linear-gradient(#f48a8a, #c44848); color: #200; }
+  button.sm { padding: 6px 10px; font-size: 13px; }
+  input, select, textarea { font: inherit; background: #0e1426; color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--brass2); border-color: transparent; }
+  textarea { width: 100%; min-height: 120px; font: 12px/1.4 ui-monospace, Consolas, monospace; resize: vertical; }
+  select { max-width: 100%; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .top { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+  .count { display: flex; align-items: center; gap: 8px; }
+  .count input { width: 110px; text-align: center; font-size: 18px; font-weight: 700; }
+  h2 { margin: 0; font-size: 19px; } h2 small { color: var(--muted); font-weight: 400; font-size: 13px; }
+  .bar { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brass2), var(--ok)); width: 0; transition: width .25s; }
+  .sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+  .sum div { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .sum b { display: block; font-size: 17px; }
+  .group { margin-top: 6px; }
+  .ghead { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 0; border-top: 1px solid var(--line); user-select: none; }
+  .ghead .arr { color: var(--brass); width: 14px; transition: transform .15s; }
+  .group.closed .arr { transform: rotate(-90deg); }
+  .group.closed .items { display: none; }
+  .ghead h3 { margin: 0; font-size: 15px; flex: 1; }
+  .item { display: grid; grid-template-columns: 26px 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 4px; border-top: 1px dashed #222c48; }
+  .item input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--ok); margin: 0; }
+  .item .n { word-break: break-word; }
+  .item .q { text-align: right; white-space: nowrap; }
+  .item .q b { font-size: 16px; }
+  .item .q span { display: block; color: var(--muted); font-size: 12px; }
+  .item.have .n, .item.have .q b { color: var(--muted); text-decoration: line-through; }
+  .edit { display: grid; grid-template-columns: 1fr 90px 70px 130px auto; gap: 6px; padding: 6px 0; border-top: 1px dashed #222c48; }
+  .edit input { padding: 7px 8px; min-width: 0; width: 100%; }
+  .meta { display: grid; grid-template-columns: 1fr 1fr 90px; gap: 6px; margin-top: 10px; }
+  .meta input { width: 100%; min-width: 0; }
+  .msg { min-height: 18px; font-size: 13px; margin-top: 8px; white-space: pre-line; }
+  .msg.err { color: var(--bad); } .msg.ok { color: var(--ok); }
+  .tag { font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); margin-left: 6px; vertical-align: middle; }
+  .tag.sh { color: var(--ok); border-color: #2c6a4b; }
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 16px; }
+  @media (max-width: 560px) {
+    .top { grid-template-columns: 1fr; }
+    .sum { grid-template-columns: 1fr 1fr; }
+    .edit { grid-template-columns: 1fr 1fr 1fr; }
+    .edit .en { grid-column: 1 / -1; }
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta .mn { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.svg" alt="">
+    <div>
+      <h1><b>Stentik</b> Kalkulačka</h1>
+      <p>Kolik čeho potřebuješ, ve stackách, i s odškrtáváním</p>
+    </div>
+  </header>
+  <nav><a href="./">Servery</a><a class="on" href="calc.html">Kalkulačka</a></nav>
+
+  <div class="card">
+    <div class="top">
+      <div>
+        <div class="label" style="margin-bottom:6px">Recept</div>
+        <select id="pick" style="width:100%"></select>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom:6px">Kolik kusů</div>
+        <div class="count">
+          <button class="ghost sm" id="minus">−</button>
+          <input id="mult" type="number" min="1" step="1" value="1" inputmode="numeric">
+          <button class="ghost sm" id="plus">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="ghost sm" id="bNew">+ Nový recept</button>
+      <button class="ghost sm" id="bEdit">Upravit</button>
+      <button class="ghost sm" id="bExport">Export</button>
+      <button class="ghost sm" id="bImport">Import</button>
+      <button class="sm" id="bShare">Uložit na GitHub</button>
+      <button class="danger sm" id="bDel">Smazat</button>
+    </div>
+    <div class="msg" id="msg"></div>
+
+    <div id="ioBox" class="hidden" style="margin-top:10px">
+      <textarea id="io" spellcheck="false" placeholder='{"format":"mc-calc/1","name":"...","unit":"...","per":1,"items":[{"n":"název","q":1,"s":64,"g":"Suroviny"}]}'></textarea>
+      <div class="tools">
+        <button class="sm" id="bLoad">Načíst jako nový recept</button>
+        <button class="ghost sm" id="bCopy">Kopírovat</button>
+        <button class="ghost sm" id="bClose">Zavřít</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="view">
+    <div class="row">
+      <h2 id="title"></h2>
+      <button class="ghost sm" id="bReset">Odškrtnout vše</button>
+    </div>
+    <div class="row muted" style="margin-top:8px"><span id="progText"></span><span id="progPct"></span></div>
+    <div class="bar"><i id="progBar"></i></div>
+    <div class="sum">
+      <div><span class="muted">Suroviny celkem</span><b id="sTotal"></b><span class="muted" id="sTotalSt"></span></div>
+      <div><span class="muted">Zbývá sehnat</span><b id="sLeft"></b><span class="muted" id="sLeftSt"></span></div>
+      <div><span class="muted">Hotovo surovin</span><b id="sPct"></b><span class="muted" id="sCnt"></span></div>
+    </div>
+
+    <div id="metaBox" class="meta hidden">
+      <input class="mn" id="mName" placeholder="Název receptu">
+      <input id="mUnit" placeholder="Jednotka (např. 4M cell)">
+      <input id="mPer" type="number" min="1" placeholder="Kusů na recept" title="Kolik kusů recept vyrobí">
+    </div>
+    <div id="groups"></div>
+    <div id="editTools" class="tools hidden">
+      <button class="ghost sm" id="bAdd">+ Přidat položku</button>
+      <button class="sm" id="bDone">Hotovo</button>
+    </div>
+  </div>
+
+  <footer>Sdílené recepty jsou na GitHubu ve složce <a href="https://github.com/Stenfordd/Stentik-TurnPC/tree/main/recipes" style="color:var(--muted)">recipes/</a>. Tvoje úpravy a odškrtávání se ukládají v tomhle prohlížeči.</footer>
+</div>
+
+<script>
+const REPO = 'Stenfordd/Stentik-TurnPC', BRANCH = 'main', DIR = 'recipes';
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('cs-CZ');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ---------- storage (works without localStorage too) ----------
+const mem = {};
+function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return k in mem ? mem[k] : d; } }
+function save(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+// recipes: { id: {recipe, src:'shared'|'local', file?} }
+let local = load('calc-local', {});          // own and edited recipes
+let shared = load('calc-shared-cache', {});  // last copy from GitHub
+let have = load('calc-have', {});            // { id: { itemName: true } }
+let ui = load('calc-ui', { cur: '', mult: {}, closed: {} });
+let editing = false;
+
+function all() {
+  const o = {};
+  for (const id in shared) o[id] = { ...shared[id], src: 'shared' };
+  for (const id in local) o[id] = { ...local[id], src: local[id].file ? 'edited' : 'local' };
+  return o;
+}
+function cur() { const a = all(); return a[ui.cur] || a[Object.keys(a)[0]] || null; }
+function curId() { const a = all(); return a[ui.cur] ? ui.cur : Object.keys(a)[0] || ''; }
+
+// ---------- validation ----------
+function validate(o) {
+  const e = [];
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return ['Není to JSON objekt.'];
+  if (o.format !== 'mc-calc/1') e.push('"format" musí být "mc-calc/1".');
+  if (typeof o.name !== 'string' || !o.name.trim()) e.push('Chybí "name" (text).');
+  if (o.unit != null && typeof o.unit !== 'string') e.push('"unit" musí být text.');
+  if (o.per != null && !(Number.isFinite(o.per) && o.per > 0)) e.push('"per" musí být kladné číslo.');
+  if (!Array.isArray(o.items) || !o.items.length) e.push('"items" musí být neprázdný seznam.');
+  else o.items.forEach((it, i) => {
+    const p = 'Položka ' + (i + 1) + ': ';
+    if (!it || typeof it !== 'object') { e.push(p + 'není objekt.'); return; }
+    if (typeof it.n !== 'string' || !it.n.trim()) e.push(p + 'chybí "n" (název).');
+    if (!Number.isFinite(it.q) || it.q < 0) e.push(p + '"q" musí být číslo ≥ 0.');
+    if (it.s != null && !(Number.isInteger(it.s) && it.s >= 1 && it.s <= 64)) e.push(p + '"s" musí být celé číslo 1–64.');
+    if (it.g != null && typeof it.g !== 'string') e.push(p + '"g" musí být text.');
+  });
+  return e;
+}
+function clean(o) {
+  return {
+    format: 'mc-calc/1', name: o.name.trim(), unit: (o.unit || 'ks').trim(), per: o.per || 1,
+    items: o.items.map(it => ({ n: it.n.trim(), q: it.q, s: it.s || 64, g: (it.g || 'Suroviny').trim() }))
+  };
+}
+const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'recept';
+
+// ---------- GitHub (shared recipes) ----------
+async function fetchShared() {
+  try {
+    const r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + DIR + '?ref=' + BRANCH, { cache: 'no-store' });
+    if (!r.ok) throw new Error('GitHub ' + r.status);
+    const files = (await r.json()).filter(f => f.type === 'file' && f.name.endsWith('.json'));
+    const next = {};
+    await Promise.all(files.map(async f => {
+      try {
+        const o = await (await fetch(f.download_url, { cache: 'no-store' })).json();
+        if (!validate(o).length) next['gh:' + f.name] = { recipe: clean(o), file: f.name };
+      } catch (e) {}
+    }));
+    shared = next; save('calc-shared-cache', shared);
+  } catch (e) {
+    if (!Object.keys(shared).length) { // GitHub API unreachable or rate limited: at least the bundled recipe
+      try { const o = await (await fetch(DIR + '/4m-mega-cell.json', { cache: 'no-store' })).json(); shared = { 'gh:4m-mega-cell.json': { recipe: clean(o), file: '4m-mega-cell.json' } }; render(); return; } catch (e2) {}
+    }
+    if (!Object.keys(shared).length) note('Sdílené recepty z GitHubu se nepodařilo načíst (' + e.message + ').', 'err');
+  }
+  render();
+}
+
+function share() {
+  const c = cur(); if (!c) return;
+  const json = toJson(c.recipe);
+  copy(json);
+  const file = c.file || (slug(c.recipe.name) + '.json');
+  if (c.file) {
+    window.open('https://github.com/' + REPO + '/edit/' + BRANCH + '/' + DIR + '/' + encodeURIComponent(file), '_blank');
+    note('JSON je zkopírovaný. Na GitHubu označ celý obsah (Ctrl+A), vlož (Ctrl+V) a dej „Commit changes“.\nZa minutu se změna objeví všem.', 'ok');
+  } else {
+    window.open('https://github.com/' + REPO + '/new/' + BRANCH + '/' + DIR + '?filename=' + encodeURIComponent(file) + '&value=' + encodeURIComponent(json), '_blank');
+    note('Otevřel se GitHub s hotovým souborem, stačí dát „Commit changes“.\n(Bez práv do repa ti GitHub nabídne „Propose changes“ a Stentik to schválí.)', 'ok');
+  }
+}
+
+// ---------- helpers ----------
+function toJson(r) {
+  return '{"format":"mc-calc/1","name":' + JSON.stringify(r.name) + ',"unit":' + JSON.stringify(r.unit) + ',"per":' + r.per + ',"items":[\n' +
+    r.items.map(it => JSON.stringify({ n: it.n, q: it.q, s: it.s, g: it.g })).join(',\n') + '\n]}';
+}
+function stacks(n, s) {
+  if (s <= 1) return fmt(n) + ' ks';
+  const st = Math.floor(n / s), r = n % s;
+  if (!st) return n + ' ks';
+  return fmt(st) + ' st.' + (r ? ' + ' + r : '') + (s !== 64 ? ' (po ' + s + ')' : '');
+}
+function copy(t) { try { navigator.clipboard.writeText(t); } catch (e) {} }
+function note(t, cls) { $('msg').className = 'msg ' + (cls || ''); $('msg').textContent = t || ''; }
+function mult() { return Math.max(1, Math.floor(Number($('mult').value) || 1)); }
+function amount(it, r) { return Math.ceil(it.q * mult() / (r.per || 1)); }
+
+// edit a recipe: shared ones become a local edited copy
+function mutate(fn) {
+  const id = curId(), c = cur(); if (!c) return;
+  const rec = JSON.parse(JSON.stringify(c.recipe));
+  fn(rec);
+  local[id] = { recipe: rec, file: c.file };
+  save('calc-local', local);
+}
+
+// ---------- render ----------
+function render() {
+  const a = all(), id = curId(), c = a[id];
+  ui.cur = id;
+  $('pick').innerHTML = Object.keys(a).sort((x, y) => a[x].recipe.name.localeCompare(a[y].recipe.name)).map(k =>
+    '<option value="' + esc(k) + '"' + (k === id ? ' selected' : '') + '>' + esc(a[k].recipe.name) +
+    (a[k].src === 'shared' ? '' : a[k].src === 'edited' ? ' (upraveno)' : ' (jen u mě)') + '</option>').join('');
+  $('view').classList.toggle('hidden', !c);
+  ['bEdit', 'bExport', 'bShare', 'bDel'].forEach(b => $(b).disabled = !c);
+  if (!c) return;
+  const r = c.recipe, h = have[id] || {};
+  $('mult').value = ui.mult[id] || 1;
+  $('title').innerHTML = esc(r.name) + ' <small>× ' + fmt(mult()) + ' ' + esc(r.unit) + '</small>' +
+    '<span class="tag ' + (c.src === 'shared' ? 'sh' : '') + '">' + (c.src === 'shared' ? 'sdílený' : c.src === 'edited' ? 'upravený, neuložený na GitHub' : 'jen v tomhle prohlížeči') + '</span>';
+  $('bDel').textContent = c.src === 'edited' ? 'Zahodit úpravy' : 'Smazat';
+
+  // totals
+  let done = 0, rawT = 0, rawL = 0, rawN = 0, rawD = 0, rawStT = 0, rawStL = 0;
+  r.items.forEach(it => {
+    const n = amount(it, r), got = !!h[it.n];
+    if (got) done++;
+    if (it.g === 'Suroviny') {
+      rawN++; rawT += n; rawStT += Math.ceil(n / it.s);
+      if (got) rawD++; else { rawL += n; rawStL += Math.ceil(n / it.s); }
+    }
+  });
+  const pct = r.items.length ? Math.round(done / r.items.length * 100) : 0;
+  $('progText').textContent = 'Máš ' + done + ' z ' + r.items.length + ' položek';
+  $('progPct').textContent = pct + ' %';
+  $('progBar').style.width = pct + '%';
+  $('sTotal').textContent = fmt(rawT) + ' ks'; $('sTotalSt').textContent = '≈ ' + fmt(rawStT) + ' slotů';
+  $('sLeft').textContent = fmt(rawL) + ' ks'; $('sLeftSt').textContent = '≈ ' + fmt(rawStL) + ' slotů';
+  $('sPct').textContent = (rawN ? Math.round(rawD / rawN * 100) : 0) + ' %'; $('sCnt').textContent = rawD + ' z ' + rawN + ' položek';
+
+  // meta
+  $('metaBox').classList.toggle('hidden', !editing);
+  $('editTools').classList.toggle('hidden', !editing);
+  $('bReset').classList.toggle('hidden', editing);
+  if (editing) { $('mName').value = r.name; $('mUnit').value = r.unit; $('mPer').value = r.per; }
+
+  // groups in first-seen order
+  const order = [];
+  r.items.forEach(it => { if (!order.includes(it.g)) order.push(it.g); });
+  const ck = id + '|';
+  $('groups').innerHTML = order.map(g => {
+    const its = r.items.map((it, i) => ({ it, i })).filter(x => x.it.g === g);
+    const gd = its.filter(x => h[x.it.n]).length;
+    const closed = !editing && ui.closed[ck + g];
+    const body = its.map(({ it, i }) => editing ?
+      '<div class="edit" data-i="' + i + '"><input class="en" data-f="n" value="' + esc(it.n) + '" placeholder="Název">' +
+      '<input data-f="q" type="number" min="0" step="any" value="' + it.q + '" title="Množství na 1 recept">' +
+      '<input data-f="s" type="number" min="1" max="64" value="' + it.s + '" title="Velikost stacku">' +
+      '<input data-f="g" value="' + esc(it.g) + '" list="glist" title="Skupina">' +
+      '<button class="danger sm" data-del="' + i + '" title="Smazat">✕</button></div>'
+      :
+      '<label class="item' + (h[it.n] ? ' have' : '') + '"><input type="checkbox" data-have="' + esc(it.n) + '"' + (h[it.n] ? ' checked' : '') + '>' +
+      '<span class="n">' + esc(it.n) + '</span>' +
+      '<span class="q"><b>' + fmt(amount(it, r)) + '</b><span>' + stacks(amount(it, r), it.s) + '</span></span></label>'
+    ).join('');
+    return '<div class="group' + (closed ? ' closed' : '') + '"><div class="ghead" data-g="' + esc(g) + '"><span class="arr">▾</span><h3>' + esc(g) +
+      '</h3><span class="muted">' + gd + ' / ' + its.length + '</span></div><div class="items">' + body + '</div></div>';
+  }).join('') + '<datalist id="glist">' + order.concat(['Suroviny', 'Meziprodukty']).filter((v, i, a) => a.indexOf(v) === i).map(g => '<option value="' + esc(g) + '">').join('') + '</datalist>';
+  save('calc-ui', ui);
+}
+
+// ---------- events ----------
+$('pick').onchange = () => { ui.cur = $('pick').value; editing = false; note(''); render(); };
+$('mult').oninput = () => { ui.mult[curId()] = mult(); render(); };
+$('mult').onchange = () => { $('mult').value = mult(); };
+$('minus').onclick = () => { $('mult').value = Math.max(1, mult() - 1); $('mult').oninput(); };
+$('plus').onclick = () => { $('mult').value = mult() + 1; $('mult').oninput(); };
+
+$('groups').addEventListener('click', e => {
+  const head = e.target.closest('.ghead');
+  if (head && !editing) { const k = curId() + '|' + head.dataset.g; ui.closed[k] = !ui.closed[k]; render(); return; }
+  const del = e.target.closest('[data-del]');
+  if (del) { mutate(r => r.items.splice(+del.dataset.del, 1)); render(); }
+});
+$('groups').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.have !== undefined) {
+    const id = curId(); have[id] = have[id] || {};
+    if (t.checked) have[id][t.dataset.have] = true; else delete have[id][t.dataset.have];
+    save('calc-have', have); render(); return;
+  }
+  const row = t.closest('.edit');
+  if (row && t.dataset.f) {
+    const i = +row.dataset.i, f = t.dataset.f;
+    mutate(r => {
+      const it = r.items[i];
+      if (f === 'n') { const old = it.n; it.n = t.value.trim() || old; const h = have[curId()]; if (h && h[old]) { delete h[old]; h[it.n] = true; save('calc-have', have); } }
+      if (f === 'q') it.q = Math.max(0, Number(t.value) || 0);
+      if (f === 's') it.s = Math.min(64, Math.max(1, Math.round(Number(t.value) || 64)));
+      if (f === 'g') it.g = t.value.trim() || 'Suroviny';
+    });
+    render();
+  }
+});
+['mName', 'mUnit', 'mPer'].forEach(k => $(k).onchange = () => {
+  mutate(r => {
+    if (k === 'mName' && $(k).value.trim()) r.name = $(k).value.trim();
+    if (k === 'mUnit') r.unit = $(k).value.trim() || 'ks';
+    if (k === 'mPer') r.per = Math.max(1, Number($(k).value) || 1);
+  });
+  render();
+});
+
+$('bEdit').onclick = () => { editing = !editing; render(); };
+$('bDone').onclick = () => { editing = false; render(); note('Uloženo v tomhle prohlížeči. Pro ostatní dej „Uložit na GitHub“.', 'ok'); };
+$('bAdd').onclick = () => { mutate(r => r.items.push({ n: 'Nová položka', q: 1, s: 64, g: 'Suroviny' })); render(); };
+$('bReset').onclick = () => { delete have[curId()]; save('calc-have', have); render(); };
+$('bNew').onclick = () => {
+  const name = prompt('Název nového receptu:'); if (!name || !name.trim()) return;
+  const id = 'local:' + Date.now();
+  local[id] = { recipe: { format: 'mc-calc/1', name: name.trim(), unit: 'ks', per: 1, items: [{ n: 'Nová položka', q: 1, s: 64, g: 'Suroviny' }] } };
+  save('calc-local', local); ui.cur = id; editing = true; render();
+};
+$('bDel').onclick = () => {
+  const id = curId(), c = cur(); if (!c) return;
+  if (c.src === 'shared') {
+    if (!confirm('Tenhle recept je sdílený na GitHubu. Otevřít GitHub a smazat ho tam pro všechny?')) return;
+    window.open('https://github.com/' + REPO + '/delete/' + BRANCH + '/' + DIR + '/' + encodeURIComponent(c.file), '_blank');
+    return;
+  }
+  if (!confirm(c.src === 'edited' ? 'Zahodit tvoje úpravy a vrátit sdílenou verzi?' : 'Smazat recept „' + c.recipe.name + '“?')) return;
+  delete local[id]; save('calc-local', local); editing = false; render();
+};
+$('bShare').onclick = share;
+
+$('bExport').onclick = () => { const c = cur(); if (!c) return; $('io').value = toJson(c.recipe); $('ioBox').classList.remove('hidden'); copy($('io').value); note('JSON je v poli níž a zkopírovaný do schránky.', 'ok'); };
+$('bImport').onclick = () => { $('io').value = ''; $('ioBox').classList.remove('hidden'); $('io').focus(); note('Vlož JSON a dej „Načíst jako nový recept“.'); };
+$('bClose').onclick = () => $('ioBox').classList.add('hidden');
+$('bCopy').onclick = () => { copy($('io').value); note('Zkopírováno.', 'ok'); };
+$('bLoad').onclick = () => {
+  let o;
+  try { o = JSON.parse($('io').value.trim().replace(/\.\s*$/, '')); } catch (e) { note('Neplatný JSON: ' + e.message, 'err'); return; }
+  const errs = validate(o);
+  if (errs.length) { note('Import se nepovedl:\n• ' + errs.slice(0, 8).join('\n• ') + (errs.length > 8 ? '\n… a další' : ''), 'err'); return; }
+  const id = 'local:' + Date.now();
+  local[id] = { recipe: clean(o) }; save('calc-local', local);
+  ui.cur = id; editing = false; $('ioBox').classList.add('hidden');
+  render(); note('Recept „' + o.name + '“ načtený. Zatím je jen u tebe, pro ostatní dej „Uložit na GitHub“.', 'ok');
+};
+
+render();
+fetchShared();
+</script>
+</body>
+</html>

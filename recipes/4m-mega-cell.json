@@ -1,0 +1,23 @@
+{"format":"mc-calc/1","name":"4M MEGA Cell (od nuly)","unit":"4M cell","per":1,"items":[
+{"n":"Certus Quartz Crystal","q":4375,"s":64,"g":"Suroviny"},
+{"n":"Redstone","q":4979,"s":64,"g":"Suroviny"},
+{"n":"Gold Ingot","q":729,"s":64,"g":"Suroviny"},
+{"n":"Glowstone Dust","q":444,"s":64,"g":"Suroviny"},
+{"n":"Quartz Dust (na sklo, Certus nebo Nether)","q":460,"s":64,"g":"Suroviny"},
+{"n":"Sand","q":368,"s":64,"g":"Suroviny"},
+{"n":"Sky Stone Block","q":56,"s":64,"g":"Suroviny"},
+{"n":"Iron Ingot","q":4,"s":64,"g":"Suroviny"},
+{"n":"Nether Quartz","q":2,"s":64,"g":"Suroviny"},
+{"n":"Ender Pearl","q":4,"s":16,"g":"Suroviny"},
+{"n":"Coal (do pece)","q":140,"s":64,"g":"Suroviny"},
+{"n":"Lava Bucket","q":1,"s":1,"g":"Suroviny"},
+{"n":"Silicon","q":1093,"s":64,"g":"Meziprodukty"},
+{"n":"Logic Processor","q":729,"s":64,"g":"Meziprodukty"},
+{"n":"Calculation Processor","q":360,"s":64,"g":"Meziprodukty"},
+{"n":"Accumulation Processor","q":4,"s":64,"g":"Meziprodukty"},
+{"n":"Quartz Glass","q":366,"s":64,"g":"Meziprodukty"},
+{"n":"Vibrant Glass","q":6,"s":64,"g":"Meziprodukty"},
+{"n":"Sky Dust","q":52,"s":64,"g":"Meziprodukty"},
+{"n":"Sky Steel Ingot","q":7,"s":64,"g":"Meziprodukty"},
+{"n":"Fluix Crystal","q":4,"s":64,"g":"Meziprodukty"}
+]}
