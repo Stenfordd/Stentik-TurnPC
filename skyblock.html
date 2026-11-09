@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stentik SkyBlock</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Public+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#eef3ee;--surface:#fbfdfb;--ink:#142019;--muted:#55665b;--line:#cfdbd1;--field:#e3ece5;--accent:#2c7a3f;--on-accent:#fbfdfb;
+--legendary:#a8670f;--epic:#7b3fb0;--rare:#2a5fb5;--uncommon:#2c7a3f;--bar:#2c7a3f;--warn:#a8331f;--stentik:#b0581a;--adam:#2a5fb5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1510;--surface:#16211a;--ink:#e5eee7;--muted:#97aa9d;--line:#2a3b2f;--field:#1d2b22;--accent:#5fcf7a;--on-accent:#0e1510;
+--legendary:#f0b04a;--epic:#c28cf0;--rare:#6fa3f5;--uncommon:#5fcf7a;--bar:#5fcf7a;--warn:#f08a6e;--stentik:#f39a5a;--adam:#6fa3f5;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1510;--surface:#16211a;--ink:#e5eee7;--muted:#97aa9d;--line:#2a3b2f;--field:#1d2b22;--accent:#5fcf7a;--on-accent:#0e1510;
+--legendary:#f0b04a;--epic:#c28cf0;--rare:#6fa3f5;--uncommon:#5fcf7a;--bar:#5fcf7a;--warn:#f08a6e;--stentik:#f39a5a;--adam:#6fa3f5;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 'Public Sans',system-ui,sans-serif;
+padding-block:0 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+main{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:'Pixelify Sans',monospace;margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:2rem}h2{font-size:1.4rem}h3{font-size:1.1rem}
+p{margin:0}
+.sub{color:var(--muted);margin-top:4px}
+header.top{padding-top:20px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:6px;border-bottom:2px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+nav.tabs a{flex:1 0 auto;text-align:center;text-decoration:none;color:var(--ink);font:700 .95rem 'Pixelify Sans',monospace;padding:9px 12px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.panel{display:flex;flex-direction:column;gap:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
+.stat{background:var(--surface);border:2px solid var(--line);padding:10px;min-width:0}
+.stat b{display:block;font:500 1.15rem 'JetBrains Mono',monospace}
+.stat span{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tag{font:700 .7rem 'Pixelify Sans',monospace;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border:2px solid currentColor;white-space:nowrap}
+.legendary{color:var(--legendary)}.epic{color:var(--epic)}.rare{color:var(--rare)}.uncommon{color:var(--uncommon)}.warn{color:var(--warn)}
+.who-s{color:var(--stentik)}.who-a{color:var(--adam)}
+section{background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--c,var(--line));padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+section.legendary{--c:var(--legendary);color:var(--ink)}section.epic{--c:var(--epic);color:var(--ink)}
+section.rare{--c:var(--rare);color:var(--ink)}section.uncommon{--c:var(--uncommon);color:var(--ink)}
+.head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+ul.check,ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+ul.dots,ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+ol.steps li::marker{font-family:'JetBrains Mono',monospace;color:var(--muted)}
+ul.check label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+small,.note{display:block;color:var(--muted);font-size:.86rem}
+input[type=checkbox]{appearance:none;flex:none;width:22px;height:22px;margin:1px 0 0;border:2px solid var(--ink);background:var(--field);cursor:pointer;display:grid;place-content:center}
+input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid var(--on-accent);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+li:has(input:checked) .t{text-decoration:line-through;opacity:.6}
+.t{font-weight:600}
+.counter{font:500 .85rem 'JetBrains Mono',monospace;color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:118px 1fr 70px;gap:8px;align-items:center;font-size:.86rem}
+.bar .track{height:14px;background:var(--field);border:2px solid var(--line)}
+.bar .fill{height:100%;background:var(--bar)}
+.bar .n{font-family:'JetBrains Mono',monospace;text-align:right;color:var(--muted)}
+.bar.quick .fill{background:var(--legendary)}
+.bar.quick span:first-child{font-weight:700}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.mono,.mono{font-family:'JetBrains Mono',monospace}td.mono{white-space:nowrap}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.goal{border:2px solid var(--line);border-top:6px solid var(--gc);padding:12px;background:var(--field);display:flex;flex-direction:column;gap:6px;min-width:0}
+.goal .k{font:700 .7rem 'Pixelify Sans',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.goal a{font-weight:700}
+.path{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.step{border:2px solid var(--line);padding:10px;background:var(--field);display:flex;flex-direction:column;gap:4px;min-width:0;font-size:.9rem}
+.step .k{font:700 .7rem 'Pixelify Sans',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.step.now{border-color:var(--accent)}
+.track-label{font-weight:700;margin-bottom:-4px}
+.tree{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:stretch}
+.tier{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tier>.k{font:700 .7rem 'Pixelify Sans',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.mut{border:2px solid var(--line);background:var(--field);padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px}
+.mut b{font-family:'Pixelify Sans',monospace;font-size:1rem}
+.mut.goal-m{border-color:var(--legendary)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:120px;flex:none}
+.grid3 span{aspect-ratio:1;display:grid;place-content:center;font:700 .62rem 'JetBrains Mono',monospace;border:2px solid var(--line);background:var(--surface)}
+.grid3 span.c{border-color:var(--legendary);color:var(--legendary)}
+.layout{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.layout>div:last-child{flex:1;min-width:200px}
+details{border:2px solid var(--line);background:var(--field)}
+details summary{cursor:pointer;padding:10px 12px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details .body{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;font-size:.93rem}
+.callout{border:2px dashed var(--line);padding:12px;background:var(--field);display:flex;flex-direction:column;gap:6px}
+.callout.warn-box{border-color:var(--warn)}
+.week{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.day{border:2px solid var(--line);padding:10px;background:var(--field);font-size:.88rem}
+.day b{font-family:'Pixelify Sans',monospace;display:block;margin-bottom:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.two>div{min-width:0;display:flex;flex-direction:column;gap:6px}
+a{color:var(--rare)}
+footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+footer ul{margin:0;padding-left:18px}
+@media(max-width:600px){.path,.tree,.two{grid-template-columns:1fr}.bar{grid-template-columns:96px 1fr 60px}h1{font-size:1.7rem}}
+
+.bar.quick span:first-child{font-weight:700}
+.dataline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:.85rem;color:var(--muted);border:2px solid var(--line);background:var(--surface);padding:8px 10px}
+.dataline b{color:var(--ink)}
+.dataline select{font:inherit;color:var(--ink);background:var(--field);border:2px solid var(--line);padding:4px 6px;max-width:100%}
+.btn{font:700 .85rem 'Public Sans',system-ui,sans-serif;color:var(--on-accent);background:var(--accent);border:2px solid var(--accent);padding:8px 12px;cursor:pointer}
+.btn.ghost{color:var(--ink);background:var(--field);border-color:var(--line)}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--rare);outline-offset:2px}
+.drop{border:2px dashed var(--line);background:var(--field);padding:18px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.drop.over{border-color:var(--accent)}
+textarea,input[type=search]{width:100%;font:500 .85rem 'JetBrains Mono',monospace;color:var(--ink);background:var(--field);border:2px solid var(--line);padding:8px}
+textarea{min-height:90px;resize:vertical}
+.msg{font-weight:600}.msg.ok{color:var(--uncommon)}.msg.err{color:var(--warn)}
+pre.code{margin:0;max-height:240px;overflow:auto;background:var(--field);border:2px solid var(--line);padding:10px;font:500 .74rem/1.45 'JetBrains Mono',monospace;white-space:pre}
+.ok{color:var(--uncommon);font-weight:700}.no{color:var(--warn);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--field);padding:3px 8px;font-size:.82rem}
+.r-common{color:var(--muted)}.r-uncommon{color:var(--uncommon)}.r-rare{color:var(--rare)}.r-epic{color:var(--epic)}.r-legendary{color:var(--legendary)}.r-mythic{color:var(--epic)}
+.row-actions{display:flex;flex-wrap:wrap;gap:8px}
+td.num{font-family:'JetBrains Mono',monospace;white-space:nowrap;text-align:right}
+
+.scroll>table{min-width:520px}
+.scroll.tall{max-height:560px;overflow:auto;border:1px solid var(--line)}
+.scroll.tall th{position:sticky;top:0;background:var(--surface)}
+
+.sitenav{display:flex;flex-wrap:wrap;gap:6px;padding-top:16px;max-width:820px;margin:0 auto}
+.sitenav a{color:var(--muted);border:1px solid var(--line);padding:7px 14px;border-radius:999px;text-decoration:none;font-size:14px}
+.sitenav a.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent);font-weight:600}
+header.top{padding-top:12px}
+</style>
+</head>
+<body>
+<nav class="sitenav" aria-label="Stránky"><a href="./">Servery</a><a href="calc.html">Kalkulačka</a><a class="on" href="skyblock.html" aria-current="page">SkyBlock</a></nav>
+<main>
+<header class="top">
+<h1>Pomegranate coop plán</h1>
+<p class="sub">SkyBlock ironman guide · čísla se berou z importovaného exportu SkyCryptu</p>
+</header>
+
+<div class="dataline">
+<span>Hráč: <select id="who" aria-label="Vybrat hráče"></select></span>
+<span>Data z <b data-b="exported">…</b></span>
+<a href="#data">Aktualizovat data →</a>
+</div>
+<p class="note" id="notStentik" hidden>Texty návodů jsou psané pro Stentika (gear, loadouty). Čísla, tabulky a cíle se ale počítají pro vybraného hráče.</p>
+
+<nav class="tabs" aria-label="Sekce">
+<a href="#ted" data-tab="ted">Teď</a>
+<a href="#garden" data-tab="garden">Garden</a>
+<a href="#mining" data-tab="mining">Mining</a>
+<a href="#combat" data-tab="combat">Combat</a>
+<a href="#postava" data-tab="postava">Postava</a>
+<a href="#data" data-tab="data">Data</a>
+</nav>
+
+<!-- ======================= TEĎ ======================= -->
+<div class="panel" data-panel="ted">
+<div class="stats">
+<div class="stat"><b data-b="sb">…</b><span>SkyBlock lvl</span></div>
+<div class="stat"><b data-b="farmingLvl">…</b><span>Farming</span></div>
+<div class="stat"><b data-b="hotmTier">…</b><span>HOTM</span></div>
+<div class="stat"><b data-b="combatLvl">…</b><span>Combat</span></div>
+<div class="stat"><b data-b="mp">…</b><span>Magical Power</span></div>
+<div class="stat"><b data-b="nw">…</b><span>Networth</span></div>
+</div>
+
+<div data-r="inactive"></div>
+
+<section>
+<div class="head"><h2>Čtyři hlavní cíle</h2></div>
+<p>Všechno ostatní je vedlejší. Každý cíl má vlastní záložku s návodem krok za krokem.</p>
+<div class="goals">
+<div class="goal" style="--gc:var(--uncommon)"><span class="k">Garden</span><b>Greenhouse → Sundial → Fermento</b><p>Greenhouse roste i offline. Chloronite z mutací je klíč k Sundialu, a Sundial k farmám bez Rancher's Boots.</p><a href="#garden">Návod →</a></div>
+<div class="goal" style="--gc:var(--rare)"><span class="k">Mining</span><b data-b="hotmGoalTitle">…</b><p data-b="hotmGoalText">…</p><a href="#mining">Návod →</a></div>
+<div class="goal" style="--gc:var(--epic)"><span class="k">Combat</span><b>Combat 24 → Crimson Isle</b><p data-b="combatGoalText">…</p><a href="#combat">Návod →</a></div>
+<div class="goal" style="--gc:var(--legendary)"><span class="k">Coiny</span><b>Meloun ~6,3M / hod</b><p>Tvůj motor na všechno. Farmi, když chceš chill nebo film. Prodávej přes cookie menu.</p><a href="#garden">Garden →</a></div>
+</div>
+</section>
+
+<section class="legendary">
+<div class="head"><h2>Denní rutina</h2><span class="counter" data-count="daily"></span></div>
+<small>Tyhle checkboxy se každý den samy vynulují.</small>
+<ul class="check" data-group="daily">
+<li><label><input type="checkbox" data-daily="d1"><span><span class="t">4 commissions</span><small>První 4 za den mají bonus (mimo jiné 900 HOTM XP). Nejrychlejší cesta k dalšímu HOTM tieru.</small></span></label></li>
+<li><label><input type="checkbox" data-daily="d2"><span><span class="t">Forge: vybrat a znovu naložit</span><small>Ať v ní pořád něco běží, hlavně přes noc a přes práci.</small></span></label></li>
+<li><label><input type="checkbox" data-daily="d3"><span><span class="t">Greenhouse: zalít a sklidit dozrálé</span><small>HydroCan na každou rostlinu, Plant Diagnostics Tool na kontrolu.</small></span></label></li>
+<li><label><input type="checkbox" data-daily="d4"><span><span class="t">Garden visitoři</span><small>Copper, Farming XP a Garden XP. Carpenter dá Greenhouse Blueprint.</small></span></label></li>
+<li><label><input type="checkbox" data-daily="d5"><span><span class="t">Experimentation Table</span><small><span class="mono">/etable</span> (s cookie odkudkoli). Enchanting XP a odměny.</small></span></label></li>
+<li><label><input type="checkbox" data-daily="d6"><span><span class="t">Minioni: vybrat plné truhly</span><small>Plný minion nic nevyrábí. Do sacků, nebo prodat.</small></span></label></li>
+</ul>
+</section>
+
+<section>
+<h2>Návrh týdne</h2>
+<div class="week">
+<div class="day"><b>Po</b>Commissions + Forge, večer meloun</div>
+<div class="day"><b>Út</b>Greenhouse: zasadit krok 1 mutací</div>
+<div class="day"><b>St</b>Zealoti (Combat XP, Summoning Eyes)</div>
+<div class="day"><b>Čt</b>Commissions + stavba cane farmy</div>
+<div class="day"><b>Pá</b>Slayeři: Tarantula a Revenant T3</div>
+<div class="day"><b>So</b>Mining event / Crystal Hollows</div>
+<div class="day"><b>Ne</b>Garden: Jacob contesty, upgrady</div>
+</div>
+<small>Je to jen kostra. Každý den platí denní rutina, zbytek podle nálady.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Skilly</h2></div>
+<small>Seřazeno podle XP do dalšího levelu. Oranžové jsou rychlé výhry (pod 25K XP).</small>
+<div class="bars" data-r="skills"></div>
+</section>
+</div>
+
+<!-- ======================= GARDEN ======================= -->
+<div class="panel" data-panel="garden" hidden>
+<div class="stats">
+<div class="stat"><b data-b="farmingLvl">…</b><span>Farming</span></div>
+<div class="stat"><b data-b="copper">…</b><span>Copper</span></div>
+<div class="stat"><b data-b="medals">…</b><span>Gold/Silver/Bronze</span></div>
+<div class="stat"><b data-b="contests">…</b><span>Contesty</span></div>
+<div class="stat"><b data-b="sunflower">…</b><span>Sunflower coll.</span></div>
+</div>
+
+<section class="legendary">
+<div class="head"><h2>1. Odemknout Greenhouse</h2><span class="counter" data-count="gh"></span></div>
+<ul class="check" data-group="gh">
+<li><label><input type="checkbox" data-id="gh1"><span><span class="t">Garden level 7</span><small>Podle exportu ze 7. 11. máte 12, splněno.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gh2"><span><span class="t">Carpenter visitor → Greenhouse Blueprint</span><small>Počkej, až přijde visitor Carpenter, a přijmi jeho nabídku. Dokud nepřijde, obsluhuj ostatní visitory, ať se fronta točí.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gh3"><span><span class="t">Materiály pro Sama</span><small>Návody uvádí 64× Enchanted Oak Log a 128× Enchanted Sand. Platí to, co řekne Sam ve hře.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gh4"><span><span class="t">Dát Samovi Blueprint a materiály</span></span></label></li>
+<li><label><input type="checkbox" data-id="gh5"><span><span class="t">Desk → plot → „Convert to Greenhouse“</span><small>Tlačítko je vlevo dole. Plot se staví asi 2 minuty, zůstaň v Gardenu, než to doběhne.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gh6"><span><span class="t">Beth: Lab questline → Crop Analyzer</span><small>Beth má chatku v Mushroom Desertu (warp <span class="mono">/warp desert</span> přes Travel Scroll, viz záložka Data). Podle hráčů je potřeba přijmout asi 5 jejích visitor nabídek. Crop Analyzer dává Copper za každou novou mutaci.</small></span></label></li>
+</ul>
+</section>
+
+<section class="epic">
+<div class="head"><h2>2. Jak Greenhouse funguje</h2></div>
+<div class="two">
+<div><p class="track-label">Základy</p>
+<ul class="dots">
+<li>Rostliny rostou <b>v reálném čase, i offline</b>. Rostou pomaleji než na poli, ale dávají víc.</li>
+<li><b>Zalévání:</b> HydroCan 1000. Najeď na rostlinu: když se ukážou čárky, chce vodu. Drž pravé tlačítko, dokud ukazatel nedojde na 100 %. U melounu a dýně klikej radši na okraj hlíny.</li>
+<li><b>Plant Diagnostics Tool:</b> pravým klikem uvidíš fázi růstu, čas do uschnutí a stav rostliny.</li>
+<li>Sklízej <b>jen plně dorostlé</b>. Když rostlina uschne dřív, než ji sklidíš, je mrtvá.</li>
+<li>Rostliny vedle sebe si dávají bonusy a postihy.</li>
+</ul></div>
+<div><p class="track-label">Půda a mutace</p>
+<ul class="dots">
+<li><b>Půdy:</b> zoraná hlína (farmland), písek, mycelium, soul sand (a end stone). Půdu změníš tak, že rozbiješ hlínu a položíš jiný blok. <b>Soul sand</b> prodává Builder v Hubu.</li>
+<li><b>Mutace:</b> kolem prázdného políčka hlíny posadíš správné rostliny a zaléváš. Mutace vyroste na prázdném středu.</li>
+<li>Mutace použité jako „ingredience“ pro další mutaci nejdou sklidit, jen zničit nebo nechat uschnout. Mutace ale může spawnovat nové, dokud žije.</li>
+<li><b>Chloronite</b> se netěží motykou, ale <b>krumpáčem nebo drillem</b>.</li>
+<li>Kterou půdu která plodina chce, ukazuje <b>crop guide u Carpentera</b>.</li>
+</ul></div>
+</div>
+</section>
+
+<section class="epic">
+<div class="head"><h2>3. Cesta k Chloronite (5 kusů)</h2></div>
+<p>Chloronite je potřeba na Sundial. Jsou to tři kroky mutací:</p>
+<div class="tree">
+<div class="tier"><span class="k">Krok 1 · ze základních plodin</span>
+<div class="mut"><b>Scourroot</b>1× Potato + 1× Carrot</div>
+<div class="mut"><b>Ashwreath</b>2× Nether Wart + 2× oheň</div>
+<div class="mut"><b>Veilshroom</b>1× Red + 1× Brown Mushroom</div>
+<div class="mut"><b>Wild Rose</b><span>Collection: <span data-b="wildrose">…</span>. Padá i z pesta Praying Mantis.</span></div>
+</div>
+<div class="tier"><span class="k">Krok 2</span>
+<div class="mut"><b>Coalroot</b>5× Ashwreath + 3× Scourroot</div>
+<div class="mut"><b>Thornshade</b>4× Wild Rose + 4× Veilshroom</div>
+</div>
+<div class="tier"><span class="k">Krok 3 · cíl</span>
+<div class="mut goal-m"><b>Chloronite</b>6× Coalroot + 2× Thornshade</div>
+<small>Recepty ze seznamu mutací na fóru Hypixelu a skyblockprogress.com. Přesné rozložení ověř v crop guide u Carpentera.</small>
+</div>
+</div>
+<div class="layout">
+<div class="grid3" role="img" aria-label="Rozložení Chloronite: 6 Coalroot a 2 Thornshade kolem prázdného středu">
+<span>CR</span><span>TS</span><span>CR</span>
+<span>CR</span><span class="c">?</span><span>CR</span>
+<span>CR</span><span>TS</span><span>CR</span>
+</div>
+<div>
+<p><b>Jak to položit:</b> střed nech prázdný (farmland), kolem 8 políček. Tady 6× Coalroot (CR) a 2× Thornshade (TS). Stejným principem uděláš Coalroot (5 Ashwreath + 3 Scourroot) a Thornshade (4 Wild Rose + 4 Veilshroom).</p>
+<small>Jestli záleží na tom, kde přesně kus leží, ti řekne Carpenter. Jedno „kolečko“ může dát Chloronite opakovaně, dokud rostliny žijí.</small>
+</div>
+</div>
+<div class="callout warn-box">
+<b class="warn">Možné zádrhele</b>
+<ul class="dots">
+<li><b>Veilshroom a mycelium:</b> houby nejspíš chtějí mycelium. Na ironmanovi ho podle hráčů vezmeš těžbou na Crimson Isle (Combat 24). Zkus nejdřív, jestli ho neprodává Builder v Hubu. Bez Veilshroomu nebude Thornshade ani Chloronite.</li>
+<li><b>„Oheň“ u Ashwreath:</b> jak přesně se oheň pokládá, ukáže crop guide. Ashwreath potřebuje soul sand.</li>
+</ul>
+</div>
+</section>
+
+<section class="epic">
+<div class="head"><h2>4. Sundial</h2><span class="counter" data-count="sun"></span></div>
+<p><b>Recept:</b> 16× Compacted Sunflower + 5× Chloronite. Dáš ho Samovi a natrvalo se ti odemkne nastavení <b>Crop Speed</b>. Pak nastavíš rychlost pro každou plodinu a nepotřebuješ Rancher's Boots.</p>
+<ul class="check" data-group="sun">
+<li><label><input type="checkbox" data-id="su1"><span><span class="t">Ověř recept Compacted Sunflower</span><small><span class="mono">/viewrecipe Compacted Sunflower</span>. Na Bazaaru stojí ~103K, takže to bude hodně Sunflowerů. Pokud je to 160× Enchanted (a ten 160× Sunflower), vychází to ~25 600 na kus a ~410 000 na všech 16. Je to jen odhad.</small></span></label></li>
+<li><label><input type="checkbox" data-id="su2"><span><span class="t">Craft Sunflower Minion</span><small>Sunflower collection: <span data-b="sunflower">…</span>. Od tieru II je recept odemčený. Je to i nový unikát do minion slotu.</small></span></label></li>
+<li><label><input type="checkbox" data-id="su3"><span><span class="t">Sbírat Sunflower</span><small>Padá z pestů a z minionu. Pokud jde zasadit na plot, farm ho, když běží Jacob's Contest.</small></span></label></li>
+<li><label><input type="checkbox" data-id="su4"><span><span class="t">5× Chloronite (viz bod 3)</span></span></label></li>
+<li><label><input type="checkbox" data-id="su5"><span><span class="t">Craft Sundial a dát ho Samovi</span></span></label></li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>5. Farmy a Fermento armor</h2></div>
+<p>Fermento armor potřebuje Farming 40 (teď: <b data-b="farmingLvl">…</b>). Fermento padá při farmení <b>sugar cane, cactus, mushroom a nether wart</b> v Squash armoru. Na to potřebuješ farmy:</p>
+<ol class="steps">
+<li><b>Video:</b> <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Cactus, cocoa a cane od <b>6:17</b>, mushroom od <b>21:20</b>.</li>
+<li><b>Začni sugar cane:</b> je nejjednodušší a podle fóra stačí plot 1×2. Wiki uvádí 328 Speed a úhel 45°.</li>
+<li><b>Litematica</b> je OK, pokud jen zobrazuje schéma a stavíš ručně. <b>Easy Place a Printer vypni</b>, ty jsou ban.</li>
+<li><b>Rychlost do Sundialu:</b> na lane farmách krátce Rancher's Boots (máš je v Ender Chestu). Přijdeš o Squash set bonus, ale jen na tu dobu.</li>
+<li><b>Fermento armor:</b> <span class="mono">/viewrecipe Fermento Helmet</span> (a další kusy). Craftuj po kusech.</li>
+<li>Klávesy drž <b>ručně</b>. Makra a autoclickery jsou ban.</li>
+</ol>
+</section>
+
+<section class="rare">
+<div class="head"><h2>6. Nástroje, Copper, medaile</h2></div>
+<div class="scroll"><table>
+<tr><th>Věc</th><th>Co dělat</th></tr>
+<tr><td>Melon Dicer Mk. III</td><td>Na levelu 40 je strop. <b>Overclocker 3000</b> (padá při farmení) přes <span class="mono">/hex</span> = +1 level stropu.</td></tr>
+<tr><td>Gemstone sloty</td><td>Peridot (Farming Fortune). Těží se v Glacite Tunnels, ty jsou až na HOTM 7.</td></tr>
+<tr><td>Copper (<span data-b="copper">…</span>)</td><td>Desk → Crop Upgrades, začni <b>Melon</b>. Pak Composter a ploty.</td></tr>
+<tr><td>Medaile (<span data-b="medals">…</span>)</td><td>Anita: <b>Extra Farming Fortune</b>. Později Anita's Artifact.</td></tr>
+<tr><td>Composter</td><td>Plant Matter, Dung, Biofuel a Box of Seeds z Ender Chestu dej do Composteru.</td></tr>
+<tr><td>Sowdust</td><td>Jen na upgrade Garden Chips. Další chip nebo duplikát najdeš v menu u Jeffa (zdroj je v popisu).</td></tr>
+<tr><td>Pesti</td><td>Body u Pesthunter Phillipa → Pesthunter Badge. Z pestů padá Wild Rose a Sunflower.</td></tr>
+</table></div>
+</section>
+</div>
+
+<!-- ======================= MINING ======================= -->
+<div class="panel" data-panel="mining" hidden>
+<div class="stats">
+<div class="stat"><b data-b="miningLvl">…</b><span>Mining</span></div>
+<div class="stat"><b data-b="hotmTier">…</b><span>HOTM</span></div>
+<div class="stat"><b data-b="hotmNeed">…</b><span data-b="hotmNeedLabel">XP do dalšího</span></div>
+<div class="stat"><b data-b="comm">…</b><span>Commissions</span></div>
+<div class="stat"><b data-b="commMs">…</b><span>Milestone</span></div>
+<div class="stat"><b data-b="nucleus">…</b><span>Nucleus runs</span></div>
+</div>
+
+<section>
+<div class="head"><h2>Tvůj HOTM</h2></div>
+<div class="scroll" data-r="hotmPerks"></div>
+<small data-b="hotmPowder">…</small>
+<p><b>Kam powder:</b> Mithril → <b>Mining Speed</b>, pak <b>Mining Fortune</b>. Gemstone → <b>Mole</b>, část do Gem Lover.</p>
+</section>
+
+<section class="legendary">
+<div class="head"><h2 data-b="hotmPathTitle">Cesta k HOTM 5</h2><span class="counter" data-count="hotm"></span></div>
+<ul class="check" data-group="hotm">
+<li><label><input type="checkbox" data-id="h1"><span><span class="t">Vybraná ability v /hotm</span><small>Teď: <span data-b="ability">…</span>. Mining guide doporučuje jako hlavní <b>Pickobulus</b>. Spouští se pravým tlačítkem s krumpáčem, jen na mining ostrovech.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h2"><span><span class="t">Commissions každý den</span><small>Dwarven Mines dávají 100–400 HOTM XP za kus. První 4 denně mají bonus včetně 900 HOTM XP. Mining eventy (Goblin Raid a podobně) dávají 200–600 XP. King Talisman XP zvyšuje.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h3"><span><span class="t">Vybrat commission milestones</span><small>Commissions menu → Milestones. Milestone IV dává warp do Dwarven Mines, VI do Crystal Nucleus.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h4"><span><span class="t">Utrácet powder hned, jak přibude</span><small>Mining Speed zrychlí všechno, i commissions.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h5"><span><span class="t">HOTM 5 → Core of the Mountain</span><small>Core dá 5 Tokens of the Mountain, víc powderu, vyšší level ability, šanci na mineshaft a <b>slot na commission navíc</b>. Bonusy z Core jsou trvalé, nejdou resetovat.</small></span></label></li>
+</ul>
+<div class="callout">
+<b>Jak dlouho to potrvá</b>
+<p data-b="hotmEta">…</p>
+</div>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Commissions krok za krokem</h2></div>
+<ol class="steps">
+<li><b>Gear:</b> Heat armor, Mithril equipment (necklace, cloak, belt, gauntlet), Bee pet (+30 Mining Fortune). Ulož si to jako loadout.</li>
+<li><span class="mono">/warp forge</span> (nebo <span class="mono">/warp mines</span>, až ho odemkneš) a jdi k <b>Emissary</b>. Vezmi commissions.</li>
+<li>Typy:
+<ul class="dots">
+<li><b>Mithril:</b> těž šedé, zelené a modré bloky (vlna a prizmarin). Royal Mines, Cliffside Veins.</li>
+<li><b>Titanium:</b> náhodně se objeví místo vytěženého Mithrilu (bílý blok jako hladký diorit). Šanci zvyšuje Titanium Insanium.</li>
+<li><b>Goblin kills:</b> Goblin Burrows.</li>
+<li><b>Event (Goblin Raid):</b> nedá se rerollnout. Čekej na event, SkyHanni má Mining Event tracker (<span class="mono">/sh</span> → „mining event“).</li>
+</ul></li>
+<li>Hotovou commission hned odevzdej u Emissary.</li>
+<li>Až máš 4 odevzdané, bonus je tvůj. Dál pokračuj, jak dlouho chceš.</li>
+</ol>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Forge</h2></div>
+<p><span class="mono">/warp forge</span>. Ať tam <b>pořád něco běží</b>. Teď ve Forge: <b data-b="forge">…</b>. Co jde vyrobit, záleží na HOTM tieru a surovinách, menu ukáže dostupné recepty.</p>
+<div class="scroll"><table>
+<tr><th>Věc</th><th>Čas</th><th>Poznámka</th></tr>
+<tr><td>Refined Diamond</td><td class="mono">8 h</td><td>Z Enchanted Diamond Blocků, diamanty máte z minionů.</td></tr>
+<tr><td>Refined Mithril</td><td class="mono">6 h</td><td>Ze Enchanted Mithril.</td></tr>
+<tr><td>Refined Titanium</td><td class="mono">12 h</td><td>Z Titania z commissions.</td></tr>
+<tr><td>Fuel Canister</td><td class="mono">10 h</td><td>Palivo do drillů.</td></tr>
+<tr><td>Ruby Drill TX-15</td><td class="mono">1 h</td><td>Nejlevnější drill. Pak Gemstone Drill LT-522 → Topaz → Jasper.</td></tr>
+<tr><td>Mithril Drill SX-R226</td><td class="mono">4 h</td><td>Druhá větev drillů, pak SX-R326.</td></tr>
+</table></div>
+<small>Časy z wiki The Forge. Perk Quick Forge je zkracuje.</small>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Gear: kam dál</h2></div>
+<div class="path">
+<div class="step now"><span class="k">Teď</span>Scraped Mithril Pickaxe, Heat armor, Mithril equipment</div>
+<div class="step"><span class="k">Další</span>Drill z Forge (Ruby Drill TX-15, nebo Mithril Drill). Případně si půjč od Adama Polished Titanium Pickaxe nebo Ruby Drill (ať je dá do truhly na ostrově).</div>
+<div class="step"><span class="k">Pak</span>Titanium drill parts a Sorrow armor (HOTM 5), Divan's armor (HOTM 7)</div>
+</div>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Později</h2></div>
+<ul class="dots">
+<li><b>Crystal Hollows:</b> pass obnovíš u vstupu. Nucleus run = 5 krystalů. Nalezené: <span data-b="crystals">…</span>. Robotron díly odevzdané: <span data-b="parts">…</span>/6.</li>
+<li><b>Glacite Tunnels:</b> potřebují <b>HOTM 7</b> a Secret Railroad Pass (Dulin Sprite, Forge). Tam je Peridot pro farming nástroje, Glacite, Umber a Tungsten.</li>
+</ul>
+</section>
+</div>
+
+<!-- ======================= COMBAT ======================= -->
+<div class="panel" data-panel="combat" hidden>
+<div class="stats">
+<div class="stat"><b data-b="combatLvl">…</b><span>Combat</span></div>
+<div class="stat"><b data-b="combatNeed">…</b><span>XP do 24</span></div>
+<div class="stat"><b data-b="cataLvl">…</b><span>Catacombs</span></div>
+<div class="stat"><b data-b="dragonEss">…</b><span>Dragon ess.</span></div>
+</div>
+
+<section class="legendary">
+<div class="head"><h2>Combat 24 → Crimson Isle</h2></div>
+<p>Podle oficiálních patch notes je podmínka vstupu na Crimson Isle <b>Combat 24</b>. <span data-b="combatGoalText">…</span></p>
+<p><b>Co tam čeká:</b> Kuudra, Blaze slayer, frakce (Mage nebo Barbarian), Crimson armor, Magma Cube a Inferno miniony, collections Blaze Rod, Magma Cream a Netherrack, a nejspíš i <b>mycelium</b> pro Greenhouse.</p>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Zealoti a draci</h2><span class="counter" data-count="zeal"></span></div>
+<ul class="check" data-group="zeal">
+<li><label><input type="checkbox" data-id="z1"><span><span class="t">Uložit combat loadout</span><small>Young Dragon armor, Blended Ender Cloak, Belt a Gauntlet (v Endu dvojnásobné staty), <b>Lion</b> pet. Rapid Spirit Shortbow 5★, Aspect of the End na pohyb.</small></span></label></li>
+<li><label><input type="checkbox" data-id="z2"><span><span class="t"><span class="mono">/warp end</span> → Dragon's Nest</span><small>Warp do Endu si odemkneš Travel Scrollem (End Stone VIII, viz záložka Data). Zealoti spawnují pořád dokola.</small></span></label></li>
+<li><label><input type="checkbox" data-id="z3"><span><span class="t">Schovávat Summoning Eyes</span><small>Padají ze Special Zealotů.</small></span></label></li>
+<li><label><input type="checkbox" data-id="z4"><span><span class="t">8 eyes → drak</span><small>Polož je na oltář v Dragon's Nest. Za damage Dragon essence a šance na kusy Dragon armoru.</small></span></label></li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Slayeři</h2></div>
+<div class="scroll" data-r="slayers"></div>
+<small>XP za tier: T1 5, T2 25, T3 100, T4 500. Když T4 nejde, dělej jen T3. Slayery dávají i Combat XP. Maddox Batphone volá questy.</small>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Dungeony (volitelné)</h2></div>
+<ul class="dots">
+<li>Kvůli pingu na US serverech je klidně vynech, nejsou povinné.</li>
+<li>Catacombs <span data-b="cataLvl">…</span>, do dalšího levelu <span data-b="cataNeed">…</span> XP. Vybraná class: <span data-b="selClass">…</span>. Secrets: <span data-b="secrets">…</span>.</li>
+<li>Pure Skeleton Master Chestplate potřebuje Catacombs 19, do té doby v dungeonech nefunguje.</li>
+<li>Pokud někdy: F4–F5 s plnou partou přes <span class="mono">/pf</span>, a šípy do Quiveru.</li>
+</ul>
+</section>
+</div>
+
+<!-- ======================= POSTAVA ======================= -->
+<div class="panel" data-panel="postava" hidden>
+<section>
+<div class="head"><h2>Na sobě teď</h2></div>
+<div data-r="gear"></div>
+</section>
+
+<section>
+<div class="head"><h2>Loadouty (doporučené)</h2></div>
+<div class="scroll"><table>
+<tr><th>Aktivita</th><th>Armor</th><th>Equipment</th><th>Pet</th></tr>
+<tr><td>Farming</td><td>Bustling Squash</td><td>Blooming Peony</td><td>Bee</td></tr>
+<tr><td>Mining</td><td>Heat</td><td>Mithril</td><td>Bee</td></tr>
+<tr><td>Combat / End</td><td>Young Dragon</td><td>Blended Ender + Balloon Snake</td><td>Lion</td></tr>
+</table></div>
+<small>Ulož si je do Loadouts, přepínáš jedním klikem.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Magical Power</h2></div>
+<p>MP: <b data-b="mp">…</b> · accessories <b data-b="accCount">…</b> · power <b data-b="power">…</b>. Accessories nejsou priorita. Jen to, co přijde samo cestou (Tarantula Talisman ze slayeru, Pesthunter Badge z pestů, Speed Ring z cane farmy). Celý seznam chybějících je v záložce Data.</p>
+<small>Po každém větším přírůstku MP zajdi za Maxwellem (budova Thaumaturgist v Hubu) a rozdej nové tuning pointy. Máš jich ~<span data-b="tuning">…</span> (1 za 10 MP).</small>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Pets</h2></div>
+<div data-r="pets"></div>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Minioni</h2></div>
+<p data-b="minionLine">…</p>
+<div data-r="minionsLow"></div>
+<ul class="dots">
+<li><b>„My storage is full“</b> = minion nic nevyrábí. <b>Super Compactor 3000</b> do upgrade slotu, větší storage, Enchanted Lava Bucket jako palivo.</li>
+<li>Budget nebo Enchanted Hopper prodává za coiny, ale prodané se nepočítá do collection.</li>
+</ul>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Essence a ostatní</h2></div>
+<div data-r="ess"></div>
+<ul class="dots">
+<li>Fairy souls <span data-b="fairy">…</span>: SkyHanni má waypointy, každých 5 vyměň u Tii.</li>
+<li>Cookie: prodej NPC odkudkoli, <span class="mono">/etable</span>, <span class="mono">/hex</span>, <span class="mono">/anvil</span>, +25 Wisdom. Bits šetři.</li>
+</ul>
+</section>
+</div>
+
+<!-- ======================= DATA ======================= -->
+<div class="panel" data-panel="data" hidden>
+<section class="legendary">
+<div class="head"><h2>Aktualizovat data</h2></div>
+<ol class="steps">
+<li>Otevři svůj profil na <a href="https://sky.shiiyu.moe" target="_blank" rel="noopener">sky.shiiyu.moe</a> a <b>proklikej všechny záložky</b> (Accessories, Pets, Inventory, Skills, Dungeons, Slayer, Minions, Collections, Misc).</li>
+<li>F12 → Console. Napoprvé napiš <span class="mono">allow pasting</span> a Enter.</li>
+<li>Zkopíruj export skript (tlačítko níž), vlož ho do konzole a dej Enter. Stáhne se soubor <span class="mono">skycrypt-….json</span>.</li>
+<li>Ten soubor sem přetáhni, vyber přes tlačítko, nebo vlož jeho obsah do pole.</li>
+</ol>
+<div class="drop" id="drop">
+<div class="row-actions">
+<label class="btn" for="file">Vybrat soubor .json</label>
+<input type="file" id="file" accept=".json,application/json" hidden>
+<button class="btn ghost" type="button" id="copyScript">Kopírovat export skript</button>
+</div>
+<small>Nebo soubor přetáhni sem. Data zůstávají jen v tomhle prohlížeči.</small>
+<textarea id="paste" placeholder="…nebo sem vlož obsah souboru a klikni Načíst" aria-label="Vložit obsah exportu"></textarea>
+<div class="row-actions"><button class="btn" type="button" id="load">Načíst vložené</button><button class="btn ghost" type="button" id="del">Smazat vybraného hráče</button></div>
+<p class="msg" id="msg" role="status"></p>
+</div>
+<details><summary>Export skript (v4)</summary><div class="body"><pre class="code" id="exportScript">// SkyCrypt export v4: vlož do konzole (F12 → Console) na stránce profilu na sky.shiiyu.moe
+// Tip: před spuštěním proklikej záložky (Accessories, Pets, Inventory, Skills, Minions, Collections...),
+// ať si stránka načte i data, která tahá až po kliknutí.
+// Stáhne jeden .json soubor se vším, co stránka načetla (data z API + text + názvy itemů).
+// Nic neposílá nikam jinam, jen si znovu přečte data, která už SkyCrypt načetl.
+(async () =&gt; {
+  const sleep = (ms) =&gt; new Promise((r) =&gt; setTimeout(r, ms));
+  const out = { url: location.href, time: new Date().toISOString(), api: {}, dom: {} };
+
+  // 1) Rozbalit sbalené sekce (Missing Accessories, Show More Pets, ...)
+  const want = /show more|missing|inactive|expand|view all|show all/i;
+  for (let pass = 0; pass &lt; 3; pass++) {
+    document.querySelectorAll(&#x27;details:not([open])&#x27;).forEach((d) =&gt; (d.open = true));
+    document.querySelectorAll(&#x27;button, [role=&quot;button&quot;], summary&#x27;).forEach((b) =&gt; {
+      const t = (b.innerText || b.getAttribute(&#x27;aria-label&#x27;) || &#x27;&#x27;).trim();
+      if (want.test(t) &amp;&amp; !b.dataset.cxDone) {
+        b.dataset.cxDone = &#x27;1&#x27;;
+        try { b.click(); } catch (e) {}
+      }
+    });
+    await sleep(800);
+  }
+
+  // 2) Data z API, která stránka načetla (nejcennější část)
+  const urls = new Set(
+    performance.getEntriesByType(&#x27;resource&#x27;).map((e) =&gt; e.name)
+      // SkyCrypt v4 bere data přes /_app/remote/... (getCombinedProfileStats a další)
+      .filter((u) =&gt; /\/_app\/remote\/|__data\.json/i.test(u))
+  );
+  urls.add(location.origin + location.pathname.replace(/\/$/, &#x27;&#x27;) + &#x27;/__data.json&#x27;);
+  out.dom.allResources = performance.getEntriesByType(&#x27;resource&#x27;).map((e) =&gt; e.name)
+    .filter((u) =&gt; !/\/api\/(item|head|leather|potion|texture|skin)|\.(png|webp|jpg|gif|svg|woff2?|css)(\?|$)/i.test(u));
+  for (const u of urls) {
+    try {
+      const same = u.startsWith(location.origin);
+      const r = await fetch(u, { credentials: same ? &#x27;include&#x27; : &#x27;omit&#x27; });
+      if (!r.ok) { out.api[u] = &#x27;HTTP &#x27; + r.status; continue; }
+      const t = await r.text();
+      try { out.api[u] = JSON.parse(t); } catch { out.api[u] = t.slice(0, 200000); }
+    } catch (e) {
+      out.api[u] = &#x27;ERR &#x27; + e.message;
+    }
+  }
+
+  // 3) Záloha: text stránky a názvy všech itemů z ikonek a tooltipů
+  out.dom.text = document.body.innerText;
+  const labels = new Set();
+  document.querySelectorAll(&#x27;img[alt], [title], [aria-label], [data-tippy-content]&#x27;).forEach((el) =&gt; {
+    for (const a of [&#x27;alt&#x27;, &#x27;title&#x27;, &#x27;aria-label&#x27;, &#x27;data-tippy-content&#x27;]) {
+      const v = el.getAttribute(a);
+      if (v &amp;&amp; v.trim() &amp;&amp; v.length &lt; 400) labels.add(v.trim());
+    }
+  });
+  out.dom.labels = [...labels];
+
+  // 4) Uložit jako soubor
+  const name = (location.pathname.split(&#x27;/&#x27;).filter(Boolean).slice(1).join(&#x27;-&#x27;) || &#x27;profil&#x27;);
+  const blob = new Blob([JSON.stringify(out)], { type: &#x27;application/json&#x27; });
+  const a = document.createElement(&#x27;a&#x27;);
+  a.href = URL.createObjectURL(blob);
+  a.download = `skycrypt-${name}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  console.log(&#x27;Hotovo. API zdroje:&#x27;, Object.keys(out.api).length,
+    &#x27;| velikost:&#x27;, (blob.size / 1e6).toFixed(2), &#x27;MB&#x27;);
+})();
+</pre></div></details>
+<small>Adam (nebo kdokoli z coopu) může udělat totéž na svém profilu. Když mu pošleš odkaz, data si načte u sebe. Uloží se jen v jeho prohlížeči, tobě se nic nepřepíše.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Travel scrolly (warpy)</h2></div>
+<small>Jestli máš recept odemčený podle collections a slayerů. Jestli už warp máš, data neukazují, to vidíš v <span class="mono">/warp</span> menu.</small>
+<div class="scroll" data-r="travel"></div>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Collections</h2></div>
+<input type="search" id="colSearch" placeholder="Hledat collection…" aria-label="Hledat collection">
+<div class="scroll tall" data-r="cols"></div>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Chybějící accessories</h2></div>
+<small>Seřazeno podle ceny na AH (na ironmanovi nekoupíš, ale nízká cena obvykle znamená snadný craft nebo drop). Upgrady jsou vyšší tiery toho, co už máš.</small>
+<input type="search" id="accSearch" placeholder="Hledat accessory…" aria-label="Hledat accessory">
+<div class="scroll tall" data-r="missing"></div>
+</section>
+</div>
+
+<footer>
+<p>Data: SkyCrypt export (import výše). Odhady jsou označené. Co se liší ve hře, má přednost.</p>
+<p>Zdroje:</p>
+<ul>
+<li><a href="https://hypixel.net/threads/greenhouse-a-general-help-guide-for-the-new.6060756/" target="_blank" rel="noopener">Greenhouse – a general help guide (Hypixel forum)</a></li>
+<li><a href="https://sky.coflnet.com/guides/greenhouse-guide" target="_blank" rel="noopener">Greenhouse Guide (SkyCofl)</a></li>
+<li><a href="https://skyblockprogress.com/greenhouse" target="_blank" rel="noopener">Greenhouse mutations (skyblockprogress.com)</a></li>
+<li><a href="https://hypixel.net/threads/list-of-mutations-in-skyblock.6101092/" target="_blank" rel="noopener">List of Mutations (Hypixel forum)</a></li>
+<li><a href="https://skykings.net/wiki/Sundial" target="_blank" rel="noopener">Sundial (SkyKings wiki)</a></li>
+<li><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">The BEST Farm Design for EVERY Crop (aleck)</a></li>
+<li><a href="https://mining-guides-v2.vercel.app/hotm_guide" target="_blank" rel="noopener">Heart of the Mountain Guide</a></li>
+<li><a href="https://hypixel-skyblock.fandom.com/wiki/The_Forge" target="_blank" rel="noopener">The Forge (fandom wiki)</a></li>
+<li><a href="https://hypixel-skyblock.fandom.com/wiki/Glacite_Tunnels" target="_blank" rel="noopener">Glacite Tunnels (fandom wiki)</a></li>
+<li><a href="https://hypixel-skyblock.fandom.com/wiki/Travel_Scrolls" target="_blank" rel="noopener">Travel Scrolls (fandom wiki)</a></li>
+<li><a href="https://hypixel.net/threads/4914038" target="_blank" rel="noopener">SkyBlock Patch 0.13 – Crimson Isle</a></li>
+</ul>
+</footer>
+</main>
+
+<script>/* Extraktor: z exportu SkyCryptu (skript v4) udělá kompaktní souhrn profilu. */
+function sbUnflatten(arr) {
+  const cache = new Map();
+  function h(i) {
+    if (typeof i !== 'number') return i;
+    if (i < 0) return i === -3 ? NaN : i === -4 ? Infinity : i === -5 ? -Infinity : i === -6 ? -0 : undefined;
+    if (cache.has(i)) return cache.get(i);
+    const v = arr[i];
+    if (Array.isArray(v)) {
+      if (typeof v[0] === 'string') {
+        const t = v[0];
+        if (t === 'Date' || t === 'BigInt' || t === 'RegExp' || t === 'URL') { cache.set(i, v[1]); return v[1]; }
+        if (t === 'Set') { const r = []; cache.set(i, r); for (const x of v.slice(1)) r.push(h(x)); return r; }
+        if (t === 'Map') { const r = {}; cache.set(i, r); for (let j = 1; j < v.length; j += 2) r[String(h(v[j]))] = h(v[j + 1]); return r; }
+        if (t === 'Promise') { const r = h(v[1]); cache.set(i, r); return r; }
+        if (t === 'null') { const r = {}; cache.set(i, r); for (let j = 1; j < v.length; j += 2) r[v[j]] = h(v[j + 1]); return r; }
+        cache.set(i, v); return v;
+      }
+      const r = []; cache.set(i, r);
+      for (const x of v) r.push(h(x));
+      return r;
+    }
+    if (v && typeof v === 'object') {
+      const r = {}; cache.set(i, r);
+      for (const k of Object.keys(v)) r[k] = h(v[k]);
+      return r;
+    }
+    cache.set(i, v); return v;
+  }
+  return h(0);
+}
+
+function sbStrip(s) { return String(s == null ? '' : s).replace(/§./g, '').trim(); }
+
+function sbExtract(input) {
+  if (input && input.v === 1 && input.user) return input; // už je to souhrn
+  if (!input || !input.api) throw new Error('Tohle není export ze SkyCryptu (chybí část „api“). Použij export skript ze záložky Data.');
+  const got = {};
+  for (const [url, val] of Object.entries(input.api)) {
+    const m = url.match(/\/(get[A-Za-z]+)\?/);
+    if (!m || !val || typeof val !== 'object' || typeof val.data !== 'string') continue;
+    try {
+      const root = sbUnflatten(JSON.parse(val.data));
+      got[m[1]] = root && root._ !== undefined ? root._ : root;
+    } catch (e) { /* ignorovat */ }
+  }
+  const c = got.getCombinedProfileStats, s = got.getSelectedProfileStats;
+  if (!c || !s) throw new Error('V exportu chybí hlavní data profilu (getCombinedProfileStats). Obnov stránku SkyCryptu, proklikej záložky a spusť skript znovu.');
+  const nwRoot = got.getProfileNetworth || {};
+  const nw = (nwRoot.normal && nwRoot.normal.networth) || (nwRoot.nonCosmetic && nwRoot.nonCosmetic.networth) || null;
+  const lv = (o) => o ? { lvl: o.level || 0, cur: Math.round(o.xpCurrent || 0), next: Math.round(o.xpForNext || 0), maxed: !!o.maxed } : null;
+
+  const out = { v: 1, user: s.username, profile: s.profile_cute_name, mode: s.game_mode, exported: input.time || new Date().toISOString() };
+  out.sb = s.skyblock_level ? { lvl: s.skyblock_level.level, cur: s.skyblock_level.xpCurrent, next: s.skyblock_level.xpForNext } : null;
+  out.purse = s.purse || 0; out.nw = nw;
+  out.fairy = s.fairySouls ? [s.fairySouls.found, s.fairySouls.total] : null;
+  out.members = (s.members || []).filter((m) => !m.removed).map((m) => m.username);
+  out.skills = {};
+  const sk = (s.skills && s.skills.skills) || {};
+  for (const [k, v] of Object.entries(sk)) out.skills[k] = lv(v);
+
+  // Accessories
+  const a = c.accessories || {};
+  const price = (x) => { const l = (x.lore || []).map(sbStrip).find((t) => t.startsWith('Price:')); if (!l) return null; const m = l.match(/Price: ([\d,]+)/); return m ? +m[1].replace(/,/g, '') : null; };
+  out.mp = { total: a.magicalPower ? a.magicalPower.total : null, unique: a.unique, all: a.total, power: a.selectedPower, recomb: a.recombobulated };
+  out.acc = (a.accessories || []).map((x) => ({ n: sbStrip(x.display_name), r: x.rarity, off: !!x.isInactive, w: x.wiki }));
+  out.missing = (a.missing || []).map((x) => ({ n: sbStrip(x.display_name), r: x.rarity, w: x.wiki, p: price(x) }));
+  out.upgrades = (a.upgrades || []).map((x) => ({ n: sbStrip(x.display_name), r: x.rarity, w: x.wiki, p: price(x) }));
+
+  // Mining / HOTM
+  const mi = (c.skills && c.skills.mining) || {};
+  const perks = [];
+  for (const x of mi.hotm || []) {
+    if (!x || !x.display_name) continue;
+    const tex = String(x.texture_path || '').split('/').pop();
+    const lore = (x.lore || []).map(sbStrip);
+    const lm = lore.map((t) => t.match(/Level (\d+)\s*\/\s*(\d+)/)).find(Boolean);
+    const cm = lore.map((t) => t.match(/Cost: ([\d,]+) (\w+) Powder/)).find(Boolean);
+    const unlocked = /EMERALD/.test(tex);
+    const ability = /_BLOCK$/.test(tex) && !/REDSTONE/.test(tex);
+    if (!unlocked) continue;
+    perks.push({ n: sbStrip(x.display_name), lvl: lm ? +lm[1] : null, max: lm ? +lm[2] : null, cost: cm ? +cm[1].replace(/,/g, '') : null, powder: cm ? cm[2] : null, ability });
+  }
+  const ch = mi.crystalHollows || {};
+  out.hotm = {
+    tier: lv(mi.level), tokens: mi.tokens || null, core: mi.peakOfTheMountain || null, ability: mi.selectedPickaxeAbility || null,
+    powder: mi.powder || null, perks,
+    comm: mi.commissions ? { done: mi.commissions.completions, milestone: mi.commissions.milestone } : null,
+    nucleus: ch.nucleusRuns || 0,
+    crystals: ch.progress && ch.progress.crystals ? Object.entries(ch.progress.crystals).filter(([, v]) => v).map(([k, v]) => k + ':' + v) : [],
+    parts: ch.progress && ch.progress.parts ? Object.entries(ch.progress.parts).filter(([, v]) => v === 'DELIVERED').length : 0,
+    forge: (mi.forge || []).map((f) => sbStrip(f.display_name || f.name || f.id || '')),
+    mineshafts: mi.glaciteTunnels ? mi.glaciteTunnels.mineshaftsEntered : 0,
+  };
+
+  // Farming
+  const fa = (c.skills && c.skills.farming) || {};
+  out.farming = { copper: fa.copper, medals: fa.medals, contests: fa.contestsAttended, golds: fa.uniqueGolds };
+
+  // Dungeons
+  const dg = c.dungeons || {};
+  const cls = (dg.classes && dg.classes.classes) || {};
+  out.dungeons = {
+    cata: lv(dg.level), sel: dg.classes ? dg.classes.selectedClass : null,
+    classes: Object.fromEntries(Object.entries(cls).map(([k, v]) => [k, lv(v)])),
+    secrets: dg.stats && dg.stats.secrets ? dg.stats.secrets.found : null,
+    spr: dg.stats && dg.stats.secrets ? dg.stats.secrets.secretsPerRun : null,
+    floor: dg.stats ? dg.stats.highestFloorBeatenNormal : null,
+  };
+
+  // Slayers
+  out.slayers = {};
+  for (const [k, v] of Object.entries((c.slayers && c.slayers.data) || {})) {
+    out.slayers[k] = { name: v.name, lvl: v.level.level, xp: v.level.xp, next: v.level.xpForNext, max: v.level.maxLevel, kills: v.kills };
+  }
+
+  // Minions
+  const mn = c.minions || {};
+  const list = [];
+  for (const [cat, v] of Object.entries(mn.minions || {})) for (const m of v.minions || []) list.push({ cat, n: m.name, max: m.maxTier, top: m.tiers && m.tiers.length ? Math.max(...m.tiers) : 0, count: (m.tiers || []).length });
+  out.minions = { slots: mn.minionsSlots ? mn.minionsSlots.current : null, bonus: mn.minionsSlots ? mn.minionsSlots.bonusSlots : null, need: mn.minionsSlots ? mn.minionsSlots.next : null, crafted: mn.maxedTiers, total: mn.totalTiers, list };
+
+  // Collections (coop tier + coop total)
+  out.cols = [];
+  for (const [cat, v] of Object.entries((c.collections && c.collections.categories) || {})) for (const it of v.items || []) out.cols.push({ cat, n: it.name, id: it.id, t: it.tier, max: it.maxTier, mine: it.amount, total: it.totalAmount });
+
+  // Pets
+  out.pets = ((c.pets && c.pets.pets) || []).map((p) => ({ n: sbStrip(p.display_name || p.type), r: p.rarity, lvl: typeof p.level === 'object' ? p.level.level : p.level, on: !!p.active }));
+
+  // Gear
+  const names = (arr) => (arr || []).map((x) => sbStrip(x && x.display_name)).filter(Boolean);
+  const g = c.gear || {};
+  out.gear = {
+    armor: names(g.armor && g.armor.armor), set: g.armor ? sbStrip(g.armor.set_name) : null,
+    equip: names(g.equipment && g.equipment.equipment),
+    weapons: names(g.weapons && g.weapons.weapons),
+  };
+
+  // Misc
+  const misc = c.misc || {};
+  out.ess = (misc.essence || []).map((e) => ({ n: e.name, a: e.amount }));
+  out.cons = (misc.consumables || []).map((e) => ({ n: e.name, a: e.amount, max: e.maxAmount }));
+  return out;
+}
+if (typeof module !== 'undefined') module.exports = { sbExtract, sbUnflatten };
+
+window.sbExtract=sbExtract;</script>
+<script>window.SB_DEFAULT={"v":1,"user":"KingStentik","profile":"Pomegranate","mode":"ironman","exported":"2026-11-08T20:19:04.403Z","sb":{"lvl":81,"cur":66,"next":100},"purse":954714,"nw":218568285.56188008,"fairy":[29,289],"members":["Tomikraft","KingStentik","KingAdamoss","Janekraft"],"skills":{"alchemy":{"lvl":9,"cur":260,"next":3500,"maxed":false},"carpentry":{"lvl":27,"cur":175301,"next":1000000,"maxed":false},"combat":{"lvl":21,"cur":146724,"next":400000,"maxed":false},"enchanting":{"lvl":22,"cur":186000,"next":500000,"maxed":false},"farming":{"lvl":41,"cur":11091,"next":2400000,"maxed":false},"fishing":{"lvl":19,"cur":186085,"next":200000,"maxed":false},"foraging":{"lvl":17,"cur":994,"next":75000,"maxed":false},"hunting":{"lvl":0,"cur":0,"next":50,"maxed":false},"mining":{"lvl":32,"cur":360040,"next":1500000,"maxed":false},"runecrafting":{"lvl":8,"cur":438,"next":500,"maxed":false},"social":{"lvl":1,"cur":56,"next":100,"maxed":false},"taming":{"lvl":32,"cur":594811,"next":1500000,"maxed":false}},"mp":{"total":172,"unique":31,"all":157,"power":"warrior","recomb":0},"acc":[{"n":"Personal Compactor 7000","r":"legendary","off":true,"w":"https://hypixelskyblock.minecraft.wiki/w/Personal_Compactor_7000"},{"n":"Cheetah Talisman","r":"epic","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Cheetah_Talisman"},{"n":"Haste Artifact","r":"epic","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Haste_Artifact"},{"n":"Melody's Hair","r":"epic","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Melody%27s_Hair"},{"n":"Atmospheric Filter","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Atmospheric_Filter"},{"n":"Campfire Cultist Badge V","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Campfire_Cultist_Badge"},{"n":"Frozen Chicken","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Frozen_Chicken"},{"n":"Scarf's Studies","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Scarf%27s_Studies"},{"n":"Spider Ring","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Spider_Ring"},{"n":"Treasure Talisman","r":"rare","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Treasure_Talisman"},{"n":"Anita's Ring","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Anita%27s_Ring"},{"n":"Book of Progression","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Book_of_Progression"},{"n":"Emerald Ring","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Emerald_Ring"},{"n":"Farming Talisman","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Farming_Talisman"},{"n":"Intimidation Ring","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Intimidation_Ring"},{"n":"Magnetic Talisman","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Magnetic_Talisman"},{"n":"Mediocre Ring of Love","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Mediocre_Ring_of_Love"},{"n":"Red Claw Talisman","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Red_Claw_Talisman"},{"n":"Wolf Paw","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Wolf_Paw"},{"n":"Wood Affinity Talisman","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Wood_Affinity_Talisman"},{"n":"Zombie Ring","r":"uncommon","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Zombie_Ring"},{"n":"Archaeologist's Compass","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Archaeologist%27s_Compass"},{"n":"Campfire Initiate Badge I","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Campfire_Initiate_Badge"},{"n":"Feather Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Feather_Talisman"},{"n":"King Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/King_Talisman"},{"n":"Mine Affinity Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Mine_Affinity_Talisman"},{"n":"Potion Affinity Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Potion_Affinity_Talisman"},{"n":"Scavenger Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Scavenger_Talisman"},{"n":"Skeleton Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Skeleton_Talisman"},{"n":"Speed Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Speed_Talisman"},{"n":"Vaccine Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Vaccine_Talisman"},{"n":"Village Affinity Talisman","r":"common","off":false,"w":"https://hypixelskyblock.minecraft.wiki/w/Village_Affinity_Talisman"}],"missing":[{"n":"IQ Point","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/IQ_Point","p":null},{"n":"Copper Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Copper_Talisman","p":5999999},{"n":"Agarimoo Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Agarimoo_Talisman","p":220000},{"n":"Wolf Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Wolf_Talisman","p":490000},{"n":"Applicant's Statement","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Applicant%27s_Statement","p":null},{"n":"Witch's Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Witch%27s_Talisman","p":249999},{"n":"White Gift Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/White_Gift_Talisman","p":299999},{"n":"Voter's Badge","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Voter%27s_Badge","p":null},{"n":"Bat Person Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Person_Talisman","p":216000},{"n":"Bat Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Talisman","p":419999},{"n":"Beastmaster Crest","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Beastmaster_Crest","p":994998},{"n":"Beastslayer's Codex","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Beastslayer%27s_Codex","p":null},{"n":"Big Brain Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Big_Brain_Talisman","p":null},{"n":"Torrhus Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Torrhus_Talisman","p":45995},{"n":"Bioanalysis Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Bioanalysis_Talisman","p":null},{"n":"Titanium Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Titanium_Talisman","p":1590000},{"n":"Blaze Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Blaze_Talisman","p":3280000},{"n":"Blood Donor Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Blood_Donor_Talisman","p":25975},{"n":"Blood God Crest","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Blood_God_Crest","p":1999999},{"n":"Bluetooth Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bluetooth_Ring","p":3250000},{"n":"Broken Piggy Bank","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Broken_Piggy_Bank","p":350000},{"n":"Bucket of Dye","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bucket_of_Dye","p":1800000},{"n":"Tiny Dancer","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Tiny_Dancer","p":null},{"n":"Test Bucket Please Ignore","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Test_Bucket_Please_Ignore","p":null},{"n":"Candy Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Candy_Talisman","p":200000},{"n":"Carnival Mask Bag","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Carnival_Mask_Bag","p":3830000},{"n":"Tarantula Talisman","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Tarantula_Talisman","p":89000},{"n":"Talisman of the Century","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Talisman_of_the_Century","p":3000000},{"n":"Chumming Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Chumming_Talisman","p":750000},{"n":"Talisman of Coins","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Talisman_of_Coins","p":1810},{"n":"Survivor Cube","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Survivor_Cube","p":null},{"n":"Soul Campfire Initiate Badge I","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Soul_Campfire_Badge","p":null},{"n":"Dante's Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Dante%27s_Talisman","p":5900000},{"n":"Day Crystal","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Day_Crystal","p":250000},{"n":"Devour Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Devour_Ring","p":2700000},{"n":"Draconic Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Draconic_Talisman","p":4890000},{"n":"Soulflow Pile","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Soulflow_Pile","p":50000},{"n":"Small Fish Bowl","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Small_Fish_Bowl","p":41459},{"n":"Shady Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Shady_Ring","p":null},{"n":"Experience Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Experience_Artifact","p":1199999},{"n":"Farmer Orb","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Farmer_Orb","p":671},{"n":"Fire Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Fire_Talisman","p":124508},{"n":"Fish Affinity Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Fish_Affinity_Talisman","p":200000},{"n":"Jake's Plushie","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Jake%27s_Plushie","p":null},{"n":"Sea Creature Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Sea_Creature_Talisman","p":304},{"n":"General's Medallion","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/General%27s_Medallion","p":1098000},{"n":"Glacial Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Glacial_Talisman","p":79998},{"n":"Seal Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Seal_Talisman","p":2710000},{"n":"Gravity Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Gravity_Talisman","p":149000},{"n":"Great Spook Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Great_Spook_Talisman","p":4400000},{"n":"Handy Blood Chalice","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Handy_Blood_Chalice","p":300000},{"n":"Healing Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Healing_Talisman","p":2311},{"n":"Safety Badge","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Safety_Badge","p":null},{"n":"Runebook","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Runebook","p":1294138},{"n":"Honeycomb Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Honeycomb_Talisman","p":149000},{"n":"Runeblade Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Runeblade_Talisman","p":9139},{"n":"Hotspot Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Hotspot_Ring","p":599998},{"n":"Hotspot Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Hotspot_Talisman","p":170000},{"n":"Respiration Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Respiration_Talisman","p":5444},{"n":"Raggedy Shark Tooth Necklace","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Raggedy_Shark_Tooth_Necklace","p":218970},{"n":"Accretion Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Accretion_Talisman","p":379996},{"n":"Pressure Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Pressure_Talisman","p":30609},{"n":"Freshly Baked Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Freshly_Baked_Talisman","p":4099000},{"n":"Green Jerry Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Green_Jerry_Talisman","p":2000000},{"n":"Jungle Amulet","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Jungle_Amulet","p":2399000},{"n":"Junk Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Junk_Talisman","p":550000},{"n":"Talisman of Power","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Talisman_of_Power","p":18864},{"n":"Powder of One","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Powder_of_One","p":1999997},{"n":"Lava Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Lava_Talisman","p":198000},{"n":"Lucky Hoof","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Lucky_Hoof","p":200000},{"n":"Lumberjack Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Lumberjack_Talisman","p":186000},{"n":"Lush Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Lush_Talisman","p":230000},{"n":"Pocket Espresso Machine","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Pocket_Espresso_Machine","p":98000},{"n":"Master Skull - Tier 1","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_1","p":299000},{"n":"Mineral Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Mineral_Talisman","p":999999},{"n":"Miniaturized Tubulator","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Miniaturized_Tubulator","p":null},{"n":"Moonglade Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Moonglade_Talisman","p":4580},{"n":"Netherrack-Looking Sunshade","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Netherrack-Looking_Sunshade","p":39997},{"n":"Pig's Foot","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Pig%27s_Foot","p":null},{"n":"New Year Cake Bag","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/New_Year_Cake_Bag","p":250000},{"n":"Nibble Chocolate Stick","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Nibble_Chocolate_Stick","p":149999},{"n":"Night Crystal","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Night_Crystal","p":399999},{"n":"Night Vision Charm","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Night_Vision_Charm","p":23801},{"n":"Odger's Bronze Tooth","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Odger%27s_Bronze_Tooth","p":null},{"n":"Organ Donor Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Organ_Donor_Talisman","p":null},{"n":"Pesthunter Badge","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Pesthunter_Badge","p":220000},{"n":"Personal Deletor 4000","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Personal_Deletor_4000","p":145125},{"n":"Hunter Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Hunter_Talisman","p":6000000},{"n":"Cropie Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Cropie_Talisman","p":6100000},{"n":"Auto Recombobulator","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Auto_Recombobulator","p":8500000},{"n":"Anguish Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Anguish_Talisman","p":9895000},{"n":"Emperor's Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Emperor%27s_Talisman","p":11800000},{"n":"Powder of the Few","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Powder_of_the_Few","p":15398998},{"n":"Bits Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bits_Talisman","p":15399999},{"n":"Gratitude Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Gratitude_Talisman","p":16999999},{"n":"InfiniPot™","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Infinipot%E2%84%A2","p":18998000},{"n":"Abicase","r":"rare","p":19000000},{"n":"Potato Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Potato_Talisman","p":19541873},{"n":"Jacobus Register","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Jacobus_Register","p":21500000},{"n":"Kuudra's Kidney","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Kuudra%27s_Kidney","p":24999000},{"n":"Catacombs Expert Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Catacombs_Expert_Ring","p":27400000},{"n":"Burning Kuudra Core","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Burning_Kuudra_Core","p":28000000},{"n":"Dwarven Metal Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Dwarven_Metal_Talisman","p":29399999},{"n":"Hotspot Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Hotspot_Artifact","p":34450000},{"n":"Bait Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bait_Ring","p":39989999},{"n":"Vampire Dentist Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Vampire_Dentist_Relic","p":44000000},{"n":"Nether Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Nether_Artifact","p":49999999},{"n":"Crab Hat of Celebration","r":"special","p":50000000},{"n":"Burststopper Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Burststopper_Talisman","p":53000000},{"n":"Wither Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Wither_Artifact","p":61400000},{"n":"Reaper Orb","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Reaper_Orb","p":66450000},{"n":"Bingo Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Bingo_Talisman","p":68000000},{"n":"Powder of the Many","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Powder_of_the_Many","p":81000000},{"n":"Hocus-Pocus Cipher","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Hocus-Pocus_Cipher","p":85700000},{"n":"Kuudra Follower Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Kuudra_Follower_Artifact","p":102776689},{"n":"Magic 8 Ball","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Magic_8_Ball","p":165000000},{"n":"Powder of the People","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Powder_of_the_People","p":170000000},{"n":"Ender Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Ender_Artifact","p":204000000},{"n":"Shen's Regalia","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Shen%27s_Regalia","p":240000000},{"n":"Hegemony Artifact","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Hegemony_Artifact","p":594999000},{"n":"Future Calories Talisman","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Future_Calories_Talisman","p":885000000},{"n":"Rift Prism","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Rift_Prism","p":1342970341},{"n":"Artifact of Control","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Artifact_of_Control","p":1809999944}],"upgrades":[{"n":"Master's Thesis","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Master%27s_Thesis","p":null},{"n":"Scarf's Thesis","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Scarf%27s_Thesis","p":5900000},{"n":"Agarimoo Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Agarimoo_Artifact","p":4699997},{"n":"Agarimoo Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Agarimoo_Ring","p":1000000},{"n":"Zombie Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Zombie_Artifact","p":3287999},{"n":"Wolf Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Wolf_Ring","p":1650000},{"n":"Legendary Ring of Love","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Legendary_Ring_of_Love","p":null},{"n":"Exquisite Ring of Love","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Exquisite_Ring_of_Love","p":null},{"n":"Potion Affinity Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Potion_Affinity_Artifact","p":344000},{"n":"Bat Artifact","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Artifact","p":3260000},{"n":"Modest Ring of Love","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Modest_Ring_of_Love","p":null},{"n":"VIP Voter's Badge","r":"uncommon","p":null},{"n":"Bat Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Ring","p":1390000},{"n":"Supreme Voter's Badge","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Supreme_Voter%27s_Badge","p":null},{"n":"Elite Voter's Badge","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Elite_Voter%27s_Badge","p":null},{"n":"Vaccine Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Vaccine_Ring","p":5000000},{"n":"Beastmaster Crest","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Beastmaster_Crest","p":2600000},{"n":"2 IQ Points","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/2_IQ_Points","p":null},{"n":"Trapper Crest","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Trapper_Crest","p":3400000},{"n":"Trapper Crest","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Trapper_Crest","p":3400000},{"n":"Bioanalysis Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bioanalysis_Artifact","p":null},{"n":"Bioanalysis Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Bioanalysis_Ring","p":null},{"n":"Trapper Crest","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Trapper_Crest","p":3400000},{"n":"Blood Donor Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Blood_Donor_Ring","p":3500000},{"n":"Torrhus Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Torrhus_Ring","p":800000},{"n":"Torrhus Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Torrhus_Artifact","p":1979997},{"n":"Blue Gift Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Blue_Gift_Talisman","p":999999},{"n":"Titanium Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Titanium_Ring","p":5800000},{"n":"Campfire Scion Badge I","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Campfire_Scion_Badge","p":null},{"n":"Campfire God Badge I","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Campfire_God_Badge","p":null},{"n":"Candy Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Candy_Artifact","p":1000000},{"n":"Sunshine Crystal","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Sunshine_Crystal","p":4676499},{"n":"Candy Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Candy_Ring","p":324000},{"n":"Student's Studies","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Student%27s_Studies","p":null},{"n":"Medium Fish Bowl","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Medium_Fish_Bowl","p":2199997},{"n":"Speed Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Speed_Ring","p":280000},{"n":"Speed Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Speed_Artifact","p":5301702},{"n":"Cracked Piggy Bank","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Cracked_Piggy_Bank","p":200000},{"n":"Crooked Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Crooked_Artifact","p":null},{"n":"Soul Campfire Cultist Badge I","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Soul_Campfire_Badge","p":null},{"n":"Soul Campfire Adept Badge I","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Soul_Campfire_Badge","p":null},{"n":"Dull Shark Tooth Necklace","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Dull_Shark_Tooth_Necklace","p":348997},{"n":"Soul Campfire God Badge I","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Soul_Campfire_Badge","p":null},{"n":"Soul Campfire Scion Badge I","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Soul_Campfire_Badge","p":null},{"n":"Soulflow Battery","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Soulflow_Battery","p":1500000},{"n":"Smooth Chocolate Bar","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Smooth_Chocolate_Bar","p":150000},{"n":"Sharp Shark Tooth Necklace","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Sharp_Shark_Tooth_Necklace","p":750000},{"n":"Feather Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Feather_Artifact","p":350000},{"n":"Feather Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Feather_Ring","p":200000},{"n":"Sea Creature Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Sea_Creature_Ring","p":245000},{"n":"Sea Creature Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Sea_Creature_Artifact","p":350000},{"n":"Seal of the Family","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Seal_of_the_Family","p":null},{"n":"Accretion Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Accretion_Ring","p":1000000},{"n":"Runeblade Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Runeblade_Ring","p":550000},{"n":"Potion Affinity Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Potion_Affinity_Ring","p":200000},{"n":"Rich Chocolate Chunk","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Rich_Chocolate_Chunk","p":350000},{"n":"Ganache Chocolate Slab","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Ganache_Chocolate_Slab","p":700000},{"n":"Respiration Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Respiration_Ring","p":950000},{"n":"Glacial Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Glacial_Ring","p":1300000},{"n":"Respiration Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Respiration_Artifact","p":2999999},{"n":"Red Claw Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Red_Claw_Ring","p":1200000},{"n":"Purple Gift Talisman","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Purple_Gift_Talisman","p":1300000},{"n":"Pulse Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Pulse_Ring","p":1944000},{"n":"Pulse Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Pulse_Ring","p":2999999},{"n":"Prestige Chocolate Realm","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Prestige_Chocolate_Realm","p":1111111},{"n":"Green Gift Talisman","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Green_Gift_Talisman","p":650000},{"n":"Healing Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Healing_Ring","p":340000},{"n":"Pressure Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Pressure_Ring","p":950000},{"n":"Honed Shark Tooth Necklace","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Honed_Shark_Tooth_Necklace","p":349998},{"n":"Honeycomb Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Honeycomb_Artifact","p":1199000},{"n":"Honeycomb Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Honeycomb_Ring","p":300000},{"n":"Pressure Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Pressure_Artifact","p":4473000},{"n":"Moonglade Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Moonglade_Artifact","p":1439000},{"n":"Intimidation Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Intimidation_Artifact","p":3000000},{"n":"Ring of Power","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Ring_of_Power","p":2322204},{"n":"Piggy Bank","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Piggy_Bank","p":333329},{"n":"PhD's Grimoire","r":"epic","p":null},{"n":"Pesthunter Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Pesthunter_Ring","p":500000},{"n":"Junk Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Junk_Artifact","p":1798999},{"n":"Junk Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Junk_Ring","p":600000},{"n":"Pesthunter Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Pesthunter_Relic","p":2500000},{"n":"Pesthunter Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Pesthunter_Artifact","p":999999},{"n":"Personal Deletor 7000","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Personal_Deletor_7000","p":817041},{"n":"Personal Deletor 6000","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Personal_Deletor_6000","p":439057},{"n":"Lumberjack Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Lumberjack_Artifact","p":3589997},{"n":"Lumberjack Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Lumberjack_Ring","p":800000},{"n":"Lush Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Lush_Artifact","p":998000},{"n":"Lush Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Lush_Ring","p":400000},{"n":"Master Skull - Tier 2","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_2","p":400000},{"n":"Master Skull - Tier 3","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_3","p":1458999},{"n":"Personal Deletor 5000","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Personal_Deletor_5000","p":243103},{"n":"Organ Donor Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Organ_Donor_Ring","p":null},{"n":"Organ Donor Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Organ_Donor_Artifact","p":null},{"n":"Odger's Silver Tooth","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Odger%27s_Silver_Tooth","p":null},{"n":"Odger's Gold Tooth","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Odger%27s_Gold_Tooth","p":null},{"n":"Odger's Diamond Tooth","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Odger%27s_Diamond_Tooth","p":null},{"n":"Moonglade Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Moonglade_Ring","p":480000},{"n":"Witch's Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Witch%27s_Ring","p":5999999},{"n":"Runeblade Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Runeblade_Artifact","p":6000000},{"n":"Ring of the Century","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Ring_of_the_Century","p":6000000},{"n":"Master Skull - Tier 4","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_4","p":6299996},{"n":"Bat Person Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Person_Ring","p":7000000},{"n":"Red Claw Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Red_Claw_Artifact","p":8000000},{"n":"Seal Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Seal_Ring","p":8000000},{"n":"Beastmaster Crest","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Beastmaster_Crest","p":8100000},{"n":"Large Fish Bowl","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Large_Fish_Bowl","p":8357999},{"n":"Spider Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Spider_Artifact","p":8699999},{"n":"Anita's Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Anita%27s_Artifact","p":8700000},{"n":"Treasure Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Treasure_Ring","p":8700000},{"n":"Moonlight Crystal","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Moonlight_Crystal","p":8814778},{"n":"Glacial Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Glacial_Artifact","p":9780000},{"n":"Intimidation Relic","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Intimidation_Relic","p":10344948},{"n":"Gold Gift Talisman","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Gold_Gift_Talisman","p":10500000},{"n":"Blue Jerry Talisman","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Blue_Jerry_Talisman","p":10900000},{"n":"Eternal Hoof","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Eternal_Hoof","p":11390000},{"n":"Vaccine Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Vaccine_Artifact","p":11499999},{"n":"Great Spook Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Great_Spook_Ring","p":12000000},{"n":"Pulse Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Pulse_Ring","p":12960000},{"n":"Accretion Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Accretion_Artifact","p":13598000},{"n":"Blood Donor Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Blood_Donor_Artifact","p":14000000},{"n":"Freshly Baked Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Freshly_Baked_Ring","p":14480000},{"n":"Titanium Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Titanium_Artifact","p":14800000},{"n":"Squash Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Squash_Ring","p":14840000},{"n":"Blood God Sigil","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Blood_God_Sigil","p":15300000},{"n":"Razor-sharp Shark Tooth Necklace","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Razor-Sharp_Shark_Tooth_Necklace","p":16500000},{"n":"Draconic Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Draconic_Ring","p":18000000},{"n":"Artifact of the Century","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Artifact_of_the_Century","p":19000000},{"n":"Ring of Coins","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Ring_of_Coins","p":21999995},{"n":"Candy Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Candy_Relic","p":22099000},{"n":"Fried Frozen Chicken","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Fried_Frozen_Chicken","p":22519467},{"n":"Soulflow Supercell","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Soulflow_Supercell","p":23790000},{"n":"Scarf's Grimoire","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Scarf%27s_Grimoire","p":23999990},{"n":"Witch's Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Witch%27s_Artifact","p":24400000},{"n":"Copper Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Copper_Ring","p":25990000},{"n":"Master Skull - Tier 5","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_5","p":28500000},{"n":"Glossy Mineral Talisman","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Glossy_Mineral_Talisman","p":28700000},{"n":"Beastmaster Crest","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Beastmaster_Crest","p":28850000},{"n":"Anguish Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Anguish_Ring","p":29400000},{"n":"Hunter Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Hunter_Ring","p":30000000},{"n":"Fermento Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Fermento_Artifact","p":30000000},{"n":"Titanium Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Titanium_Relic","p":33000000},{"n":"Great Spook Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Great_Spook_Artifact","p":33650000},{"n":"Bat Person Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bat_Person_Artifact","p":34749999},{"n":"Tarantula Ring","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Tarantula_Ring","p":35999999},{"n":"Bluertooth Ring","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Bluertooth_Ring","p":37776994},{"n":"Potato Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Potato_Ring","p":38500000},{"n":"Speed Relic","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Speed_Relic","p":39390000},{"n":"Freshly Baked Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Freshly_Baked_Artifact","p":40000000},{"n":"Emperor's Ring","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Emperor%27s_Ring","p":46500000},{"n":"Gratitude Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Gratitude_Ring","p":48900000},{"n":"Draconic Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Draconic_Artifact","p":51999988},{"n":"Helianthus Relic","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Helianthus_Relic","p":55400000},{"n":"Scavenger Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Scavenger_Ring","p":59000000},{"n":"Spiked Atrocity","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Spiked_Atrocity","p":62989998},{"n":"Anguish Artifact","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Anguish_Artifact","p":62999999},{"n":"Purple Jerry Talisman","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Purple_Jerry_Talisman","p":63666666},{"n":"Pulse Ring","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Pulse_Ring","p":64800000},{"n":"Beastmaster Crest","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Beastmaster_Crest","p":69430000},{"n":"Artifact of Power","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Artifact_of_Power","p":71053129},{"n":"Kuudra's Lung","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Kuudra%27s_Lung","p":74499999},{"n":"Freshly Baked Relic","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Freshly_Baked_Relic","p":77000000},{"n":"Wither Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Wither_Relic","p":78990000},{"n":"Treasure Artifact","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Treasure_Artifact","p":80000000},{"n":"Copper Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Copper_Artifact","p":89000000},{"n":"Artifact of Coins","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Artifact_of_Coins","p":89900000},{"n":"Kuudra Follower Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Kuudra_Follower_Relic","p":103976686},{"n":"Gratitude Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Gratitude_Artifact","p":111999999},{"n":"Burststopper Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Burststopper_Artifact","p":115899999},{"n":"Master Skull - Tier 6","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_6","p":126676766},{"n":"Fiery Kuudra Core","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Fiery_Kuudra_Core","p":131000000},{"n":"Relic of Power","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Relic_of_Power","p":156069923},{"n":"Kuudra's Heart","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Kuudra%27s_Heart","p":167500000},{"n":"Scavenger Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Scavenger_Artifact","p":169999999},{"n":"Emperor's Artifact","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Emperor%27s_Artifact","p":195950000},{"n":"Relic of Power","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Relic_of_Power","p":200046416},{"n":"Ender Relic","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Ender_Relic","p":209702001},{"n":"Emerald Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Emerald_Artifact","p":210000000},{"n":"Freshly Baked Heirloom","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Freshly_Baked_Heirloom","p":255000000},{"n":"Golden Jerry Artifact","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Golden_Jerry_Artifact","p":296999999},{"n":"Relic of Coins","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Relic_of_Coins","p":379000000},{"n":"Bingo Ring","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Bingo_Ring","p":395000000},{"n":"Pandora's Box","r":"mythic","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Pandora's Box","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Pandora's Box","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Pandora's Box","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Pandora's Box","r":"uncommon","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Pandora's Box","r":"common","w":"https://hypixelskyblock.minecraft.wiki/w/Pandora%27s_Box","p":468900000},{"n":"Infernal Kuudra Core","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Infernal_Kuudra_Core","p":498000000},{"n":"Master Skull - Tier 7","r":"legendary","w":"https://hypixelskyblock.minecraft.wiki/w/Master_Skull_-_Tier_7","p":500000000},{"n":"Bingo Artifact","r":"rare","w":"https://hypixelskyblock.minecraft.wiki/w/Bingo_Artifact","p":819999999},{"n":"Bingo Relic","r":"epic","w":"https://hypixelskyblock.minecraft.wiki/w/Bingo_Relic","p":1422999999}],"hotm":{"tier":{"lvl":4,"cur":17560,"next":60000,"maxed":false},"tokens":{"total":7,"spent":7,"available":0},"core":{"level":0,"max_level":10},"ability":"Pickaxe Toss","powder":{"mithril":{"spent":131607,"total":7675,"available":132579},"gemstone":{"spent":56871,"total":16790,"available":73661},"glacite":{"spent":0,"total":0,"available":0}},"perks":[{"n":"Mole","lvl":43,"max":200,"cost":4335,"powder":"Gemstone","ability":false},{"n":"Gem Lover","lvl":5,"max":20,"cost":2401,"powder":"Gemstone","ability":false},{"n":"Efficient Miner","lvl":30,"max":100,"cost":8192,"powder":"Mithril","ability":false},{"n":"Mining Fortune","lvl":14,"max":50,"cost":4705,"powder":"Mithril","ability":false},{"n":"Titanium Insanium","lvl":12,"max":50,"cost":3572,"powder":"Mithril","ability":false},{"n":"Pickobulus","lvl":null,"max":null,"cost":null,"powder":null,"ability":true},{"n":"Mining Speed","lvl":18,"max":50,"cost":8000,"powder":"Mithril","ability":false}],"comm":{"done":61,"milestone":0},"nucleus":0,"crystals":["amethyst:FOUND","ruby:FOUND"],"parts":0,"forge":[],"mineshafts":0},"farming":{"copper":690,"medals":{"bronze":{"amount":5,"total":47},"diamond":{"amount":0,"total":0},"gold":{"amount":4,"total":5},"platinum":{"amount":0,"total":0},"silver":{"amount":5,"total":46}},"contests":147,"golds":2},"dungeons":{"cata":{"lvl":15,"cur":3010,"next":10300,"maxed":false},"sel":"Archer","classes":{"archer":{"lvl":14,"cur":984,"next":7380,"maxed":false},"berserk":{"lvl":11,"cur":1505,"next":2665,"maxed":false},"healer":{"lvl":8,"cur":509,"next":950,"maxed":false},"mage":{"lvl":10,"cur":493,"next":1890,"maxed":false},"tank":{"lvl":11,"cur":339,"next":2665,"maxed":false}},"secrets":531,"spr":11.06,"floor":5},"slayers":{"blaze":{"name":"Inferno Demonlord","lvl":0,"xp":0,"next":10,"max":9,"kills":{"1":0,"2":0,"3":0,"4":0,"5":0,"total":0}},"enderman":{"name":"Voidgloom Seraph","lvl":0,"xp":5,"next":10,"max":9,"kills":{"1":1,"2":0,"3":0,"4":0,"5":0,"total":1}},"spider":{"name":"Tarantula Broodfather","lvl":2,"xp":30,"next":200,"max":9,"kills":{"1":1,"2":1,"3":0,"4":0,"5":0,"total":2}},"vampire":{"name":"Riftstalker Bloodfiend","lvl":0,"xp":0,"next":20,"max":5,"kills":{"1":0,"2":0,"3":0,"4":0,"5":0,"total":0}},"wolf":{"name":"Sven Packmaster","lvl":3,"xp":755,"next":1500,"max":9,"kills":{"1":1,"2":2,"3":2,"4":1,"5":0,"total":6}},"zombie":{"name":"Revenant Horror","lvl":3,"xp":324,"next":1000,"max":9,"kills":{"1":1,"2":3,"3":2,"4":0,"5":0,"total":6}}},"minions":{"slots":17,"bonus":5,"need":15,"crafted":260,"total":719,"list":[{"cat":"combat","n":"Ghast","max":12,"top":3,"count":3},{"cat":"combat","n":"Voidling","max":11,"top":0,"count":0},{"cat":"combat","n":"Slime","max":11,"top":4,"count":4},{"cat":"combat","n":"Vampire","max":11,"top":0,"count":0},{"cat":"combat","n":"Zombie","max":11,"top":7,"count":7},{"cat":"combat","n":"Revenant","max":12,"top":1,"count":1},{"cat":"combat","n":"Skeleton","max":11,"top":1,"count":1},{"cat":"combat","n":"Creeper","max":11,"top":0,"count":0},{"cat":"combat","n":"Spider","max":11,"top":7,"count":7},{"cat":"combat","n":"Blaze","max":12,"top":1,"count":1},{"cat":"combat","n":"Enderman","max":11,"top":6,"count":6},{"cat":"combat","n":"Inferno","max":11,"top":0,"count":0},{"cat":"combat","n":"Tarantula","max":12,"top":0,"count":0},{"cat":"combat","n":"Magma Cube","max":12,"top":0,"count":0},{"cat":"combat","n":"Cave Spider","max":11,"top":5,"count":5},{"cat":"farming","n":"Cocoa","max":12,"top":8,"count":8},{"cat":"farming","n":"Melon","max":12,"top":4,"count":4},{"cat":"farming","n":"Chicken","max":12,"top":8,"count":8},{"cat":"farming","n":"Cactus","max":12,"top":6,"count":6},{"cat":"farming","n":"Sunflower","max":12,"top":0,"count":0},{"cat":"farming","n":"Mushroom","max":12,"top":7,"count":7},{"cat":"farming","n":"Wheat","max":12,"top":6,"count":6},{"cat":"farming","n":"Cow","max":12,"top":5,"count":5},{"cat":"farming","n":"Rabbit","max":12,"top":1,"count":1},{"cat":"farming","n":"Carrot","max":12,"top":5,"count":5},{"cat":"farming","n":"Potato","max":12,"top":7,"count":7},{"cat":"farming","n":"Pumpkin","max":12,"top":9,"count":9},{"cat":"farming","n":"Pig","max":12,"top":1,"count":1},{"cat":"farming","n":"Sugar Cane","max":12,"top":4,"count":4},{"cat":"farming","n":"Nether Warts","max":12,"top":5,"count":5},{"cat":"farming","n":"Sheep","max":12,"top":2,"count":2},{"cat":"fishing","n":"Clay","max":12,"top":0,"count":0},{"cat":"fishing","n":"Lily Pad","max":12,"top":0,"count":0},{"cat":"fishing","n":"Fishing","max":12,"top":5,"count":5},{"cat":"foraging","n":"Flower","max":12,"top":0,"count":0},{"cat":"foraging","n":"Oak","max":12,"top":8,"count":8},{"cat":"foraging","n":"Birch","max":12,"top":5,"count":5},{"cat":"foraging","n":"Spruce","max":12,"top":5,"count":5},{"cat":"foraging","n":"Dark Oak","max":12,"top":5,"count":5},{"cat":"foraging","n":"Acacia","max":12,"top":5,"count":5},{"cat":"foraging","n":"Jungle","max":12,"top":5,"count":5},{"cat":"mining","n":"Cobblestone","max":12,"top":9,"count":9},{"cat":"mining","n":"Coal","max":12,"top":8,"count":8},{"cat":"mining","n":"Gold","max":12,"top":5,"count":5},{"cat":"mining","n":"Diamond","max":12,"top":7,"count":7},{"cat":"mining","n":"Lapis","max":12,"top":6,"count":6},{"cat":"mining","n":"Mithril","max":12,"top":6,"count":6},{"cat":"mining","n":"Quartz","max":12,"top":5,"count":5},{"cat":"mining","n":"End Stone","max":11,"top":9,"count":9},{"cat":"mining","n":"Hard Stone","max":12,"top":6,"count":6},{"cat":"mining","n":"Ice","max":12,"top":8,"count":8},{"cat":"mining","n":"Redstone","max":12,"top":11,"count":11},{"cat":"mining","n":"Obsidian","max":12,"top":7,"count":7},{"cat":"mining","n":"Glowstone","max":12,"top":4,"count":4},{"cat":"mining","n":"Gravel","max":11,"top":4,"count":4},{"cat":"mining","n":"Snow","max":12,"top":0,"count":0},{"cat":"mining","n":"Iron","max":12,"top":5,"count":5},{"cat":"mining","n":"Red Sand","max":12,"top":0,"count":0},{"cat":"mining","n":"Mycelium","max":12,"top":0,"count":0},{"cat":"mining","n":"Sand","max":11,"top":4,"count":4},{"cat":"mining","n":"Emerald","max":12,"top":5,"count":5}]},"cols":[{"cat":"BOSSES","n":"Bonzo","id":"1","t":1,"max":6,"mine":28,"total":28},{"cat":"BOSSES","n":"Scarf","id":"2","t":0,"max":6,"mine":3,"total":3},{"cat":"BOSSES","n":"The Professor","id":"3","t":0,"max":6,"mine":6,"total":6},{"cat":"BOSSES","n":"Thorn","id":"4","t":0,"max":6,"mine":2,"total":2},{"cat":"BOSSES","n":"Livid","id":"5","t":0,"max":7,"mine":1,"total":1},{"cat":"BOSSES","n":"Kuudra","id":"kuudra","t":0,"max":5,"mine":0,"total":0},{"cat":"COMBAT","n":"Gunpowder","id":"SULPHUR","t":2,"max":9,"mine":28,"total":113},{"cat":"COMBAT","n":"Rotten Flesh","id":"ROTTEN_FLESH","t":10,"max":10,"mine":7144,"total":317656},{"cat":"COMBAT","n":"Ender Pearl","id":"ENDER_PEARL","t":9,"max":9,"mine":18771,"total":62964},{"cat":"COMBAT","n":"Chili Pepper","id":"CHILI_PEPPER","t":0,"max":9,"mine":0,"total":0},{"cat":"COMBAT","n":"Slimeball","id":"SLIME_BALL","t":4,"max":9,"mine":26,"total":1278},{"cat":"COMBAT","n":"Spider Eye","id":"SPIDER_EYE","t":9,"max":9,"mine":6532,"total":96767},{"cat":"COMBAT","n":"Bone","id":"BONE","t":9,"max":10,"mine":15273,"total":139789},{"cat":"COMBAT","n":"Blaze Rod","id":"BLAZE_ROD","t":2,"max":8,"mine":0,"total":347},{"cat":"COMBAT","n":"String","id":"STRING","t":9,"max":9,"mine":8700,"total":155959},{"cat":"COMBAT","n":"Magma Cream","id":"MAGMA_CREAM","t":0,"max":8,"mine":0,"total":44},{"cat":"COMBAT","n":"Ghast Tear","id":"GHAST_TEAR","t":6,"max":7,"mine":3650,"total":11713},{"cat":"FARMING","n":"Sugar Cane","id":"SUGAR_CANE","t":9,"max":9,"mine":2461202,"total":2477156},{"cat":"FARMING","n":"Carrot","id":"CARROT_ITEM","t":9,"max":9,"mine":3707620,"total":3749484},{"cat":"FARMING","n":"Sunflower","id":"DOUBLE_PLANT","t":4,"max":8,"mine":28320,"total":28320},{"cat":"FARMING","n":"Raw Chicken","id":"RAW_CHICKEN","t":10,"max":10,"mine":18266,"total":139077},{"cat":"FARMING","n":"Seeds","id":"SEEDS","t":7,"max":7,"mine":4359159,"total":4408765},{"cat":"FARMING","n":"Nether Wart","id":"NETHER_STALK","t":12,"max":12,"mine":559372,"total":569687},{"cat":"FARMING","n":"Feather","id":"FEATHER","t":9,"max":9,"mine":18104,"total":63244},{"cat":"FARMING","n":"Pumpkin","id":"PUMPKIN","t":11,"max":11,"mine":5461044,"total":5553253},{"cat":"FARMING","n":"Wheat","id":"WHEAT","t":11,"max":11,"mine":3074120,"total":3110651},{"cat":"FARMING","n":"Raw Rabbit","id":"RABBIT","t":2,"max":9,"mine":0,"total":108},{"cat":"FARMING","n":"Melon Slice","id":"MELON","t":9,"max":9,"mine":45667323,"total":45700880},{"cat":"FARMING","n":"Leather","id":"LEATHER","t":11,"max":11,"mine":43887,"total":166038},{"cat":"FARMING","n":"Raw Porkchop","id":"PORK","t":4,"max":9,"mine":0,"total":1281},{"cat":"FARMING","n":"Cactus","id":"CACTUS","t":9,"max":9,"mine":719272,"total":726407},{"cat":"FARMING","n":"Mushroom","id":"MUSHROOM_COLLECTION","t":9,"max":9,"mine":204796,"total":210459},{"cat":"FARMING","n":"Raw Mutton","id":"MUTTON","t":3,"max":10,"mine":3,"total":412},{"cat":"FARMING","n":"Potato","id":"POTATO_ITEM","t":9,"max":9,"mine":2069411,"total":2090059},{"cat":"FARMING","n":"Cocoa Beans","id":"INK_SACK:3","t":9,"max":9,"mine":5263375,"total":5273121},{"cat":"FARMING","n":"Moonflower","id":"MOONFLOWER","t":3,"max":8,"mine":17600,"total":17600},{"cat":"FARMING","n":"Wild Rose","id":"WILD_ROSE","t":4,"max":8,"mine":51360,"total":51360},{"cat":"FISHING","n":"Sponge","id":"SPONGE","t":9,"max":9,"mine":42,"total":21108},{"cat":"FISHING","n":"Ink Sac","id":"INK_SACK","t":4,"max":9,"mine":4,"total":220},{"cat":"FISHING","n":"Raw Cod","id":"RAW_FISH","t":11,"max":11,"mine":902,"total":422806},{"cat":"FISHING","n":"Lotus","id":"LOTUS","t":0,"max":11,"mine":0,"total":0},{"cat":"FISHING","n":"Clay Ball","id":"CLAY_BALL","t":8,"max":9,"mine":0,"total":10240},{"cat":"FISHING","n":"Lily Pad","id":"WATER_LILY","t":2,"max":11,"mine":3,"total":96},{"cat":"FISHING","n":"Prismarine Shard","id":"PRISMARINE_SHARD","t":7,"max":7,"mine":33,"total":14596},{"cat":"FISHING","n":"Pufferfish","id":"RAW_FISH:3","t":10,"max":10,"mine":202,"total":37752},{"cat":"FISHING","n":"Tropical Fish","id":"RAW_FISH:2","t":9,"max":9,"mine":48,"total":22499},{"cat":"FISHING","n":"Raw Salmon","id":"RAW_FISH:1","t":9,"max":9,"mine":379,"total":166109},{"cat":"FISHING","n":"Magmafish","id":"MAGMA_FISH","t":0,"max":12,"mine":0,"total":0},{"cat":"FISHING","n":"Prismarine Crystals","id":"PRISMARINE_CRYSTALS","t":7,"max":7,"mine":38,"total":14626},{"cat":"FORAGING","n":"Sea Lumies","id":"SEA_LUMIES","t":0,"max":10,"mine":0,"total":0},{"cat":"FORAGING","n":"Spruce Log","id":"LOG:1","t":7,"max":9,"mine":1975,"total":7373},{"cat":"FORAGING","n":"Birch Log","id":"LOG:2","t":7,"max":9,"mine":1516,"total":8856},{"cat":"FORAGING","n":"Lushlilac","id":"LUSHLILAC","t":0,"max":5,"mine":1,"total":1},{"cat":"FORAGING","n":"Fig Log","id":"FIG_LOG","t":0,"max":9,"mine":172,"total":172},{"cat":"FORAGING","n":"Tender Wood","id":"TENDER_WOOD","t":0,"max":9,"mine":2,"total":2},{"cat":"FORAGING","n":"Ruby Veilshroom","id":"RUBY_VEILSHROOM","t":0,"max":9,"mine":0,"total":0},{"cat":"FORAGING","n":"Mangrove Log","id":"MANGROVE_LOG","t":0,"max":9,"mine":0,"total":0},{"cat":"FORAGING","n":"Honeycomb","id":"HONEYCOMB","t":0,"max":9,"mine":0,"total":0},{"cat":"FORAGING","n":"Acacia Log","id":"LOG_2","t":7,"max":9,"mine":620,"total":5865},{"cat":"FORAGING","n":"Vinesap","id":"VINESAP","t":0,"max":9,"mine":0,"total":0},{"cat":"FORAGING","n":"Helix Log","id":"HELIX_LOG","t":0,"max":9,"mine":0,"total":0},{"cat":"FORAGING","n":"Oak Log","id":"LOG","t":9,"max":9,"mine":43558,"total":144676},{"cat":"FORAGING","n":"Jungle Log","id":"LOG:3","t":8,"max":9,"mine":8492,"total":10410},{"cat":"FORAGING","n":"Dark Oak Log","id":"LOG_2:1","t":9,"max":9,"mine":605,"total":41939},{"cat":"MINING","n":"Hard Stone","id":"HARD_STONE","t":7,"max":7,"mine":242209,"total":5211897},{"cat":"MINING","n":"Ice","id":"ICE","t":11,"max":11,"mine":6354,"total":758420},{"cat":"MINING","n":"Glacite","id":"GLACITE","t":0,"max":9,"mine":0,"total":0},{"cat":"MINING","n":"Netherrack","id":"NETHERRACK","t":2,"max":5,"mine":0,"total":399},{"cat":"MINING","n":"End Stone","id":"ENDER_STONE","t":10,"max":10,"mine":21903,"total":173602},{"cat":"MINING","n":"Iron Ingot","id":"IRON_INGOT","t":9,"max":12,"mine":3160,"total":84365},{"cat":"MINING","n":"Gold Ingot","id":"GOLD_INGOT","t":10,"max":10,"mine":39074,"total":508208},{"cat":"MINING","n":"Red Sand","id":"SAND:1","t":2,"max":8,"mine":0,"total":1372},{"cat":"MINING","n":"Sulphur","id":"SULPHUR_ORE","t":0,"max":9,"mine":1,"total":23},{"cat":"MINING","n":"Cobblestone","id":"COBBLESTONE","t":10,"max":10,"mine":251513,"total":1349658},{"cat":"MINING","n":"Lapis Lazuli","id":"INK_SACK:4","t":10,"max":10,"mine":67278,"total":6292435},{"cat":"MINING","n":"Coal","id":"COAL","t":10,"max":10,"mine":219001,"total":2817841},{"cat":"MINING","n":"Sand","id":"SAND","t":7,"max":7,"mine":28571,"total":31421},{"cat":"MINING","n":"Tungsten","id":"TUNGSTEN","t":0,"max":9,"mine":0,"total":0},{"cat":"MINING","n":"Obsidian","id":"OBSIDIAN","t":10,"max":10,"mine":59140,"total":749116},{"cat":"MINING","n":"Emerald","id":"EMERALD","t":6,"max":9,"mine":12946,"total":19984},{"cat":"MINING","n":"Redstone Dust","id":"REDSTONE","t":9,"max":9,"mine":1133874,"total":11549210},{"cat":"MINING","n":"Umber","id":"UMBER","t":0,"max":9,"mine":0,"total":0},{"cat":"MINING","n":"Nether Quartz","id":"QUARTZ","t":9,"max":9,"mine":2014,"total":1395812},{"cat":"MINING","n":"Gravel","id":"GRAVEL","t":4,"max":9,"mine":0,"total":1459},{"cat":"MINING","n":"Mithril","id":"MITHRIL_ORE","t":8,"max":9,"mine":149742,"total":559128},{"cat":"MINING","n":"Mycelium","id":"MYCEL","t":0,"max":10,"mine":0,"total":0},{"cat":"MINING","n":"Gemstone","id":"GEMSTONE_COLLECTION","t":6,"max":11,"mine":22249,"total":97336},{"cat":"MINING","n":"Diamond","id":"DIAMOND","t":9,"max":9,"mine":60643,"total":2611226},{"cat":"MINING","n":"Glowstone Dust","id":"GLOWSTONE_DUST","t":5,"max":7,"mine":0,"total":6202},{"cat":"RIFT","n":"Timite","id":"TIMITE","t":0,"max":6,"mine":0,"total":0},{"cat":"RIFT","n":"Wilted Berberis","id":"WILTED_BERBERIS","t":0,"max":4,"mine":0,"total":0},{"cat":"RIFT","n":"Living Metal Heart","id":"METAL_HEART","t":0,"max":5,"mine":0,"total":0},{"cat":"RIFT","n":"Caducous Stem","id":"CADUCOUS_STEM","t":0,"max":4,"mine":0,"total":0},{"cat":"RIFT","n":"Agaricus Cap","id":"AGARICUS_CAP","t":0,"max":4,"mine":0,"total":0},{"cat":"RIFT","n":"Hemovibe","id":"HEMOVIBE","t":0,"max":9,"mine":0,"total":0},{"cat":"RIFT","n":"Half-Eaten Carrot","id":"HALF_EATEN_CARROT","t":0,"max":4,"mine":0,"total":0}],"pets":[{"n":"Bee","r":"EPIC","lvl":100,"on":true},{"n":"Lion","r":"RARE","lvl":69,"on":false},{"n":"Enderman","r":"RARE","lvl":61,"on":false},{"n":"Rock","r":"RARE","lvl":1,"on":false},{"n":"Enderman","r":"UNCOMMON","lvl":60,"on":false},{"n":"Monkey","r":"UNCOMMON","lvl":1,"on":false},{"n":"Rock","r":"UNCOMMON","lvl":1,"on":false},{"n":"Rock","r":"COMMON","lvl":63,"on":false},{"n":"Grandma Wolf","r":"COMMON","lvl":46,"on":false},{"n":"Armadillo","r":"COMMON","lvl":1,"on":false},{"n":"Bee","r":"COMMON","lvl":1,"on":false},{"n":"Griffin","r":"COMMON","lvl":1,"on":false}],"gear":{"armor":["Bustling Squash Helmet","Bustling Squash Chestplate","Bustling Squash Leggings","Bustling Squash Boots"],"set":"Bustling Squash Armor","equip":["Blooming Peony Bracelet","Blooming Peony Belt","Blooming Peony Cloak","Blooming Peony Necklace"],"weapons":["Rapid Spirit Shortbow ✪✪✪✪✪","Spicy Hyper Cleaver ✪✪✪✪✪","Aspect of the End","Wand of Mending","Rogue Sword"]},"ess":[{"n":"Undead","a":1007},{"n":"Diamond","a":329},{"n":"Dragon","a":92},{"n":"Gold","a":310},{"n":"Crimson","a":0},{"n":"Ice","a":165},{"n":"Spider","a":307},{"n":"Fossil","a":0},{"n":"Wither","a":362}],"cons":[{"n":"Teleporter Pill","a":0,"max":1},{"n":"Metaphysical Serums Drank","a":0,"max":3},{"n":"Reaper Peppers Eaten","a":0,"max":5},{"n":"McGrubber's Burgers Eaten","a":0,"max":5},{"n":"Wriggling Larvae Eaten","a":1,"max":5},{"n":"Refined Bottles of Jyrre Drank","a":0,"max":5},{"n":"Refined Dark Cacao Truffles Consumed","a":0,"max":5}]};</script>
+<script>(function () {
+  // ---------- pomocné ----------
+  var SKILL_XP = [50,125,200,300,500,750,1000,1500,2000,3500,5000,7500,10000,15000,20000,30000,50000,75000,100000,200000,300000,400000,500000,600000,700000,800000,900000,1000000,1100000,1200000,1300000,1400000,1500000,1600000,1700000,1800000,1900000,2000000,2100000,2200000,2300000,2400000,2500000,2600000,2750000,2900000,3100000,3400000,3700000,4000000,4300000,4600000,4900000,5200000,5500000,5800000,6100000,6400000,6700000,7000000];
+  var SKILL_CZ = { farming: 'Farming', mining: 'Mining', combat: 'Combat', foraging: 'Foraging', fishing: 'Fishing', enchanting: 'Enchanting', alchemy: 'Alchemy', carpentry: 'Carpentry', taming: 'Taming', runecrafting: 'Runecrafting', social: 'Social', hunting: 'Hunting' };
+  var ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  function el(tag, attrs, html) { var e = document.createElement(tag); if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function n0(x) { return x == null || isNaN(x) ? '—' : Math.round(x).toLocaleString('cs-CZ'); }
+  function short(n) { if (n == null) return '—'; return n >= 1e9 ? (n / 1e9).toFixed(2).replace('.', ',') + 'B' : n >= 1e6 ? (n / 1e6).toFixed(n >= 1e8 ? 0 : 2).replace('.', ',') + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'K' : n >= 1e3 ? (n / 1e3).toFixed(1).replace('.', ',') + 'K' : String(Math.round(n)); }
+  function skillTo(sk, target) { if (!sk) return null; if (sk.lvl >= target) return 0; var need = Math.max(0, sk.next - sk.cur); for (var l = sk.lvl + 1; l < target; l++) need += SKILL_XP[l] || 0; return need; }
+  function fmtDate(iso) { try { var d = new Date(iso); return d.toLocaleDateString('cs-CZ') + ' ' + d.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } }
+  function col(P, name) { return (P.cols || []).filter(function (c) { return c.n === name; })[0]; }
+  function rcls(r) { return 'r-' + String(r || '').toLowerCase(); }
+
+  // ---------- úložiště ----------
+  var LS = 'pomegranate-profiles-v1', LSA = 'pomegranate-active-v1';
+  var profiles = {}, active = null;
+  try { profiles = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { profiles = {}; }
+  try { active = localStorage.getItem(LSA); } catch (e) { }
+  var DEF = window.SB_DEFAULT;
+  if (DEF && (!profiles[DEF.user] || new Date(profiles[DEF.user].exported) < new Date(DEF.exported))) profiles[DEF.user] = DEF;
+  if (!active || !profiles[active]) active = DEF ? DEF.user : Object.keys(profiles)[0];
+  function persist() { try { localStorage.setItem(LS, JSON.stringify(profiles)); localStorage.setItem(LSA, active); } catch (e) { msg('Data se nepodařilo uložit do prohlížeče (možná soukromé okno). Na stránce je vidíš, ale po obnovení zmizí.', true); } }
+
+  // ---------- render ----------
+  function render() {
+    var P = profiles[active];
+    var who = document.getElementById('who');
+    who.innerHTML = '';
+    Object.keys(profiles).forEach(function (u) { var o = el('option', { value: u }, esc(u + ' · ' + (profiles[u].profile || ''))); if (u === active) o.selected = true; who.appendChild(o); });
+    document.getElementById('notStentik').hidden = !P || P.user === 'KingStentik';
+    if (!P) return;
+    var S = P.skills || {}, H = P.hotm || {}, T = H.tier || {}, D = P.dungeons || {};
+    var hotmNext = (T.lvl || 0) + 1, hotmNeed = T.next ? Math.max(0, T.next - T.cur) : null;
+    var combatNeed = skillTo(S.combat, 24);
+    var ess = {}; (P.ess || []).forEach(function (e) { ess[e.n] = e.a; });
+    var sunf = col(P, 'Sunflower'), rose = col(P, 'Wild Rose');
+    var m = (P.farming && P.farming.medals) || {};
+    var pw = H.powder || {};
+    var B = {
+      exported: fmtDate(P.exported) + ' (' + P.user + ')',
+      sb: P.sb ? P.sb.lvl : '—', farmingLvl: S.farming ? S.farming.lvl : '—', miningLvl: S.mining ? S.mining.lvl : '—', combatLvl: S.combat ? S.combat.lvl : '—',
+      hotmTier: T.lvl != null ? T.lvl : '—', mp: P.mp ? P.mp.total : '—', nw: short(P.nw),
+      hotmNeed: hotmNeed == null ? '—' : n0(hotmNeed), hotmNeedLabel: 'XP do HOTM ' + hotmNext,
+      hotmGoalTitle: 'HOTM ' + hotmNext + (T.lvl < 5 && hotmNext === 5 ? ' → Core of the Mountain' : ''),
+      hotmGoalText: 'Chybí ' + n0(hotmNeed) + ' HOTM XP.' + (hotmNext === 5 ? ' Core dá 5 tokenů, víc powderu a slot na commission navíc.' : ''),
+      hotmPathTitle: 'Cesta k HOTM ' + hotmNext,
+      hotmEta: hotmNeed == null ? '—' : 'Odhad: při 4 commissions denně (bonus + ~250 XP za kus) ~1 900 XP denně, tedy zhruba ' + Math.ceil(hotmNeed / 1900) + ' dní. Při ~10 commissions denně (~3 400 XP) asi ' + Math.ceil(hotmNeed / 3400) + ' dní. Eventy to zrychlí.',
+      combatNeed: combatNeed === 0 ? 'hotovo' : short(combatNeed),
+      combatGoalText: combatNeed === 0 ? 'Combat 24 máš, Crimson Isle je otevřený (warp přes Travel Scroll, Glowstone IV).' : 'Máš Combat ' + (S.combat ? S.combat.lvl : '—') + ' (' + n0(S.combat && S.combat.cur) + ' / ' + n0(S.combat && S.combat.next) + '). Do 24 chybí ~' + short(combatNeed) + ' XP.',
+      cataLvl: D.cata ? D.cata.lvl : '—', cataNeed: D.cata ? n0(D.cata.next - D.cata.cur) : '—', selClass: D.sel || '—',
+      secrets: D.secrets != null ? n0(D.secrets) + ' (' + (D.spr || 0).toFixed(1).replace('.', ',') + ' na run)' : '—',
+      dragonEss: ess.Dragon != null ? n0(ess.Dragon) : '—',
+      copper: P.farming ? n0(P.farming.copper) : '—',
+      medals: [m.gold, m.silver, m.bronze].map(function (x) { return x ? x.amount : 0; }).join('/'),
+      contests: P.farming ? n0(P.farming.contests) : '—',
+      sunflower: sunf ? ROMAN[sunf.t] + ' (' + short(sunf.total) + ')' : '—',
+      wildrose: rose ? ROMAN[rose.t] + ' (' + short(rose.total) + ')' : '—',
+      comm: H.comm ? n0(H.comm.done) : '—', commMs: H.comm ? ROMAN[H.comm.milestone] : '—', nucleus: n0(H.nucleus),
+      ability: H.ability || 'žádná', forge: H.forge && H.forge.length ? H.forge.join(', ') : 'prázdná',
+      crystals: H.crystals && H.crystals.length ? H.crystals.map(function (c) { return c.split(':')[0]; }).join(', ') : 'žádné', parts: H.parts || 0,
+      hotmPowder: 'Tokeny ' + (H.tokens ? H.tokens.spent + '/' + H.tokens.total : '—') + ', Core of the Mountain ' + (H.core ? H.core.level + '/' + H.core.max_level : '—') + '. Powder podle SkyCryptu: Mithril ' + n0(pw.mithril && pw.mithril.total) + ', Gemstone ' + n0(pw.gemstone && pw.gemstone.total) + ' (pole „total“; skutečně volný powder ověř v /hotm).',
+      accCount: P.mp ? P.mp.unique + '/' + P.mp.all : '—', power: P.mp ? P.mp.power : '—', tuning: P.mp ? Math.floor(P.mp.total / 10) : '—',
+      fairy: P.fairy ? P.fairy[0] + '/' + P.fairy[1] : '—',
+      minionLine: P.minions ? 'Unikátních tierů ' + n0(P.minions.crafted) + ' / ' + n0(P.minions.total) + ', slotů ' + P.minions.slots + ' (+' + P.minions.bonus + ' bonus). Do dalšího slotu chybí ' + P.minions.need + ' unikátů.' : '—'
+    };
+    document.querySelectorAll('[data-b]').forEach(function (e) { var k = e.getAttribute('data-b'); if (B[k] != null) e.textContent = B[k]; });
+
+    // inactive accessories
+    var off = (P.acc || []).filter(function (a) { return a.off; });
+    var box = document.querySelector('[data-r="inactive"]');
+    box.innerHTML = off.length ? '<div class="callout warn-box"><b class="warn">Neaktivní accessories</b><p>' + off.map(function (a) { return esc(a.n); }).join(', ') + ': SkyCrypt je ukazuje jako neaktivní (nejspíš leží mimo Accessory Bag, nebo máš vyšší tier stejné rodiny). Dej je do bagu.</p></div>' : '';
+
+    // skills
+    var sb = document.querySelector('[data-r="skills"]'); sb.innerHTML = '';
+    Object.keys(S).map(function (k) { var s = S[k]; return { n: SKILL_CZ[k] || k, l: s.lvl, h: s.cur, t: s.next, r: Math.max(0, s.next - s.cur), mx: s.maxed || !s.next }; })
+      .filter(function (s) { return !s.mx; }).sort(function (a, b) { return a.r - b.r; })
+      .forEach(function (s) {
+        var pct = Math.max(2, Math.round(s.h / s.t * 100));
+        sb.appendChild(el('div', { 'class': 'bar' + (s.r < 25000 ? ' quick' : '') }, '<span>' + esc(s.n + ' ' + s.l) + '</span><div class="track"><div class="fill" style="width:' + pct + '%"></div></div><span class="n">' + short(s.r) + '</span>'));
+      });
+
+    // HOTM perks
+    var hp = document.querySelector('[data-r="hotmPerks"]');
+    var rows = (H.perks || []).filter(function (p) { return !p.ability; });
+    var abil = (H.perks || []).filter(function (p) { return p.ability; }).map(function (p) { return p.n; });
+    hp.innerHTML = '<table><tr><th>Perk</th><th>Level</th><th>Další level</th></tr>' + rows.map(function (p) { return '<tr><td>' + esc(p.n) + '</td><td class="mono">' + (p.lvl != null ? p.lvl + '/' + p.max : '—') + '</td><td class="mono">' + (p.cost ? n0(p.cost) + ' ' + esc(p.powder) : (p.lvl === p.max ? 'max' : '—')) + '</td></tr>'; }).join('') + (abil.length ? '<tr><td>' + esc(abil.join(', ')) + '</td><td colspan="2">ability, odemčená</td></tr>' : '') + '</table>';
+
+    // slayers
+    var META = { enderman: ['Voidgloom', 'Juju Shortbow (Enderman 5), warp Void Sepulture (IV)'], spider: ['Tarantula', 'Tarantula Talisman (Epic, +12 MP)'], zombie: ['Revenant', 'Zombie Artifact, warp Hub Crypts (IV)'], wolf: ['Sven', 'Red Claw Ring'], blaze: ['Inferno Demonlord', 'až na Crimson Isle'], vampire: ['Riftstalker', 'v Riftu'] };
+    function plan(need) { if (need <= 0) return '—'; var t4 = Math.floor(need / 500), rem = need - t4 * 500, out = []; if (t4) out.push(t4 + '× T4'); if (rem > 0) out.push(rem <= 5 ? '1× T1' : rem <= 25 ? '1× T2' : Math.ceil(rem / 100) + '× T3'); var s = out.join(' + '); if (t4) s += ' (nebo ' + Math.ceil(need / 100) + '× T3)'; return s; }
+    var sl = document.querySelector('[data-r="slayers"]');
+    var keys = ['enderman', 'spider', 'zombie', 'wolf', 'blaze', 'vampire'].filter(function (k) { return P.slayers && P.slayers[k]; });
+    sl.innerHTML = '<table><tr><th>Boss</th><th>Level</th><th>Chybí XP</th><th>Co zabít</th><th>Proč</th></tr>' + keys.map(function (k) { var s = P.slayers[k]; var need = Math.max(0, s.next - s.xp); return '<tr><td>' + esc(META[k][0]) + '</td><td>' + s.lvl + '</td><td class="mono">' + n0(need) + '</td><td>' + plan(need) + '</td><td>' + esc(META[k][1]) + '</td></tr>'; }).join('') + '</table>';
+
+    // gear
+    var G = P.gear || {};
+    document.querySelector('[data-r="gear"]').innerHTML = '<p><b>Armor:</b> ' + esc((G.armor || []).join(', ') || '—') + '</p><p><b>Equipment:</b> ' + esc((G.equip || []).join(', ') || '—') + '</p><p><b>Zbraně:</b> ' + esc((G.weapons || []).join(', ') || '—') + '</p><small>Je to stav v okamžiku exportu (co jsi měl na sobě).</small>';
+
+    // pets
+    document.querySelector('[data-r="pets"]').innerHTML = '<div class="chips">' + (P.pets || []).map(function (p) { return '<span class="chip"><b class="' + rcls(p.r) + '">' + esc(p.n) + '</b> ' + esc((p.r || '').toLowerCase()) + ' · lvl ' + p.lvl + (p.on ? ' · aktivní' : '') + '</span>'; }).join('') + '</div>';
+
+    // minions low
+    var low = (P.minions && P.minions.list || []).filter(function (x) { return x.top <= 2; }).sort(function (a, b) { return a.top - b.top; });
+    document.querySelector('[data-r="minionsLow"]').innerHTML = low.length ? '<p class="track-label">Levné unikáty (tier 0–2)</p><div class="chips">' + low.map(function (x) { return '<span class="chip">' + esc(x.n) + ' <b>' + x.top + '</b></span>'; }).join('') + '</div><small>Tier 0 = ještě nemáš. Recept ověř přes /viewrecipe.</small>' : '';
+
+    // essence + consumables
+    document.querySelector('[data-r="ess"]').innerHTML = '<div class="chips">' + (P.ess || []).map(function (e) { return '<span class="chip">' + esc(e.n) + ' <b>' + n0(e.a) + '</b></span>'; }).join('') + '</div>' + '<p class="note">Consumables: ' + (P.cons || []).map(function (c) { return esc(c.n) + ' ' + c.a + '/' + c.max; }).join(', ') + '</p>';
+
+    // travel scrolls
+    var TRAVEL = [
+      ['The Barn', 'barn', { c: 'Potato', t: 6 }], ['Mushroom Desert', 'desert', { c: 'Cocoa Beans', t: 5 }], ['Gold Mine', 'gold', { c: 'Coal', t: 6 }],
+      ['Deep Caverns', 'deep', { c: 'Redstone Dust', t: 7 }], ["Spider's Den", 'spider', { c: 'Gravel', t: 8 }], ['The End', 'end', { c: 'End Stone', t: 8 }],
+      ['Crimson Isle', 'isle', { c: 'Glowstone Dust', t: 4, note: 'vstup chce Combat 24' }], ['Murkwater Loch', 'murk', { c: 'Mangrove Log', t: 1 }],
+      ['Dwarven Mines', 'mines', { ms: 4 }], ['Crystal Nucleus', 'nucleus', { ms: 6 }],
+      ['Hub Crypts', 'crypt', { s: 'zombie', t: 4 }], ['Void Sepulture', 'void', { s: 'enderman', t: 4 }], ['Smoldering Tomb', 'smold', { s: 'blaze', t: 4 }],
+      ['Wizard Tower', 'wizard', { buy: 'Grumblefoot, 11 111 coinů' }], ['Jungle Island', 'jungle', { buy: 'Joyful Viking, 70 000 coinů' }], ['Hub Castle', 'castle', { buy: 'Lonely Philosopher, 150 000 coinů' }],
+      ["Dragon's Nest", 'drag', { drop: 'drop z Unstable Dragona' }], ['The Rift', 'rift', { buy: 'Roger, 5 000 Motes' }]
+    ];
+    document.querySelector('[data-r="travel"]').innerHTML = '<table><tr><th>Warp</th><th>Podmínka</th><th>Stav</th></tr>' + TRAVEL.map(function (t) {
+      var r = t[2], cond, ok = null;
+      if (r.c) { var cc = col(P, r.c); cond = r.c + ' ' + ROMAN[r.t] + ' (craft)'; ok = cc ? cc.t >= r.t : false; cond += cc ? ' · máte ' + ROMAN[cc.t] : ''; if (r.note) cond += ' · ' + r.note; }
+      else if (r.ms) { var ms = H.comm ? H.comm.milestone : 0; cond = 'Commission Milestone ' + ROMAN[r.ms] + ' · máš ' + (ROMAN[ms] || '0'); ok = ms >= r.ms; }
+      else if (r.s) { var ss = P.slayers && P.slayers[r.s]; cond = META[r.s][0] + ' slayer ' + ROMAN[r.t] + ' · máš ' + (ss ? ss.lvl : 0); ok = ss ? ss.lvl >= r.t : false; }
+      else cond = r.buy || r.drop;
+      return '<tr><td>' + esc(t[0]) + ' <span class="mono note">/warp ' + t[1] + '</span></td><td>' + esc(cond) + '</td><td>' + (ok === null ? '<span class="note">—</span>' : ok ? '<span class="ok">✓ jde</span>' : '<span class="no">✗ chybí</span>') + '</td></tr>';
+    }).join('') + '</table>';
+
+    renderCols(); renderMissing();
+  }
+
+  function renderCols() {
+    var P = profiles[active]; if (!P) return;
+    var q = (document.getElementById('colSearch').value || '').toLowerCase();
+    var list = (P.cols || []).filter(function (c) { return !q || c.n.toLowerCase().indexOf(q) >= 0 || c.cat.toLowerCase().indexOf(q) >= 0; });
+    document.querySelector('[data-r="cols"]').innerHTML = '<table><tr><th>Collection</th><th>Kategorie</th><th>Tier</th><th>Coop celkem</th><th>Ty</th></tr>' + list.map(function (c) { return '<tr><td>' + esc(c.n) + '</td><td class="note">' + esc(c.cat.toLowerCase()) + '</td><td class="mono">' + (ROMAN[c.t] || c.t) + ' / ' + (ROMAN[c.max] || c.max) + '</td><td class="num">' + n0(c.total) + '</td><td class="num">' + n0(c.mine) + '</td></tr>'; }).join('') + '</table>';
+  }
+  function renderMissing() {
+    var P = profiles[active]; if (!P) return;
+    var q = (document.getElementById('accSearch').value || '').toLowerCase();
+    var all = (P.missing || []).map(function (x) { x.k = 'nový'; return x; }).concat((P.upgrades || []).map(function (x) { x.k = 'upgrade'; return x; }))
+      .filter(function (x) { return !q || x.n.toLowerCase().indexOf(q) >= 0; })
+      .sort(function (a, b) { return (a.p == null ? 1e15 : a.p) - (b.p == null ? 1e15 : b.p); });
+    document.querySelector('[data-r="missing"]').innerHTML = '<table><tr><th>Accessory</th><th>Typ</th><th>Rarita</th><th>AH cena</th></tr>' + all.slice(0, 400).map(function (x) { return '<tr><td>' + (x.w ? '<a href="' + esc(x.w) + '" target="_blank" rel="noopener">' + esc(x.n) + '</a>' : esc(x.n)) + '</td><td class="note">' + x.k + '</td><td class="' + rcls(x.r) + '">' + esc(x.r) + '</td><td class="num">' + (x.p == null ? '—' : short(x.p)) + '</td></tr>'; }).join('') + '</table>';
+  }
+
+  // ---------- import ----------
+  function msg(t, err) { var m = document.getElementById('msg'); m.textContent = t; m.className = 'msg ' + (err ? 'err' : 'ok'); }
+  function importText(text) {
+    var data;
+    try { data = JSON.parse(text); } catch (e) { msg('Soubor není platný JSON. Zkopíroval ses celý obsah?', true); return; }
+    try {
+      var sum = window.sbExtract(data);
+      profiles[sum.user] = sum; active = sum.user; persist(); render();
+      msg('Načteno: ' + sum.user + ' (' + sum.profile + '), export ' + fmtDate(sum.exported) + '.');
+    } catch (e) { msg(e.message || String(e), true); }
+  }
+  document.getElementById('file').addEventListener('change', function (e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { importText(r.result); }; r.readAsText(f); e.target.value = ''; });
+  var drop = document.getElementById('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { importText(r.result); }; r.readAsText(f); });
+  document.getElementById('load').addEventListener('click', function () { var t = document.getElementById('paste').value.trim(); if (!t) { msg('Pole je prázdné.', true); return; } importText(t); });
+  document.getElementById('del').addEventListener('click', function () {
+    if (!active) return;
+    if (DEF && active === DEF.user) { profiles[active] = DEF; persist(); render(); msg('Vrácena výchozí data pro ' + active + '.'); return; }
+    delete profiles[active]; active = Object.keys(profiles)[0] || null; persist(); render(); msg('Hráč smazán.');
+  });
+  document.getElementById('who').addEventListener('change', function (e) { active = e.target.value; persist(); render(); });
+  document.getElementById('colSearch').addEventListener('input', renderCols);
+  document.getElementById('accSearch').addEventListener('input', renderMissing);
+  document.getElementById('copyScript').addEventListener('click', function () {
+    var pre = document.getElementById('exportScript'), txt = pre.textContent;
+    function fallback() { pre.closest('details').open = true; var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); msg('Kopírování tu nejde, skript je označený níž. Zkopíruj ho Ctrl+C.', true); }
+    try { navigator.clipboard.writeText(txt).then(function () { msg('Export skript zkopírován.'); }, fallback); } catch (e) { fallback(); }
+  });
+
+  // ---------- checkboxy ----------
+  var KEY = 'pomegranate-guide-v3', DKEY = 'pomegranate-daily', saved = {}, daily = {};
+  var today = new Date().toISOString().slice(0, 10);
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  try { daily = JSON.parse(localStorage.getItem(DKEY) || '{}') || {}; if (daily.date !== today) daily = { date: today }; } catch (e) { daily = { date: today }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(saved)); localStorage.setItem(DKEY, JSON.stringify(daily)); } catch (e) { } }
+  function counts() { document.querySelectorAll('[data-count]').forEach(function (c) { var g = document.querySelector('[data-group="' + c.getAttribute('data-count') + '"]'); if (!g) return; c.textContent = 'Hotovo ' + g.querySelectorAll('input:checked').length + '/' + g.querySelectorAll('input').length; }); }
+  document.querySelectorAll('input[data-id]').forEach(function (b) { var id = b.getAttribute('data-id'); if (saved[id]) b.checked = true; b.addEventListener('change', function () { saved[id] = b.checked; save(); counts(); }); });
+  document.querySelectorAll('input[data-daily]').forEach(function (b) { var id = b.getAttribute('data-daily'); if (daily[id]) b.checked = true; b.addEventListener('change', function () { daily[id] = b.checked; daily.date = today; save(); counts(); }); });
+  counts();
+
+  // ---------- záložky ----------
+  var tabs = ['ted', 'garden', 'mining', 'combat', 'postava', 'data'];
+  function show() {
+    var h = (location.hash || '').replace('#', ''); if (tabs.indexOf(h) < 0) h = 'ted';
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== h; });
+    document.querySelectorAll('nav.tabs a').forEach(function (a) { if (a.getAttribute('data-tab') === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  }
+  window.addEventListener('hashchange', function () { show(); window.scrollTo(0, 0); });
+  show();
+  render();
+})();
+</script>
+</body>
+</html>
