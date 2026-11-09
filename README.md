@@ -19,5 +19,6 @@ Přidat další server: spusť `stentik-agent.exe` znovu → „Ano“ → najde
 
 ## Soubory
 - `index.html`, `config.js`, `icon.svg` – stránka
+- `skyblock.html` – Hypixel SkyBlock guide (ironman coop). Data se aktualizují importem exportu ze SkyCryptu přímo na stránce (záložka Data), ukládají se jen v prohlížeči.
 - `apps-script/Code.gs` – API
 - `agent/` – zdrojový kód agenta (Go), `download/stentik-agent.exe` – hotový program
