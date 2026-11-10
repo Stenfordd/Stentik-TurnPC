@@ -19,6 +19,6 @@ Přidat další server: spusť `stentik-agent.exe` znovu → „Ano“ → najde
 
 ## Soubory
 - `index.html`, `config.js`, `icon.svg` – stránka
-- `skyblock.html` – Hypixel SkyBlock guide (ironman coop). Data se aktualizují importem exportu ze SkyCryptu přímo na stránce (záložka Data), ukládají se jen v prohlížeči.
+- `skyblock.html` – Hypixel SkyBlock guide (ironman coop). Data se aktualizují importem exportu ze SkyCryptu (záložka Data). S GitHub tokenem se save nahraje do `data/skyblock/` a vidí ho všichni. Záložka Mayor čte Hypixel API, záloha `data/election.json` se obnovuje workflow `skyblock-election.yml`.
 - `apps-script/Code.gs` – API
 - `agent/` – zdrojový kód agenta (Go), `download/stentik-agent.exe` – hotový program
