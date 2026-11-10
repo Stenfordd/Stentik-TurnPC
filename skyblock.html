@@ -279,6 +279,33 @@ pre.code{margin:0;max-height:240px;overflow:auto;background:var(--field);border:
 .cand-perks{grid-column:1/-1;margin-top:-4px;font-size:.8rem;color:var(--muted)}
 .mc-0{color:var(--mc-0)}.mc-1{color:var(--mc-1)}.mc-2{color:var(--mc-2)}.mc-3{color:var(--mc-3)}.mc-4{color:var(--mc-4)}.mc-5{color:var(--mc-5)}.mc-6{color:var(--mc-6)}.mc-7{color:var(--muted)}.mc-8{color:var(--mc-8)}.mc-9{color:var(--mc-9)}.mc-a{color:var(--mc-a)}.mc-b{color:var(--mc-b)}.mc-c{color:var(--mc-c)}.mc-d{color:var(--mc-d)}.mc-e{color:var(--mc-e)}.mc-f{color:var(--ink)}.mc-l{font-weight:800}.mc-o{font-style:italic}
 
+/* ===== Eventy ===== */
+.evstrip{display:flex;gap:10px;align-items:center;border-radius:12px;padding:8px 14px;border:1px solid var(--line);background:var(--glass);text-decoration:none;color:var(--ink);font-size:.88rem;font-weight:600;backdrop-filter:blur(8px)}
+.evstrip svg{width:18px;height:18px;color:var(--mythic);flex:none}
+.evstrip span:first-of-type{flex:1;min-width:0}
+.evstrip .go{font:700 .78rem 'Pixelify Sans',monospace;color:var(--mythic);white-space:nowrap}
+.evstrip:hover{color:var(--ink);border-color:var(--mythic)}
+.evlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ev{--ec:var(--accent);position:relative;display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--ec) 10%,var(--surface-2)),var(--surface-2) 70%);text-decoration:none;color:var(--ink);min-width:0;transition:transform .15s,border-color .15s}
+.ev:hover{transform:translateY(-2px);border-color:var(--ec);color:var(--ink)}
+.ev.live{border-color:var(--ec);box-shadow:0 0 0 1px var(--ec),0 12px 30px -16px var(--ec)}
+.ev.off{opacity:.5}
+.evn{font:700 1.02rem 'Pixelify Sans',monospace;color:var(--ec)}
+.evst{font:600 .78rem 'JetBrains Mono',monospace;color:var(--muted)}
+.evst.live{color:var(--accent)}
+.evst.live::before{content:"● ";animation:pulse 1.2s infinite}
+.evt{font-size:.85rem}
+.evguide{display:flex;flex-direction:column;gap:8px}
+.tl{position:relative;min-width:640px;padding:4px 0 8px;font-size:.78rem}
+.tl-months{display:grid;grid-template-columns:repeat(12,1fr);margin-left:130px;border-bottom:1px solid var(--line);padding-bottom:4px;color:var(--muted);font:600 .68rem 'JetBrains Mono',monospace}
+.tl-months span{border-left:1px solid var(--line);padding-left:4px}
+.tl-row{display:grid;grid-template-columns:130px 1fr;align-items:center;height:28px}
+.tl-name{font-weight:700;color:var(--ec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.tl-lane{position:relative;height:12px;background:repeating-linear-gradient(90deg,var(--field) 0 calc(100%/12 - 1px),var(--line) calc(100%/12 - 1px) calc(100%/12))}
+.tl-seg{position:absolute;top:0;bottom:0;border-radius:999px;background:var(--ec);box-shadow:0 0 10px -2px var(--ec)}
+.tl-now{position:absolute;top:0;bottom:0;width:2px;background:var(--warn);box-shadow:0 0 8px var(--warn)}
+.tl-now b{position:absolute;top:-2px;left:4px;font:700 .65rem 'Pixelify Sans',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:.1em}
+
 /* ===== Patička ===== */
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
 footer ul{margin:0;padding-left:18px}
@@ -322,12 +349,14 @@ footer ul{margin:0;padding-left:18px}
 <a href="#data">Aktualizovat data →</a>
 </div>
 <a class="mstrip" id="mstrip" href="#mayor"><svg class="crown" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span class="mt"><b id="mstripTitle">Mayor se načítá…</b><span id="mstripText">Hypixel API</span></span><span class="go">Detail →</span></a>
+<a class="evstrip" href="#eventy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="evNextBadge">Eventy…</span><span class="go">Kalendář →</span></a>
 <p class="note" id="notStentik" hidden>Texty návodů jsou psané pro Stentika (gear, loadouty). Čísla, tabulky a cíle se ale počítají pro vybraného hráče.</p>
 </header>
 
 <nav class="tabs" aria-label="Sekce">
 <a href="#ted" data-tab="ted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Teď</a>
 <a href="#mayor" data-tab="mayor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Mayor</a>
+<a href="#eventy" data-tab="eventy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Eventy</a>
 <a href="#garden" data-tab="garden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9M12 12C12 7 8 4 3 4c0 5 4 8 9 8zM12 12c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>Garden</a>
 <a href="#mining" data-tab="mining"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 13 11"/><path d="M5 6c5-3 10-3 14 0-4-1-8 0-11 2zM18 5c1 4 0 9-3 12 0-3 0-6-2-8"/></svg>Mining</a>
 <a href="#combat" data-tab="combat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 3H21v6.5L10 20.5 3.5 14z"/><path d="M5 15l4 4M3 21l3-3"/></svg>Combat</a>
@@ -429,6 +458,35 @@ footer ul{margin:0;padding-left:18px}
 <button class="btn ghost" type="button" id="manClear">Zpět na živá data</button>
 </div>
 <p class="msg" id="manMsg" role="status"></p>
+</section>
+</div>
+
+<!-- ======================= EVENTY ======================= -->
+<div class="panel" data-panel="eventy" hidden>
+<section class="legendary">
+<div class="head"><h2>Teď a brzy</h2><span class="tag">Časy v tvém pásmu</span></div>
+<small>Počítá se ze SkyBlock kalendáře (1 SkyBlock den = 20 minut, rok = 5 dní a 4 hodiny). Eventy závislé na mayorovi se zapnou podle aktuálních perků. Klikni na event a otevře se jeho návod.</small>
+<div class="evlist" id="evList"></div>
+</section>
+
+<section class="epic">
+<div class="head"><h2>SkyBlock rok</h2></div>
+<div class="scroll"><div id="evYear"></div></div>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Průvodce eventy</h2></div>
+<div class="evguide" id="evGuide"></div>
+</section>
+
+<section class="mythic">
+<div class="head"><h2>Jerry, Derpy a Scorpius</h2></div>
+<ul class="dots">
+<li><b>Jerry</b> je dvojí: <b>Jerry's Workshop</b> (zimní ostrov, každou Late Winter, viz výš) a <b>Jerry jako speciální mayor</b>.</li>
+<li>Speciální mayoři kandidují jen jednou za několik SkyBlock let a střídají se: <b>Scorpius</b> (Darker Auctions, pro ironmana nic), <b>Derpy</b> (minioni dvakrát rychleji a víc skill XP, pro nás nejlepší) a <b>Jerry</b> (Perkpocalypse: každých pár hodin perky jiného mayora).</li>
+<li>Když je speciální kandidát ve volbách, uvidíš ho na záložce Mayor.</li>
+<li>Při <b>Derpym</b>: naplnit všechny miniony palivem, vyprázdnit je a grindit skilly. Při <b>Jerrym</b> se dívej, čí perky zrovna běží: když je to Cole, honem minovat, když Finnegan, farmit.</li>
+</ul>
 </section>
 </div>
 
@@ -1517,7 +1575,7 @@ window.sbExtract=sbExtract;</script>
   counts();
 
   // ---------- záložky ----------
-  var tabs = ['ted', 'mayor', 'garden', 'mining', 'combat', 'foraging', 'postava', 'data'];
+  var tabs = ['ted', 'mayor', 'eventy', 'garden', 'mining', 'combat', 'foraging', 'postava', 'data'];
   function show() {
     var h = (location.hash || '').replace('#', ''); if (tabs.indexOf(h) < 0) h = 'ted';
     document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== h; });
@@ -1709,6 +1767,10 @@ window.sbExtract=sbExtract;</script>
   function dur(ms) { if (ms < 0) ms = 0; var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return (d ? d + ' d ' : '') + h + ' h ' + (d ? '' : m + ' min'); }
 
   var DATA = null, SRC = '';
+  function setPerks(list, mayorName, ministerName) {
+    window.SBPerks = { perks: list.map(plain), mayor: mayorName, minister: ministerName };
+    document.dispatchEvent(new Event('sb-perks'));
+  }
   function card(el, role, key, name, perks, isMin) {
     var I = info(key, name);
     el.style.setProperty('--mc', I.c);
@@ -1738,8 +1800,10 @@ window.sbExtract=sbExtract;</script>
       var I = info(mayor.key, mayor.name), J = minister ? info(minister.key, minister.name) : null;
       $('mstripTitle').textContent = 'Mayor ' + I.n + (J ? ' · Minister ' + J.n + (minister.perk ? ' (' + plain(minister.perk.name) + ')' : '') : '');
       var stale = cur && cur.year && now > (EPOCH + cur.year * YEAR + END_OFF) * 1000 + 3600000;
+      setPerks((mayor.perks || []).map(function (p) { return p.name; }).concat(minister && minister.perk ? [minister.perk.name] : []), I.n, J ? J.n : '');
       if (stale) {
         var win = cur.candidates.slice().sort(function (a, b) { return (b.votes || 0) - (a.votes || 0); });
+        setPerks((win[0].perks || []).map(function (p) { return p.name; }).concat((win[1] && win[1].perks || []).filter(function (p) { return p.minister; }).map(function (p) { return p.name; })), win[0].name, win[1] ? win[1].name : '');
         $('mstripTitle').textContent = 'Nový mayor: nejspíš ' + win[0].name + (win[1] ? ' · Minister ' + win[1].name : '');
         $('mstripText').textContent = 'Hypixel API ještě ukazuje minulé období (' + I.n + '). Volby roku ' + cur.year + ' už skončily, tohle je pořadí podle posledních hlasů.';
         $('electionSrc').textContent = SRC + ' · API zaostává';
@@ -1809,6 +1873,108 @@ window.sbExtract=sbExtract;</script>
       .catch(function () { if (!DATA) render(); });
   }
   guide(); render(); load();
+  setInterval(render, 30000);
+})();
+</script>
+<script>// Eventy: odpočty podle SkyBlock kalendáře + průvodce
+(function () {
+  var EPOCH = 1560275700, YEAR = 446400, D = 1200;
+  var MON = ['Early Spring', 'Spring', 'Late Spring', 'Early Summer', 'Summer', 'Late Summer', 'Early Autumn', 'Autumn', 'Late Autumn', 'Early Winter', 'Winter', 'Late Winter'];
+  var MSHORT = ['E.Spr', 'Spr', 'L.Spr', 'E.Sum', 'Sum', 'L.Sum', 'E.Aut', 'Aut', 'L.Aut', 'E.Win', 'Win', 'L.Win'];
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function ys(y) { return EPOCH + (y - 1) * YEAR; }
+  function cy(t) { return Math.floor((t - EPOCH) / YEAR) + 1; }
+  function at(y, m, d) { return ys(y) + (m * 31 + d - 1) * D; }
+  function yearly(list) { return function (y) { return list.map(function (w) { var s = at(y, w[0], w[1]); return [s, s + w[2] * D]; }); }; }
+  function monthly(days, h0, h1) { return function (y) { var o = []; for (var m = 0; m < 12; m++) days.forEach(function (d) { var s = at(y, m, d); o.push([s + h0 * 50, s + h1 * 50]); }); return o; }; }
+  function election(y) { return [[at(y, 5, 27), at(y + 1, 2, 27)]]; }
+  function term(y) { return [[at(y, 2, 27), at(y + 1, 2, 27)]]; }
+  function realHourly(min, len) { return function (t) { var d = new Date(t * 1000); d.setMinutes(min, 0, 0); var s = d.getTime() / 1000; if (s + len * 60 <= t) s += 3600; return [s, s + len * 60]; }; }
+
+  var E = [
+    { id: 'jacob', n: "Jacob's Farming Contest", c: 'var(--uncommon)', when: 'Každou hodinu v :15, 20 minut', real: realHourly(15, 20),
+      tip: 'Medaile → Jacob\'s Tickets a Turbo enchanty. Které 3 plodiny to budou, ukáže Calendar (nebo SkyHanni/Skyblocker).',
+      g: ['Účast stačí na bronz, pokud farmíš aspoň pár minut, ale medaile se počítají podle bracketu (procenta hráčů).', 'Za medaile kupuješ u Anity: Turbo enchanty, Anita\'s Artifact (+Farming Fortune) a upgrady farming fortune pro plodiny.', 'Sleduj plodinu, na kterou máš farmu a nástroj. Bez farmy se contest nevyplatí honit.'] },
+    { id: 'cult', n: 'Cult of the Fallen Star', c: 'var(--rare)', when: 'Dny 7, 14, 21, 28 každého měsíce, ~5 min', sb: monthly([7, 14, 21, 28], 0, 6),
+      tip: 'Dwarven Mines. Krátké okno, kdy se dá najít kult a bonus k mining eventům.',
+      g: ['Probíhá v Dwarven Mines čtyřikrát za SkyBlock měsíc a trvá jen pár reálných minut.', 'Když zrovna děláš commissions, mrkni se. Kvůli tomu samotnému se nepřesouvej.'] },
+    { id: 'hoppity', n: "Hoppity's Hunt", c: 'var(--mythic)', when: 'Celé jaro (Early Spring 1 – Late Spring 31)', sb: yearly([[0, 1, 93]]),
+      tip: 'Hledání vajec po ostrovech. Noví králíci zvyšují výrobu v Chocolate Factory.',
+      g: ['Chocolate Factory (<span class="mono">/cf</span>) běží celý rok, Hoppity\'s Hunt jen na jaře.', 'Během huntu se na ostrovech objevují vajíčka. Každé dá králíka (nový = vyšší produkce čokolády, duplikát = čokoláda).', 'S Egglocatorem vajíčka najdeš rychle. Mody jako SkyHanni nebo Skyblocker je umí ukázat.', 'Čokoláda se hodí na upgrady továrny a v Hoppity shopu. Zorro\'s Cape (farming) je z Chocolate Factory.'] },
+    { id: 'zoo', n: 'Traveling Zoo', c: 'var(--legendary)', when: 'Early Summer 1–3 a Early Winter 1–3 (~1 hod)', sb: yearly([[3, 1, 3], [9, 1, 3]]),
+      tip: 'Oringo v Hubu prodává exotické pety. Pro Stentika: Elephant (farming).',
+      g: ['Oringo přijde do Hubu dvakrát za SkyBlock rok, zhruba každých 62 hodin, a zůstane asi hodinu.', 'Každý zoo má jiného peta (Elephant, Lion, Tiger, Giraffe, Monkey, Blue Whale) v několika raritách za coiny a materiály.', 'Elephant = farming pet (Farming Fortune). Monkey = foraging. Blue Whale = HP/obrana. Lion a Tiger = combat.'] },
+    { id: 'election', n: 'Volby mayora', c: 'var(--legendary)', when: 'Late Summer 27 → Late Spring 27', sb: election,
+      tip: 'Hlasuj v Hubu. Vítěz je mayor, druhý minister.',
+      g: ['Hlasovat můžeš kdykoli během voleb. Jde jen o to, kdo vyhraje, odměna za hlas je malá.', 'Pro ironman coop: Cole (mining, Titanium equipment), Finnegan (Garden, Copper), Diana (Pet XP) a Derpy (minioni, skill XP) jsou nejužitečnější.', 'Co který mayor dělá, je na záložce Mayor.'] },
+    { id: 'spooky', n: 'Spooky Festival', c: 'var(--legendary)', when: 'Autumn 29–31 (~1 hod)', sb: yearly([[7, 29, 3]]),
+      tip: 'Mobové dropují Green a Purple Candy → shop Fear Mongerera v Hubu.',
+      g: ['Během festivalu padá z mobů na veřejných ostrovech <b>Green a Purple Candy</b>. Purple má větší hodnotu.', 'Candy měníš u <b>Fear Mongerera</b> v Hubu: Bat Person armor, Spooky dekorace a další.', 'Vyplatí se farmit tam, kde je hodně mobů naráz (Hub Graveyard, Spider\'s Den, Crypty). S Foxy jako mayorem je candy víc.', 'Během Spooky se při rybaření objevují spooky sea creatures.'] },
+    { id: 'workshop', n: "Jerry's Workshop", c: 'var(--rare)', when: 'Celá Late Winter (~10 hod)', sb: yearly([[11, 1, 31]]),
+      tip: 'Winter Island je otevřený. Gifty, zimní rybaření, Yeti a Reindrake.',
+      g: ['Winter Island (Jerry\'s Workshop) se otvírá na Late Winter. Dostaneš se tam přes portál v Hubu.', '<b>Gifty:</b> White Gifty padají z mobů na ostrově, Green a Red Gifty jsou vzácnější. Z otevírání gifts padají <b>Jerry talismany</b> (Green → Blue → Purple → Golden Jerry), tedy Magical Power.', '<b>Zimní rybaření:</b> Frozen Steve, Frosty, Grinch, Yeti (Baby Yeti pet) a Reindrake. Silnější mobové chtějí lepší gear.', 'Snow a Ice minioni a recepty ze zimních collections.'] },
+    { id: 'jerry', n: 'Season of Jerry', c: 'var(--rare)', when: 'Late Winter 24–26 (~1 hod)', sb: yearly([[11, 24, 3]]),
+      tip: 'Obrana Jerry\'s Workshopu před vlnami mobů. Odměny podle zapojení.',
+      g: ['Probíhá uvnitř Jerry\'s Workshopu. Brání se dílna proti vlnám mobů a podle zapojení dostaneš gifty a další odměny.', 'Přijď s gearem, který zvládne mobů hodně naráz (AoE). Na ironmanovi stačí to, co používáš na Zealoty.'] },
+    { id: 'newyear', n: 'New Year Celebration', c: 'var(--legendary)', when: 'Late Winter 29–31 (~1 hod)', sb: yearly([[11, 29, 3]]),
+      tip: 'New Year Cake toho roku zdarma u Bakera. Sbírej do New Year Cake Bagu.',
+      g: ['Na konci roku se v Hubu (Village) objeví obří dort a Baker rozdává <b>New Year Cake</b> s číslem roku.', 'Každý rok je jiný dort. Do <b>New Year Cake Bagu</b> se sbírají unikáty a dávají drobné staty.', 'Stojí to 10 sekund, nevynechávej.'] },
+    { id: 'fishfest', n: 'Fishing Festival', c: 'var(--rare)', when: 'Dny 1–3 každého měsíce, jen s perkem', perk: /^fishing festival$/i, sb: monthly([1, 2, 3], 0, 24),
+      tip: 'Žraloci: Shark Fins a zuby na Shark equipment a armor.',
+      g: ['Jen když mayor nebo minister má perk Fishing Festival (Marina), nebo Foxy přidá Extra Event (pak jen jeden festival za rok).', 'Během festivalu chytáš žraloky (Nurse, Blue, Tiger, Great White). Z nich padají Shark Fins a zuby na Shark armor a Shark Tooth Necklace.'] },
+    { id: 'fiesta', n: 'Mining Fiesta', c: 'var(--rare)', when: 'Celé období, jen s Colem', perk: /mining fiesta/i, sb: term,
+      tip: 'Refined Minerals a Glossy Gemstones: Titanium equipment a Mineral armor pro Adama.',
+      g: ['Jen s perkem Mining Fiesta (Cole jako mayor nebo minister).', 'Jediná doba, kdy padají <b>Refined Minerals a Glossy Gemstones</b>: suroviny na Titanium equipment a Mineral/Glossy armor.', 'Bonus Mining Wisdom a Fortune. Ideál na HOTM a Mining skill.'] },
+    { id: 'myth', n: 'Mythological Ritual', c: 'var(--legendary)', when: 'Celé období, jen s Dianou', perk: /mythological ritual/i, sb: term,
+      tip: 'Griffin burrows v Hubu s Ancestral Spade a Griffin petem.',
+      g: ['Jen s Dianou. Kopeš Griffin burrows v Hubu (Ancestral Spade od Diany, Griffin pet).', 'Padají Mythological mobové a poklady. Na ironmanovi je to pomalejší, ale Griffin pet a některé dropy se vyplatí.'] },
+    { id: 'carnival', n: 'Carnival', c: 'var(--mythic)', when: 'Celé období, jen s Foxy', perk: /carnival/i, sb: term,
+      tip: 'Minihry v Hubu za Carnival Tokens.',
+      g: ['Jen s Foxy (Chivalrous Carnival). V Hubu běží carnival s minihrami (střelba, rybaření, kopání).', 'Za tokeny se nakupuje v carnival shopu. Dobré na chvilku, když čekáš na Forge nebo miniony.'] }
+  ];
+
+  function occ(e, t) {
+    if (e.real) return e.real(t);
+    var y = cy(t), best = null;
+    for (var yy = y - 1; yy <= y + 1; yy++) e.sb(yy).forEach(function (w) { if (w[1] > t && (!best || w[0] < best[0])) best = w; });
+    return best;
+  }
+  function dur(s) { if (s < 0) s = 0; var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return d ? d + ' d ' + h + ' h' : h ? h + ' h ' + m + ' min' : m + ' min'; }
+  function lt(s) { return new Date(s * 1000).toLocaleString('cs-CZ', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  function perkOn(e) { if (!e.perk) return true; var P = window.SBPerks; if (!P) return false; return P.perks.some(function (p) { return e.perk.test(p); }); }
+
+  function render() {
+    var t = Date.now() / 1000;
+    var rows = E.map(function (e) { var o = occ(e, t), on = perkOn(e); return { e: e, s: o[0], f: o[1], live: o[0] <= t, on: on }; });
+    rows.sort(function (a, b) { var ka = a.on === false ? 2 : a.live ? 0 : 1, kb = b.on === false ? 2 : b.live ? 0 : 1; return ka - kb || (ka === 0 ? a.f - b.f : a.s - b.s); });
+    var next = rows.filter(function (r) { return r.on !== false; });
+    var nb = $('evNextBadge');
+    if (nb && next[0]) nb.textContent = next[0].live ? 'Teď běží: ' + next[0].e.n : 'Další: ' + next[0].e.n + ' za ' + dur(next[0].s - t);
+    $('evList').innerHTML = rows.map(function (r) {
+      var e = r.e, st;
+      if (r.on === false) st = '<span class="evst off">Neaktivní · ' + esc(e.when) + '</span>';
+      else if (r.live) st = '<span class="evst live">Právě běží · konec za ' + dur(r.f - t) + '</span>';
+      else st = '<span class="evst">Za ' + dur(r.s - t) + ' · ' + esc(lt(r.s)) + '</span>';
+      return '<a class="ev' + (r.live && r.on !== false ? ' live' : '') + (r.on === false ? ' off' : '') + '" href="#ev-' + e.id + '" style="--ec:' + e.c + '"><span class="evn">' + esc(e.n) + '</span>' + st + '<span class="evt">' + esc(e.tip) + '</span></a>';
+    }).join('');
+    // časová osa roku
+    var y = cy(t), pos = ((t - ys(y)) / YEAR) * 100;
+    var lanes = E.filter(function (e) { return e.sb && ['hoppity', 'zoo', 'election', 'spooky', 'workshop', 'jerry', 'newyear'].indexOf(e.id) >= 0; });
+    $('evYear').innerHTML = '<div class="tl"><div class="tl-months">' + MSHORT.map(function (m, i) { return '<span title="' + MON[i] + '">' + m + '</span>'; }).join('') + '</div>'
+      + lanes.map(function (e) {
+        var segs = e.sb(y).concat(e.sb(y - 1)).map(function (w) { var a = Math.max(0, (w[0] - ys(y)) / YEAR * 100), b = Math.min(100, (w[1] - ys(y)) / YEAR * 100); return b > a ? '<span class="tl-seg" style="left:' + a.toFixed(2) + '%;width:' + Math.max(.8, b - a).toFixed(2) + '%"></span>' : ''; }).join('');
+        return '<div class="tl-row" style="--ec:' + e.c + '"><span class="tl-name">' + esc(e.n) + '</span><span class="tl-lane">' + segs + '</span></div>';
+      }).join('') + '<span class="tl-now" style="left:calc(130px + (100% - 130px) * ' + (pos / 100).toFixed(4) + ')"><b>teď</b></span></div>';
+  }
+  function guide() {
+    $('evGuide').innerHTML = E.map(function (e) {
+      return '<details id="ev-' + e.id + '" style="--c:' + e.c + '"><summary><span><b style="color:' + e.c + '">' + esc(e.n) + '</b> <small style="display:inline">· ' + esc(e.when) + '</small></span></summary><div class="body"><ul class="dots">' + e.g.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div></details>';
+    }).join('');
+    document.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('a.ev'); if (!a) return; ev.preventDefault(); var d = document.querySelector(a.getAttribute('href')); if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } });
+  }
+  guide(); render();
+  document.addEventListener('sb-perks', render);
   setInterval(render, 30000);
 })();
 </script>
