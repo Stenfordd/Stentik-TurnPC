@@ -250,9 +250,11 @@ header.top{padding-top:12px}
 <ul class="dots">
 <li><b>Půdy:</b> zoraná hlína (farmland), písek, mycelium, soul sand (a end stone). Půdu změníš tak, že rozbiješ hlínu a položíš jiný blok. <b>Soul sand</b> prodává Builder v Hubu.</li>
 <li><b>Mutace:</b> kolem prázdného políčka hlíny posadíš správné rostliny a zaléváš. Mutace vyroste na prázdném středu.</li>
-<li>Mutace použité jako „ingredience“ pro další mutaci nejdou sklidit, jen zničit nebo nechat uschnout. Mutace ale může spawnovat nové, dokud žije.</li>
+<li>Mutace má šanci spawnout v každém <b>růstovém stádiu (základ 4 hodiny)</b>. Okolní rostliny nemusí přežít, aby mutace dorostla (jediná výjimka je Soggybud), ale setup nech stát kvůli dalším mutacím.</li>
+<li>Když mutaci <b>znovu zasadíš</b> a projde jedno růstové stádium, už <b>nejde sklidit</b>. Hlídej si čas.</li>
+<li>Většina běžných mutací (Scourroot, Veilshroom, Shadevine, Dustgrain, Choconut, Gloomgourd) potřebuje jen 2 vstupní plodiny. Na začátku se vyplatí honit z nich „vines“ (Gloomgourd, Pumpkin nebo Sunflower vedle sklízené rostliny dává šanci na vine navíc).</li>
 <li><b>Chloronite</b> se netěží motykou, ale <b>krumpáčem nebo drillem</b>.</li>
-<li>Kterou půdu která plodina chce, ukazuje <b>crop guide u Carpentera</b>.</li>
+<li>Kterou půdu která plodina chce, ukazuje <b>crop guide u Carpentera</b>. Rozložení si naplánuješ v <a href="https://greenhouse.skyshards.com/" target="_blank" rel="noopener">SkyShards Greenhouse kalkulačce</a>.</li>
 </ul></div>
 </div>
 </section>
@@ -284,7 +286,7 @@ header.top{padding-top:12px}
 </div>
 <div>
 <p><b>Jak to položit:</b> střed nech prázdný (farmland), kolem 8 políček. Tady 6× Coalroot (CR) a 2× Thornshade (TS). Stejným principem uděláš Coalroot (5 Ashwreath + 3 Scourroot) a Thornshade (4 Wild Rose + 4 Veilshroom).</p>
-<small>Jestli záleží na tom, kde přesně kus leží, ti řekne Carpenter. Jedno „kolečko“ může dát Chloronite opakovaně, dokud rostliny žijí.</small>
+<small>Jestli záleží na tom, kde přesně kus leží, ti řekne Carpenter nebo SkyShards kalkulačka. Okolí nemusí přežít celý růst, ale když ho necháš stát, dá další mutace.</small>
 </div>
 </div>
 <div class="callout warn-box">
@@ -298,7 +300,7 @@ header.top{padding-top:12px}
 
 <section class="epic">
 <div class="head"><h2>4. Sundial</h2><span class="counter" data-count="sun"></span></div>
-<p><b>Recept:</b> 16× Compacted Sunflower + 5× Chloronite. Dáš ho Samovi a natrvalo se ti odemkne nastavení <b>Crop Speed</b>. Pak nastavíš rychlost pro každou plodinu a nepotřebuješ Rancher's Boots.</p>
+<p>Podle guidu Ironman Sweats je lepší nejdřív dodělat běžné mutace a Sundial nechat až potom. <b>Recept:</b> 16× Compacted Sunflower + 5× Chloronite. Dáš ho Samovi a natrvalo se ti odemkne nastavení <b>Crop Speed</b>. Pak nastavíš rychlost pro každou plodinu a nepotřebuješ Rancher's Boots.</p>
 <ul class="check" data-group="sun">
 <li><label><input type="checkbox" data-id="su1"><span><span class="t">Ověř recept Compacted Sunflower</span><small><span class="mono">/viewrecipe Compacted Sunflower</span>. Na Bazaaru stojí ~103K, takže to bude hodně Sunflowerů. Pokud je to 160× Enchanted (a ten 160× Sunflower), vychází to ~25 600 na kus a ~410 000 na všech 16. Je to jen odhad.</small></span></label></li>
 <li><label><input type="checkbox" data-id="su2"><span><span class="t">Craft Sunflower Minion</span><small>Sunflower collection: <span data-b="sunflower">…</span>. Od tieru II je recept odemčený. Je to i nový unikát do minion slotu.</small></span></label></li>
@@ -308,15 +310,46 @@ header.top{padding-top:12px}
 </ul>
 </section>
 
+<section class="legendary">
+<div class="head"><h2>Rychlé výhry v Gardenu</h2><span class="counter" data-count="gq"></span></div>
+<ul class="check" data-group="gq">
+<li><label><input type="checkbox" data-id="gq1"><span><span class="t">Yellow Bandana na Bee peta</span><small>Kupuje se za Copper na Desku a na petovi od levelu 90 dává +30 Farming Fortune. Tvůj Bee je na 100.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq2"><span><span class="t">Cactus Knife do ruky na lane farmách</span><small>Když ho držíš v Gardenu, zvedá Speed cap o 100. Odemyká se na Garden levelu 7.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq3"><span><span class="t">Plot editor místo stavění</span><small><span class="mono">/desk</span> → plot editor má 10 presetů, jeden na každou plodinu. Vlastní plot si můžeš uložit a vložit jinam: zasadí se z plodin v inventáři a zbytek ti vrátí. Hotové designy si můžeš prohlédnout na <span class="mono">/visit farminghub</span>.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq4"><span><span class="t">Fermento armor najednou, ne po kusech</span><small>Každý set (Melon → Cropie → Squash → Fermento → Helianthus) má vlastní schopnost a sety se nesčítají. 2 kusy Fermenta a 2 kusy Squashe jsou horší než 4 kusy jednoho setu. Nasbírej na všechny 4 a pak přepni.</small></span></label></li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Armor, equipment a pets</h2></div>
+<div class="scroll"><table>
+<tr><th>Set</th><th>Čím farmíš</th><th>Co padá</th></tr>
+<tr><td>Melon (Tater)</td><td>Wheat, Carrot, Potato</td><td>Cropie</td></tr>
+<tr><td>Cropie</td><td>Cocoa, Melon, Pumpkin</td><td>Squash</td></tr>
+<tr><td><b>Squash (máš)</b></td><td>Nether Wart, Sugar Cane, Cactus, Mushroom</td><td><b>Fermento</b></td></tr>
+<tr><td>Fermento</td><td>Wild Rose, Sunflower, Moonflower</td><td>Helianthus</td></tr>
+<tr><td>Helianthus</td><td>cokoli</td><td>všechny tři</td></tr>
+</table></div>
+<ul class="dots">
+<li><b>Equipment:</b> Lotus → Blossom (obojí za Copper na Desku, fortune podle počtu obsloužených visitorů). Na pesty Pesthunter's equipment od Phillipa. Zorro's Cape z Chocolate Factory má při Jacob contestu dvojnásobné staty.</li>
+<li><b>Reforge:</b> na armor je nejlepší <b>Mossy</b>. Bustling (to máš) z Desku se podle guidu kupovat nevyplatí. Na equipment je Blooming zadarmo, ale nejslabší. Nejlepší je Rooted (z Greenhouse). Na nástroje Bountiful (wheat a melon), Overpriced nebo Earthy (stejná fortune + víc Sowdustu).</li>
+<li><b>Pets:</b> Epic nebo Legendary Rabbit, dokud levelíš Farming. Pak <b>Mooshroom Cow</b> (craft z Mycelium collection, Mycelium vás zase čeká přes Crimson Isle). Elephant je Legendary od Oringa (chodí jednou za ~62 hodin). Na pesty Slug, Mosquito (craft ze Spider slayeru) a Hedgehog (Phillip).</li>
+<li><b>Enchanty:</b> Turbo-plodina za bronz a lepší v contestu. Dedication a Sunder do tieru 5 za Copper. Crop Fever z Moonflower collection (vrací Roll 'em ability). Green Thumb na equipment za Copper.</li>
+<li><b>Overclocker 3000</b> padá z plodin, z Greenhouse, od visitorů, z contestů i z pestů. 10 kusů = nástroj z levelu 40 na 50.</li>
+</ul>
+</section>
+
 <section class="rare">
 <div class="head"><h2>5. Farmy a Fermento armor</h2></div>
 <p>Fermento armor potřebuje Farming 40 (teď: <b data-b="farmingLvl">…</b>). Fermento padá při farmení <b>sugar cane, cactus, mushroom a nether wart</b> v Squash armoru. Na to potřebuješ farmy:</p>
 <ol class="steps">
 <li><b>Video:</b> <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Cactus, cocoa a cane od <b>6:17</b>, mushroom od <b>21:20</b>.</li>
 <li><b>Začni sugar cane:</b> je nejjednodušší a podle fóra stačí plot 1×2. Wiki uvádí 328 Speed a úhel 45°.</li>
+<li><b>Designy, které nemusíš přestavovat:</b> Draip farmy na cane, wart, wheat, carrot, potato a růže (<a href="https://youtu.be/gcJ5U7SyA-c" target="_blank" rel="noopener">video</a>, řady dělej 3 bloky široké, ne 5) a IdkVenom farma na melon a pumpkin (<a href="https://www.youtube.com/watch?v=s4HV0RyWcoI&amp;t=775s" target="_blank" rel="noopener">video</a>). Část hráčů má jen 4 farmy: wheat, melon, wart a sun/moonflower nebo růže, jednu na každý vzácný drop.</li>
+<li><b>Než budeš stavět:</b> zkus preset z plot editoru (<span class="mono">/desk</span>) a podívej se na <span class="mono">/visit farminghub</span>.</li>
 <li><b>Litematica</b> je OK, pokud jen zobrazuje schéma a stavíš ručně. <b>Easy Place a Printer vypni</b>, ty jsou ban.</li>
 <li><b>Rychlost do Sundialu:</b> na lane farmách krátce Rancher's Boots (máš je v Ender Chestu). Přijdeš o Squash set bonus, ale jen na tu dobu.</li>
-<li><b>Fermento armor:</b> <span class="mono">/viewrecipe Fermento Helmet</span> (a další kusy). Craftuj po kusech.</li>
+<li><b>Fermento armor:</b> <span class="mono">/viewrecipe Fermento Helmet</span> (a další kusy). Nasbírej Fermento na <b>všechny 4 kusy</b> a přepni najednou, sety se nesčítají.</li>
 <li>Klávesy drž <b>ručně</b>. Makra a autoclickery jsou ban.</li>
 </ol>
 </section>
@@ -325,9 +358,9 @@ header.top{padding-top:12px}
 <div class="head"><h2>6. Nástroje, Copper, medaile</h2></div>
 <div class="scroll"><table>
 <tr><th>Věc</th><th>Co dělat</th></tr>
-<tr><td>Melon Dicer Mk. III</td><td>Na levelu 40 je strop. <b>Overclocker 3000</b> (padá při farmení) přes <span class="mono">/hex</span> = +1 level stropu.</td></tr>
+<tr><td>Melon Dicer Mk. III</td><td>Na levelu 40 je strop. <b>Overclocker 3000</b> (z plodin, Greenhouse, visitorů, contestů a pestů) přes <span class="mono">/hex</span> = +1 level stropu, max 50.</td></tr>
 <tr><td>Gemstone sloty</td><td>Peridot (Farming Fortune). Těží se v Glacite Tunnels, ty jsou až na HOTM 7.</td></tr>
-<tr><td>Copper (<span data-b="copper">…</span>)</td><td>Desk → Crop Upgrades, začni <b>Melon</b>. Pak Composter a ploty.</td></tr>
+<tr><td>Copper (<span data-b="copper">…</span>)</td><td>Nejdřív Yellow Bandana na Beeho. Pak Desk → Crop Upgrades (začni <b>Melon</b>), Composter Speed a ploty. Později dává Greenhouse (analýza mutací) víc Copperu než visitoři.</td></tr>
 <tr><td>Medaile (<span data-b="medals">…</span>)</td><td>Anita: <b>Extra Farming Fortune</b>. Později Anita's Artifact.</td></tr>
 <tr><td>Composter</td><td>Plant Matter, Dung, Biofuel a Box of Seeds z Ender Chestu dej do Composteru.</td></tr>
 <tr><td>Sowdust</td><td>Jen na upgrade Garden Chips. Další chip nebo duplikát najdeš v menu u Jeffa (zdroj je v popisu).</td></tr>
@@ -402,17 +435,34 @@ header.top{padding-top:12px}
 </section>
 
 <section class="legendary">
-<div class="head"><h2>Ironman mining: celá cesta</h2></div>
-<p>Platí pro oba. Na ironmanovi nic nekoupíš na AH, takže gear jde hlavně z <b>Forge</b>, z <b>Crystal Hollows</b> a z dropů. Postup podle HOTM tieru:</p>
+<div class="head"><h2>Ironman mining: gear cesta</h2></div>
+<p class="track-label">Krumpáč a drill</p>
+<p>Lazy Miner's Pickaxe → Diamond Pickaxe (Fortune III) → Fractured, pak Bandaged a nakonec normální Mithril Pickaxe → <b>Mithril Drill SX-R226 → SX-R326</b> → Ruby Drill → Gemstone Drill → Topaz Drill → <b>Titanium Drill DR-X355 → 455 → 555 → 655</b> → (bokem Jasper Drill) → <b>Divan's Drill</b>.</p>
+<p class="track-label">Armor</p>
 <div class="scroll"><table>
-<tr><th>HOTM</th><th>Krumpáč / drill</th><th>Armor</th><th>Equipment</th><th>Kde těžit</th></tr>
-<tr><td class="mono">1–2</td><td>Fractured Mithril Pickaxe (Boo Boo, 10K) → Mithril Drill SX-R226</td><td>Glacite (Glacite Walkers u Great Ice Wall)</td><td>Mithril (Forge)</td><td>Dwarven Mines</td></tr>
-<tr><td class="mono">3–4</td><td>Mithril Drill SX-R326 + Mithril-Plated Drill Engine, Mithril-Infused Fuel Tank, Goblin Omelette</td><td>Glacite</td><td>Titanium</td><td>Dwarven Mines</td></tr>
-<tr><td class="mono">5</td><td>Titanium-Plated Engine, Titanium-Infused Tank, Blue Cheese Goblin Omelette</td><td>Glacite nebo Mineral (co máš). Sorrow přeskoč: padá z Ghostů v The Mist, ti mají ~1M HP.</td><td>Titanium</td><td>Crystal Hollows</td></tr>
-<tr><td class="mono">6–7</td><td>Titanium Drill DR-X355 → 455 → 555 → 655, nebo rovnou Divan's Drill. Ruby-Polished Engine, Gemstone Fuel Tank</td><td><b>Armor of Divan</b> (Forge od HOTM 6)</td><td>Titanium</td><td>Crystal Hollows (gemstony)</td></tr>
-<tr><td class="mono">8–10</td><td>Sapphire- a Amber-Polished Engine, Perfectly-Cut Fuel Tank</td><td>Divan + Jaded reforge</td><td>Dwarven Handwarmers (8), Pendant of Divan (10)</td><td>Glacite Tunnels</td></tr>
+<tr><th>Set</th><th>Kdy</th><th>Poznámka</th></tr>
+<tr><td>Heat</td><td>začátek</td><td>Imunní na horko, na mining ostrovech trojnásobná Strength a Defense. Vzácný drop z Deep Caverns.</td></tr>
+<tr><td>Glacite</td><td>od Mining 20</td><td>Je lepší než Heat. Glacite Walkers u Great Ice Wall.</td></tr>
+<tr><td>Flamebreaker → <b>Yog</b></td><td>před gemstony</td><td>Odolnost proti horku. Yog má Pristine a je minimum na těžbu gemstonů ve velkém.</td></tr>
+<tr><td><b>Divan</b></td><td>end game</td><td>Vyplatí se nad Yog až s Topaz slotem. Fragmenty z Mines of Divan.</td></tr>
+<tr><td>Mineral / Glossy Mineral</td><td>jen při Cole Mining Fiesta</td><td>Na rudy a bloky. Adam má celý Mineral set.</td></tr>
 </table></div>
-<small>Podle Mining Guides (HOTM guide) a skyblockopedia, upraveno pro ironmana bez silného combat gearu. Na drillu dávej Efficiency, Fortune, Compact a později Pristine. Glacite Jewels neprodávej, budou potřeba.</small>
+<p class="track-label">Equipment</p>
+<p><b>Mithril</b> (hned) → <b>Titanium</b> (suroviny jen při Cole Mining Fiesta) → Gemstone equipment (taky Fiesta, malý rozdíl). Konec: <b>Dwarven Handwarmers</b> (Glacite Tunnels) a <b>Pendant of Divan</b>. Plášť: Ancient Cloak, v Endu Dragonfade Cloak.</p>
+<p class="track-label">Do drillu</p>
+<p><b>Blue Cheese Goblin Omelette</b> je nejlepší upgrade skoro na všechno. Na grind powderu Spicy Goblin Omelette. Enchanty: Ultimate Wise (poloviční mana na ability), Flowstate (gemstony a zlato).</p>
+<small>Hlavní zdroj: Mining Guide 2026 z Discordu Ironman Sweats. Doplněno o Mining Guides a fandom wiki.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Grind powderu</h2></div>
+<div class="scroll"><table>
+<tr><th>Powder</th><th>Jak</th><th>Gear</th></tr>
+<tr><td>Mithril</td><td>Mithril v Dwarven Mines, eventy a powder ghasti</td><td>Mithril Drill SX-R326 (Stellar) se Spicy Omelette, Dimensional armor (Yog nebo Divan), Royal equipment, Mithril Golem</td></tr>
+<tr><td>Gemstone</td><td>Jungle Pickaxe v Jungle, treasure chesty otvírat Ruby, Gemstone nebo Topaz drillem</td><td>Mineral armor, Armadillo (Legendary) nebo Scatha</td></tr>
+<tr><td>Glacite</td><td>Glacite Tunnels a mineshafty</td><td>Titanium DR-X655 nebo Divan's Drill</td></tr>
+</table></div>
+<small>Video: <a href="https://www.youtube.com/watch?v=dFTemP5c29c" target="_blank" rel="noopener">The ONLY Powder Grinding Guide (Candypat a V1dd)</a>, Glacite: <a href="https://www.youtube.com/watch?v=t6eo3w-Mflw" target="_blank" rel="noopener">d3rp13</a>.</small>
 </section>
 
 <section class="epic">
@@ -428,38 +478,51 @@ header.top{padding-top:12px}
 <tr><td>Vanguard corpse</td><td class="mono">5 000</td></tr>
 <tr><td>Darovaný fossil</td><td class="mono">5 000</td></tr>
 </table></div>
-<small>Commissions ber u <b>Krále</b> v Royal Palace, dokud neobejdeš všechny krále. Za to je <b>King Talisman</b> (víc XP). Pickaxe ability: <b>Pickobulus</b>. Na klíčové perky je potřeba zhruba 9M Mithril, 12M Gemstone a 12M Glacite powderu.</small>
+<small>King Talisman (obejít všechny krále v Royal Palace) a Hunting atribut Troglobyte dávají víc HOTM XP. Pickaxe ability: <b>Pickobulus</b>.</small>
 </section>
 
 <section class="epic">
 <div class="head"><h2>Crystal Hollows (od HOTM 5)</h2></div>
 <ul class="dots">
 <li><b>Vstup:</b> pass u Gwendolyn v Dwarven Mines, 10 000 coinů na 5 hodin (běží i mimo Hollows). Lobby se každých 5 hodin resetuje.</li>
-<li><b>Treasure chesty</b> při těžbě a loot chesty ve stavbách dávají powder a gemstony. Loot chest má ~2× víc a 5% šanci být rare.</li>
-<li><b>Nucleus run:</b> 5 krystalů ze 5 oblastí, odevzdat v Crystal Nucleus uprostřed. Dává powder, HOTM XP a vzácné itemy. Milestone VI odemkne <span class="mono">/warp nucleus</span>.</li>
+<li><b>Treasure chesty</b> při těžbě a loot chesty ve stavbách dávají powder a gemstony.</li>
+<li><b>Nucleus run:</b> 5 krystalů ze 5 oblastí, odevzdat v Crystal Nucleus uprostřed. Padá z něj Armadillo a vzácně Mole pet.</li>
 </ul>
 <div class="scroll"><table>
 <tr><th>Oblast</th><th>Stavba</th><th>Krystal</th><th>Co tam</th></tr>
-<tr><td>Jungle</td><td>Jungle Temple</td><td>Amethyst</td><td>Jungle Key (od Odawy za Sludge Juice)</td></tr>
+<tr><td>Jungle</td><td>Jungle Temple</td><td>Amethyst</td><td>Jungle Key (od Odawy za Sludge Juice). Gemstone powder s Jungle Pickaxe.</td></tr>
 <tr><td>Goblin Holdout</td><td>Goblin Queen's Den</td><td>Amber</td><td>Goblin Egg → King Yolkar → Goblin Omelette do drillu</td></tr>
-<tr><td>Mithril Deposits</td><td>Mines of Divan</td><td>Jade</td><td>Keepers → Metal Detector → Divan fragmenty na Armor of Divan</td></tr>
-<tr><td>Precursor Remnants</td><td>Lost Precursor City</td><td>Sapphire</td><td>Robotron díly pro Professor Robota</td></tr>
-<tr><td>Magma Fields</td><td>Khazad-dûm</td><td>Topaz</td><td>Boss Bal</td></tr>
+<tr><td>Mithril Deposits</td><td>Mines of Divan</td><td>Jade</td><td>Keepers → Metal Detector → Divan fragmenty</td></tr>
+<tr><td>Precursor Remnants</td><td>Lost Precursor City</td><td>Sapphire</td><td>Robotron díly pro Professor Robota, Automatoni</td></tr>
+<tr><td>Magma Fields</td><td>Khazad-dûm</td><td>Topaz</td><td>Boss Bal (Bal pet). Nejlepší místo na gemstony, chce Heated reforge.</td></tr>
 </table></div>
-<small>Rozdělení oblastí je ze staršího stavu hry. Wiki ho teď neuvádí, tak si ho ověř na místě.</small>
+<small>Rozdělení oblastí je ze staršího stavu hry, ověř si ho na místě.</small>
 </section>
 
 <section class="rare">
-<div class="head"><h2>Mining pets</h2></div>
+<div class="head"><h2>Mining pets (od nejsnazšího)</h2></div>
 <div class="scroll"><table>
 <tr><th>Pet</th><th>Na co</th><th>Kde</th></tr>
-<tr><td>Silverfish</td><td>Mining Wisdom, brzy</td><td>Craft / Kat</td></tr>
-<tr><td>Mithril Golem</td><td>Mithril, Dwarven Mines</td><td>Adam ho má</td></tr>
-<tr><td><b>Scatha</b></td><td>Gemstony, treasure chesty, Gemstone powder. Nejlepší poměr cena/výkon.</td><td>Vzácný drop ze Scathy (worm) v Crystal Hollows, nebo při těžbě Hard Stone</td></tr>
-<tr><td>Glacite Golem</td><td>Glacite Tunnels</td><td>Glacite Tunnels</td></tr>
-<tr><td>Bal (Legendary)</td><td>Kratší cooldown ability</td><td>Magma Fields</td></tr>
+<tr><td>Silverfish</td><td>Mining Wisdom a Speed, začátek</td><td>Craft</td></tr>
+<tr><td>Mithril Golem</td><td>Mithril powder a ghosti</td><td>Craft. Adam ho má jako Legendary, ale na levelu 1.</td></tr>
+<tr><td>Armadillo</td><td>Commissions v Hollows. Legendary je top na Gemstone powder.</td><td>Častý drop z Nucleu a chestů</td></tr>
+<tr><td>Mole</td><td>Nucleus runy a Automaton díly</td><td>1/37 z Nucleu</td></tr>
+<tr><td>Bal</td><td>Gemstony v Hollows, kratší cooldown ability</td><td>Drop z Bala</td></tr>
+<tr><td>Goblin</td><td>Zlato v Mines of Divan</td><td>Fossil z Glacite Tunnels</td></tr>
+<tr><td>Glacite Golem</td><td>Glacite powder, mineshafty</td><td>Craft</td></tr>
+<tr><td><b>Scatha</b></td><td>Všechno kromě gemstonů v Magma Fields</td><td>Vzácný drop ze Scath</td></tr>
 </table></div>
-<small>Pet item: Bejeweled Collar. Leveluj pety přes Taming a EXP Share.</small>
+<small>Nejlepší pet item je Quick Claw (+50 Fortune a +50 Speed na levelu 100).</small>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Reforge a Hunting atributy</h2></div>
+<ul class="dots">
+<li><b>Drill:</b> Stellar (levný, na Mithril powder), Lustrous (nejlepší univerzální, drahý), Heated (vše v Magma Fields), Fleet (bloky). Scraped dá +1 Breaking Power, ale guide ho nedoporučuje.</li>
+<li><b>Armor:</b> Dimensional (Mithril powder + Mining Wisdom), Jaded (nejlepší speed a fortune, jen na Mineral a Divan).</li>
+<li><b>Equipment:</b> <b>Royal</b> (Mithril powder a speed, to má Adam), Blazing (fortune, grind Scathy).</li>
+<li><b>Hunting atributy pro mining:</b> Troglobyte (+HOTM XP), Miner Zombie (+Mining Speed), Hideonleaf (+Block Fortune), Silentdepth (šance na dvojitou odměnu z chestů), Quartzfang (+speed z eventů), Cavernshade (+Mining Wisdom).</li>
+</ul>
 </section>
 
 <section class="uncommon">
@@ -467,12 +530,13 @@ header.top{padding-top:12px}
 <p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
 <ul class="dots">
 <li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
-<li><b>Gear:</b> celý Wise Mineral armor, Royal Mithril equipment, aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
-<li><b>Forge:</b> 5× Fuel Canister. Powder volný skoro žádný (~4 300 Mithril), takže perky má utracené.</li>
-<li><b>Hned:</b> Mithril Golema levelovat, na levelu 1 skoro nic nedává. Milestone IV (warp <span class="mono">/warp mines</span>) přijde s dalšími commissions na Coconutu.</li>
-<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Pak <b>Armor of Divan</b> (Divan fragmenty z Mines of Divan, Flawless Ruby).</li>
-<li><b>Po cestě:</b> Scatha pet (Hard Stone v Hollows), Blue Cheese Goblin Omelette do drillu, Titanium equipment.</li>
-<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>.</li>
+<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
+<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
+<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
+<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Armadillo a Mole.</li>
+<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
+<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
+<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
 </ul>
 </section>
 
@@ -798,6 +862,8 @@ header.top{padding-top:12px}
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/The_Forge" target="_blank" rel="noopener">The Forge (fandom wiki)</a></li>
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/Glacite_Tunnels" target="_blank" rel="noopener">Glacite Tunnels (fandom wiki)</a></li>
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/Travel_Scrolls" target="_blank" rel="noopener">Travel Scrolls (fandom wiki)</a></li>
+<li>Garden Guide 2026 a Mining Guide 2026 z Discordu Ironman Sweats (shrnuto vlastními slovy)</li>
+<li><a href="https://greenhouse.skyshards.com/" target="_blank" rel="noopener">SkyShards Greenhouse kalkulačka</a></li>
 <li><a href="https://hypixel.net/threads/4914038" target="_blank" rel="noopener">SkyBlock Patch 0.13 – Crimson Isle</a></li>
 </ul>
 </footer>
