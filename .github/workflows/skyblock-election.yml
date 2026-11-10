@@ -1,0 +1,24 @@
+name: SkyBlock election snapshot
+# Záloha pro skyblock.html: když prohlížeč nedosáhne na Hypixel API, stránka čte data/election.json
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stáhnout volby z Hypixel API
+        run: |
+          mkdir -p data
+          curl -fsS https://api.hypixel.net/v2/resources/skyblock/election -o /tmp/e.json
+          python3 -c "import json;d=json.load(open('/tmp/e.json'));assert d.get('success') and d.get('mayor');json.dump(d,open('data/election.json','w'),ensure_ascii=False)"
+      - name: Commit, pokud se něco změnilo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/election.json
+          git diff --cached --quiet || (git commit -m "SkyBlock: election snapshot" && git push)
