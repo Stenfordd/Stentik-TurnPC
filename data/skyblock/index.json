@@ -1,17 +1,1 @@
-{
- "v": 1,
- "users": {
-  "KingStentik": {
-   "profile": "Pomegranate",
-   "exported": "2026-11-08T20:19:04.403Z",
-   "file": "kingstentik.json",
-   "uploaded": "2026-11-08T20:19:04.403Z"
-  },
-  "KingAdamoss": {
-   "profile": "Coconut",
-   "exported": "2026-11-10T12:33:59.050Z",
-   "file": "kingadamoss.json",
-   "uploaded": "2026-11-10T12:33:59.050Z"
-  }
- }
-}
+{"v":1,"users":{"KingStentik":{"profile":"Pomegranate","exported":"2026-11-10T19:48:21.241Z","file":"kingstentik.json","uploaded":"2026-11-10T19:52:56.559Z"},"KingAdamoss":{"profile":"Coconut","exported":"2026-11-10T12:33:59.050Z","file":"kingadamoss.json","uploaded":"2026-11-10T12:33:59.050Z"}}}
