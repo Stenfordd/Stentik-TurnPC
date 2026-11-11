@@ -356,6 +356,9 @@ section.done.peek .head::after{content:"sbalit"}
 .pp h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:8px}
 .pp h3 span{font:600 .85rem 'JetBrains Mono',monospace;color:var(--muted)}
 
+td .inp.cfgi{width:100%;min-width:90px;font:500 .88rem 'JetBrains Mono',monospace;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+td .inp.cfgi::placeholder{color:var(--muted);opacity:.7}
+
 /* ===== Patička ===== */
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
 footer ul{margin:0;padding-left:18px}
@@ -734,7 +737,7 @@ footer ul{margin:0;padding-left:18px}
 <label>Bloků za sekundu<input type="text" class="inp" id="fcBps" inputmode="decimal" placeholder="20"></label>
 </div>
 <div class="scroll" id="fcTable"></div>
-<small>Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
+<small>NPC ceny a základní dropy si můžeš přepsat v záložce <a href="#data">Data → Nastavení cen a dropů</a>. Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
 </section>
 
 <section class="rare">
@@ -1316,6 +1319,18 @@ footer ul{margin:0;padding-left:18px}
 <small>Adam (nebo kdokoli z coopu) může udělat totéž na svém profilu. Když mu pošleš odkaz, data si načte u sebe. Uloží se jen v jeho prohlížeči, tobě se nic nepřepíše.</small>
 </section>
 
+<section class="legendary" id="cfgBox">
+<div class="head"><h2>Nastavení cen a dropů</h2><span class="tag">Společné pro oba</span></div>
+<p>Hodnoty, se kterými počítá kalkulačka výdělku a odhad ze vzorce v Gardenu. Prázdné pole znamená výchozí hodnotu (je vidět šedě). Změny se ukládají hned a s tokenem i na GitHub, takže je uvidí i druhý hráč.</p>
+<div class="scroll" id="cfgTable"></div>
+<div class="row-actions">
+<button class="btn" type="button" id="cfgAdd">Přidat vlastní item</button>
+<button class="btn ghost" type="button" id="cfgReset">Obnovit výchozí hodnoty</button>
+</div>
+<p class="msg" id="cfgMsg" role="status"></p>
+<small>Vlastní item (třeba Enchanted Melon nebo Sunflower) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
+</section>
+
 <section class="mythic" id="syncBox">
 <div class="head"><h2>Sdílení přes GitHub</h2><span class="sync" id="syncStatus2">…</span></div>
 <p>Stránka si při každém otevření stáhne nejnovější savy obou hráčů z repa (<span class="mono">data/skyblock/</span>). Když někdo nahraje export a má uložený token, save se uloží do repa a druhý ho uvidí po obnovení stránky.</p>
@@ -1830,6 +1845,7 @@ window.sbExtract=sbExtract;</script>
     activeUser: function () { return active; },
     state: function (u) { return stOf(u || active); },
     touch: touch,
+    touchUser: function (u) { var s = stOf(u); s.updated = Date.now(); s.dirty = true; saveStates(); if (window.SBSync && window.SBSync.queueState) window.SBSync.queueState(u); },
     applyChecks: applyChecks,
     markClean: function (u, stamp) { var s = states[u]; if (s && s.updated === stamp) { delete s.dirty; saveStates(); } },
     mergeState: function (r) {
@@ -1837,7 +1853,7 @@ window.sbExtract=sbExtract;</script>
       var l = states[r.user];
       if (l && (l.dirty || (l.updated || 0) >= (r.updated || 0))) return false;
       delete r.dirty; states[r.user] = r; saveStates();
-      if (r.user === active) { applyChecks(); document.dispatchEvent(new Event('sb-render')); }
+      if (r.user === active || r.user === '_config') { applyChecks(); document.dispatchEvent(new Event('sb-render')); }
       return true;
     },
     merge: function (sum) {
@@ -1956,7 +1972,7 @@ window.sbExtract=sbExtract;</script>
   function status(t, cls) { ['syncStatus', 'syncStatus2'].forEach(function (id) { var s = $(id); if (s) { s.textContent = t; s.className = 'sync ' + (cls || ''); } }); }
   function msg(t, err) { var m = $('ghMsg'); if (m) { m.textContent = t; m.className = 'msg ' + (err ? 'err' : 'ok'); } }
   function toast(t, err) { if (window.sbToast) window.sbToast(t, err); }
-  function slug(u) { return String(u).toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'hrac'; }
+  function slug(u) { return String(u).toLowerCase().replace(/[^a-z0-9_-]/g, '').replace(/^_+/, '') || 'hrac'; }
   function b64(s) { var bytes = new TextEncoder().encode(s), bin = ''; for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
   function unb64(s) { var bin = atob(String(s).replace(/\s/g, '')), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new TextDecoder().decode(u); }
   function hm(d) { try { return new Date(d).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
@@ -2006,7 +2022,7 @@ window.sbExtract=sbExtract;</script>
   }
   function pullStates() {
     if (!window.SBApp) return Promise.resolve();
-    return Promise.all(Object.keys(window.SBApp.profiles()).map(function (u) {
+    return Promise.all(Object.keys(window.SBApp.profiles()).concat(['_config']).map(function (u) {
       return readJSON(stateFile(u)).then(function (r) {
         if (r) window.SBApp.mergeState(r);
         if (window.SBApp.state(u).dirty && token()) queueState(u);
@@ -2460,12 +2476,47 @@ window.sbExtract=sbExtract;</script>
 
   // ================= Měřič farmení =================
   var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 3, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 0, 0], ['moonflower', 'Moonflower', 0, 0], ['rose', 'Wild Rose', 0, 0]];
-  var CB = {}; CROPS.forEach(function (c) { CB[c[0]] = c; });
+  var CROPS_DEF = CROPS.map(function (c) { return c.slice(); }), CB = {};
+  function cfg() { var c = App().state('_config'); if (!c.crops) c.crops = {}; if (!c.custom) c.custom = []; return c; }
+  // výchozí hodnoty + přepsání ze společného nastavení + vlastní itemy
+  function loadCfg() {
+    var c = cfg();
+    CROPS = CROPS_DEF.map(function (d) { var o = c.crops[d[0]] || {}, p = num(o.price), dr = num(o.drop); return [d[0], d[1], isNaN(p) ? d[2] : p, isNaN(dr) ? d[3] : dr]; })
+      .concat(c.custom.map(function (x) { var p = num(x.price), dr = num(x.drop); return [x.k, x.n, isNaN(p) ? 0 : p, isNaN(dr) ? 0 : dr]; }));
+    CB = {}; CROPS.forEach(function (x) { CB[x[0]] = x; });
+  }
+  function renderCfg() {
+    if (!$('cfgTable')) return;
+    var c = cfg(), foc = document.activeElement && document.activeElement.closest && document.activeElement.closest('#cfgTable');
+    if (foc) return;
+    $('cfgTable').innerHTML = '<table><tr><th>Item</th><th>NPC cena za kus</th><th>Základní drop za blok</th><th></th></tr>' + CROPS_DEF.map(function (d) {
+      var o = c.crops[d[0]] || {};
+      return '<tr><td><b>' + d[1] + '</b></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="price" value="' + esc(o.price != null ? o.price : '') + '" placeholder="' + d[2] + '" aria-label="NPC cena ' + d[1] + '"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="drop" value="' + esc(o.drop != null ? o.drop : '') + '" placeholder="' + String(d[3]).replace('.', ',') + '" aria-label="Základní drop ' + d[1] + '"></td><td class="note">' + (o.price != null && o.price !== '' || o.drop != null && o.drop !== '' ? 'upraveno' : 'výchozí') + '</td></tr>';
+    }).join('') + c.custom.map(function (x) {
+      return '<tr><td><input type="text" class="inp cfgi" data-cus="' + x.k + '" data-f="n" value="' + esc(x.n) + '" aria-label="Název itemu"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="price" value="' + esc(x.price != null ? x.price : '') + '" placeholder="0" aria-label="NPC cena"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="drop" value="' + esc(x.drop != null ? x.drop : '') + '" placeholder="0" aria-label="Základní drop"></td><td><button type="button" class="xbtn" data-cusdel="' + x.k + '" aria-label="Smazat item">×</button></td></tr>';
+    }).join('') + '</table>';
+  }
+  function refreshCrops() { loadCfg(); var sel = $('fmCrop'); if (sel) { var v = sel.value; sel.innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join(''); sel.value = CB[v] ? v : 'wheat'; if (document.activeElement !== $('fmPrice')) $('fmPrice').value = CB[sel.value][2] || ''; } }
+  function bindCfg() {
+    if (!$('cfgTable')) return;
+    $('cfgTable').addEventListener('input', function (ev) {
+      var i = ev.target; if (!i.classList || !i.classList.contains('cfgi')) return;
+      var c = cfg(), f = i.getAttribute('data-f'), k;
+      if ((k = i.getAttribute('data-cfg'))) { if (!c.crops[k]) c.crops[k] = {}; if (i.value.trim() === '') delete c.crops[k][f]; else c.crops[k][f] = i.value.trim(); }
+      else if ((k = i.getAttribute('data-cus'))) { var x = c.custom.filter(function (q) { return q.k === k; })[0]; if (x) x[f] = i.value.trim(); }
+      App().touchUser('_config'); refreshCrops(); renderFarmTables();
+    });
+    $('cfgTable').addEventListener('focusout', function () { setTimeout(renderCfg, 0); });
+    $('cfgAdd').addEventListener('click', function () { var c = cfg(); c.custom.push({ k: 'c' + Date.now().toString(36), n: 'Nový item', price: '', drop: '' }); App().touchUser('_config'); refreshCrops(); renderCfg(); });
+    $('cfgReset').addEventListener('click', function () { var c = cfg(); c.crops = {}; App().touchUser('_config'); refreshCrops(); renderCfg(); renderFarmTables(); $('cfgMsg').textContent = 'Ceny a dropy plodin jsou zpátky na výchozích. Vlastní itemy zůstaly.'; $('cfgMsg').className = 'msg ok'; });
+    document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-cusdel]'); if (!b) return; var c = cfg(); c.custom = c.custom.filter(function (q) { return q.k !== b.getAttribute('data-cusdel'); }); App().touchUser('_config'); refreshCrops(); renderCfg(); renderFarmTables(); });
+  }
+  function renderFarmTables() { renderFarm(); }
   function hrs(h) { if (!isFinite(h)) return '—'; if (h < 1) return Math.max(1, Math.round(h * 60)) + ' min'; return h < 48 ? (Math.round(h * 10) / 10).toString().replace('.', ',') + ' h' : Math.round(h / 24) + ' dní farmení v kuse'; }
   function renderFarm() {
     if (!$('fmCrop')) return;
     var s = S(), meas = s.meas || {};
-    if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join(''); $('fmCrop').value = 'wheat'; $('fmPrice').value = CB.wheat[2]; }
+    if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join(''); $('fmCrop').value = 'wheat'; $('fmPrice').value = CB.wheat[2]; }
     if (document.activeElement !== $('fmHours')) $('fmHours').value = s.farmHours != null ? s.farmHours : '';
     if (document.activeElement !== $('fmGoal')) $('fmGoal').value = s.farmGoal != null ? s.farmGoal : '';
     var H = num($('fmHours').value); if (isNaN(H) || H <= 0) H = 1;
@@ -2483,7 +2534,7 @@ window.sbExtract=sbExtract;</script>
     $('fcTable').innerHTML = isNaN(F) ? '<table><tr><td class="note">Zadej Farming Fortune a stránka dopočítá odhad pro každou plodinu.</td></tr></table>' : '<table><tr><th>Plodina</th><th>Základní drop</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Tvoje zadání</th></tr>' + CROPS.filter(function (c) { return c[3]; }).map(function (c) {
       var per = Bp * 3600 * c[3] * (1 + F / 100); return { c: c, per: per, coins: per * c[2] };
     }).sort(function (a, b) { return b.coins - a.coins; }).map(function (r, i) {
-      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + r.c[1] + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] && meas[r.c[0]].coins ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
+      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc(r.c[1]) + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] && meas[r.c[0]].coins ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
     }).join('') + '</table>';
   }
   function bindFarm() {
@@ -2594,8 +2645,8 @@ window.sbExtract=sbExtract;</script>
     document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-fgdel]'); if (!b) return; var s = S(); s.forge = (s.forge || []).filter(function (x) { return x.id !== b.getAttribute('data-fgdel'); }); App().touch(); renderForge(); renderAdvisor(); });
   }
 
-  function renderAll() { if (!App()) return; autoGear(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderAdvisor(); }
-  bindFarm(); bindHotm(); bindForge(); renderAll();
+  function renderAll() { if (!App()) return; autoGear(); refreshCrops(); renderCfg(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderAdvisor(); }
+  bindFarm(); bindHotm(); bindForge(); bindCfg(); renderAll();
   document.addEventListener('sb-render', renderAll);
   document.addEventListener('sb-perks', renderAdvisor);
   document.addEventListener('sb-events', renderAdvisor);
