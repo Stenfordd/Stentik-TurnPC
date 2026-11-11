@@ -643,7 +643,7 @@ footer ul{margin:0;padding-left:18px}
 
 <section class="legendary">
 <div class="head"><h2>Moje ploty</h2></div>
-<p>Vyber plodinu a klikáním ji přiřaď plotům, stejně jako ve hře v <span class="mono">/desk</span> → Configure Plots. Ukládá se to k vybranému hráči. Ploty se znaménkem <b>+</b> jsou ty, které se vyplatí odemknout jako další, protože prodlouží farmu rovně.</p>
+<p>Vyber plodinu (nebo <b>víc plodin najednou</b>, když je máš v jednom plotu) a klikáním ji přiřaď plotům. Ukládá se to k vybranému hráči. Ploty se znaménkem <b>+</b> jsou ty, které se vyplatí odemknout jako další, protože prodlouží farmu rovně.</p>
 <div class="plotwrap">
 <div class="plotgrid" id="plotGrid" role="group" aria-label="Ploty v Gardenu"></div>
 <div class="plotside">
@@ -1708,13 +1708,23 @@ window.sbExtract=sbExtract;</script>
     ['pumpkin', 'Pumpkin', '#e8842a'], ['mushroom', 'Mushroom', '#c98b8b'], ['sunflower', 'Sunflower', '#f2cf3a'], ['moonflower', 'Moonflower', '#8e9bff'], ['rose', 'Wild Rose', '#e86aa0']
   ];
   var BY = {}; CROPS.forEach(function (c) { BY[c[0]] = c; });
-  var DEFAULTS = { KingStentik: { 5: 'wheat', 6: 'wheat', 7: 'wheat', 8: 'wheat', 9: 'wheat', 11: 'pumpkin', 13: 'carrot', 16: 'melon', 17: 'melon', 18: 'carrot' } };
-  var brush = 'melon';
+  var ORDER = CROPS.map(function (c) { return c[0]; });
+  var MIX = 'wheat+carrot+potato+wart+cane+cactus+cocoa';
+  var DEFAULTS = { KingStentik: { 5: MIX, 6: MIX, 7: MIX, 8: MIX, 9: MIX, 11: 'pumpkin', 13: 'carrot', 16: 'melon', 17: 'melon', 18: 'carrot' } };
+  var brush = ['melon'];
+  function norm(list) { return list.slice().sort(function (a, b) { return ORDER.indexOf(a) - ORDER.indexOf(b); }).join('+'); }
+  function parts(v) { return String(v).split('+').filter(function (k) { return BY[k]; }); }
+  function label(v) { var a = parts(v); return a.length > 1 ? 'Mix ' + a.length : (BY[v] || BY.locked)[1]; }
+  function names(v) { return parts(v).map(function (k) { return BY[k][1]; }).join(', '); }
+  function paint(v) { var a = parts(v); if (a.length < 2) return ''; var n = a.length; return 'background:linear-gradient(135deg,' + a.map(function (k, i) { return 'color-mix(in srgb,' + BY[k][2] + ' 45%,var(--surface)) ' + (i / n * 100).toFixed(1) + '% ' + ((i + 1) / n * 100).toFixed(1) + '%'; }).join(',') + ');'; }
+  function color(v) { var a = parts(v); return a.length ? BY[a[0]][2] : 'var(--line-2)'; }
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function plots() {
     var A = window.SBApp, s = A.state();
     if (!s.plots) s.plots = JSON.parse(JSON.stringify(DEFAULTS[A.activeUser()] || {}));
+    // dřívější odhad (5× samotný wheat) byl špatně: je to smíšená farma
+    if (A.activeUser() === 'KingStentik' && [5, 6, 7, 8, 9].every(function (i) { return s.plots[i] === 'wheat'; })) [5, 6, 7, 8, 9].forEach(function (i) { s.plots[i] = MIX; });
     return s.plots;
   }
   function get(p, i) { return i === 12 ? 'barn' : (p[i] || 'locked'); }
@@ -1754,27 +1764,31 @@ window.sbExtract=sbExtract;</script>
     $('plotGrid').innerHTML = Array.apply(null, Array(25)).map(function (_, i) {
       var v = get(p, i);
       if (v === 'barn') return '<span class="plot barn" title="Barn">Barn</span>';
-      var C = BY[v] || BY.locked;
-      return '<button type="button" class="plot ' + (v === 'locked' ? 'locked' : v === 'empty' ? 'empty' : 'crop') + (hot[i] ? ' hot' : '') + '" data-i="' + i + '" style="--pc:' + C[2] + '" title="' + esc(C[1]) + '">' + (v === 'locked' ? (hot[i] ? '+' : '') : esc(C[1])) + '</button>';
+      return '<button type="button" class="plot ' + (v === 'locked' ? 'locked' : v === 'empty' ? 'empty' : 'crop') + (hot[i] ? ' hot' : '') + '" data-i="' + i + '" style="--pc:' + color(v) + ';' + paint(v) + '" title="' + esc(names(v) || label(v)) + '">' + (v === 'locked' ? (hot[i] ? '+' : '') : esc(label(v))) + '</button>';
     }).join('');
-    $('plotPalette').innerHTML = CROPS.map(function (c) { return '<button type="button" class="chip pbrush" data-brush="' + c[0] + '" aria-pressed="' + (c[0] === brush) + '" style="--pc:' + c[2] + '">' + esc(c[1]) + '</button>'; }).join('');
+    $('plotPalette').innerHTML = CROPS.map(function (c) { return '<button type="button" class="chip pbrush" data-brush="' + c[0] + '" aria-pressed="' + (brush.indexOf(c[0]) >= 0) + '" style="--pc:' + c[2] + '">' + esc(c[1]) + '</button>'; }).join('');
     var open = 0, counts = {}; for (var i = 0; i < 25; i++) { var v = get(p, i); if (v !== 'locked' && v !== 'barn') open++; if (isCrop(v)) counts[v] = (counts[v] || 0) + 1; }
     var R = runs(p);
     $('plotStats').innerHTML = '<div class="stat"><b>' + open + ' / 24</b><span>odemčených plotů</span></div>' + Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).map(function (k) {
-      return '<div class="stat"><b style="color:' + BY[k][2] + '">' + counts[k] + '× ' + esc(BY[k][1]) + '</b><span>nejdelší řada ' + (R[k] || 1) + ' = ' + (R[k] || 1) * 96 + ' bloků</span></div>';
+      return '<div class="stat"><b style="color:' + color(k) + '">' + counts[k] + '× ' + esc(label(k)) + '</b><span>' + (parts(k).length > 1 ? esc(names(k)) + ' · ' : '') + 'nejdelší řada ' + (R[k] || 1) + ' = ' + (R[k] || 1) * 96 + ' bloků</span></div>';
     }).join('');
     $('plotTips').innerHTML = top.length ? top.map(function (s) {
       var r = Math.floor(s.i / 5) + 1, c = s.i % 5 + 1;
-      return '<li>Plot v <b>řadě ' + r + ', sloupci ' + c + '</b>: když ho odemkneš a dáš na něj <b style="color:' + BY[s.crop][2] + '">' + esc(BY[s.crop][1]) + '</b>, protáhneš farmu ' + (s.row ? 'v řadě' : 've sloupci') + ' na <b>' + (s.k + 1) + ' ploty (' + (s.k + 1) * 96 + ' bloků)</b>.</li>';
+      return '<li>Plot v <b>řadě ' + r + ', sloupci ' + c + '</b>: když ho odemkneš a dáš na něj <b style="color:' + color(s.crop) + '">' + esc(parts(s.crop).length > 1 ? 'stejný mix (' + names(s.crop) + ')' : label(s.crop)) + '</b>, protáhneš farmu ' + (s.row ? 'v řadě' : 've sloupci') + ' na <b>' + (s.k + 1) + ' ploty (' + (s.k + 1) * 96 + ' bloků)</b>.</li>';
     }).join('') : '<li>Žádný zamčený plot teď nenavazuje na farmu. Nejdřív naklikej, co máš kde.</li>';
   }
   document.addEventListener('click', function (ev) {
     var t = ev.target.closest && ev.target.closest('.pbrush');
-    if (t) { brush = t.getAttribute('data-brush'); render(); return; }
+    if (t) {
+      var k = t.getAttribute('data-brush');
+      if (k === 'locked' || k === 'empty') brush = [k];
+      else { brush = brush.filter(function (x) { return x !== 'locked' && x !== 'empty'; }); var at = brush.indexOf(k); if (at >= 0) brush.splice(at, 1); else brush.push(k); if (!brush.length) brush = [k]; }
+      render(); return;
+    }
     var b = ev.target.closest && ev.target.closest('#plotGrid .plot[data-i]');
     if (!b) return;
     var p = plots(), i = +b.getAttribute('data-i');
-    if (brush === 'locked') delete p[i]; else p[i] = brush;
+    if (brush[0] === 'locked') delete p[i]; else p[i] = norm(brush);
     window.SBApp.touch(); render();
   });
   document.addEventListener('sb-render', render);
