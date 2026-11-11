@@ -1414,7 +1414,7 @@ footer ul{margin:0;padding-left:18px}
 <button class="btn ghost" type="button" id="cfgReset">Obnovit výchozí hodnoty</button>
 </div>
 <p class="msg" id="cfgMsg" role="status"></p>
-<small>Vlastní item (třeba Enchanted Melon nebo Sunflower) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
+<small>Výchozí NPC ceny a základní dropy jsou z <a href="https://hypixel.net/threads/balancing-crop-npc-sell-prices.6036271/" target="_blank" rel="noopener">přehledu na Hypixel fóru (prosinec 2025)</a>. Vlastní item (třeba Enchanted Melon) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
 </section>
 
 <section class="mythic" id="syncBox">
@@ -2571,9 +2571,9 @@ window.sbExtract=sbExtract;</script>
   }
 
   // ================= Měřič farmení =================
-  var ENCH = { wheat: [1296, 186624, 'Enchanted Hay Bale', 'Tightly-Tied Hay Bale'], carrot: [160, 0, 'Enchanted Carrot', ''], potato: [160, 25600, 'Enchanted Potato', 'Enchanted Baked Potato'], wart: [160, 25600, 'Enchanted Nether Wart', 'Mutant Nether Wart'], cane: [160, 25600, 'Enchanted Sugar', 'Enchanted Sugar Cane'], cactus: [160, 25600, 'Enchanted Cactus Green', 'Enchanted Cactus'], cocoa: [160, 0, 'Enchanted Cocoa Bean', ''], melon: [160, 25600, 'Enchanted Melon', 'Enchanted Melon Block'], pumpkin: [160, 25600, 'Enchanted Pumpkin', 'Polished Pumpkin'], mushroom: [160, 0, 'Enchanted Mushroom', ''] };
+  var ENCH = { wheat: [160, 25600, 'Enchanted Wheat', 'Enchanted Hay Bale'], carrot: [160, 0, 'Enchanted Carrot', ''], potato: [160, 25600, 'Enchanted Potato', 'Enchanted Baked Potato'], wart: [160, 25600, 'Enchanted Nether Wart', 'Mutant Nether Wart'], cane: [160, 25600, 'Enchanted Sugar', 'Enchanted Sugar Cane'], cactus: [160, 25600, 'Enchanted Cactus Green', 'Enchanted Cactus'], cocoa: [160, 0, 'Enchanted Cocoa Bean', ''], melon: [160, 25600, 'Enchanted Melon', 'Enchanted Melon Block'], pumpkin: [160, 25600, 'Enchanted Pumpkin', 'Polished Pumpkin'], mushroom: [32, 0, 'Enchanted Mushroom', ''] };
   function ench(k) { var d = ENCH[k] || [160, 25600, 'Enchanted', '2. stupeň'], o, c = App() ? cfg() : null; o = c ? (c.crops[k] || (c.custom.filter(function (q) { return q.k === k; })[0]) || {}) : {}; var a = num(o.e1), b = num(o.e2); return [isNaN(a) ? d[0] : a, isNaN(b) ? d[1] : b, d[2], d[3]]; }
-  var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 3, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 0, 0], ['moonflower', 'Moonflower', 0, 0], ['rose', 'Wild Rose', 0, 0]];
+  var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 4, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 4, 2], ['moonflower', 'Moonflower', 4, 2], ['rose', 'Wild Rose', 4, 2]];
   var CROPS_DEF = CROPS.map(function (c) { return c.slice(); }), CB = {};
   function cfg() { var c = App().state('_config'); if (!c.crops) c.crops = {}; if (!c.custom) c.custom = []; return c; }
   // výchozí hodnoty + přepsání ze společného nastavení + vlastní itemy
