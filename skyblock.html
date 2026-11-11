@@ -710,17 +710,23 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section class="uncommon">
-<div class="head"><h2>Měřič farmení</h2></div>
-<p>Zapiš stav collection (nebo sacku) před farmením a po něm a kolik minut jsi farmil. Stránka dopočítá kusy a coiny za hodinu a uloží to, ať můžeš plodiny porovnat. Do čísel můžeš psát i <span class="mono">4306240+153000</span> nebo <span class="mono">1,3m</span>.</p>
+<div class="head"><h2>Kalkulačka výdělku z farmení</h2></div>
+<p>Napiš, kolik jsi udělal a za jak dlouho. Třeba „za 10 minut 1 500 000 coinů z wheatu“ nebo „za jednu lajnu 2M“ a jak dlouho lajna trvá. Stránka dopočítá výdělek za hodinu, uloží ho a porovná plodiny. Uložené řádky jdou kdykoli upravit.</p>
 <div class="formgrid">
 <label>Plodina<select class="inp" id="fmCrop"></select></label>
-<label>Stav před<input type="text" class="inp" id="fmBefore" inputmode="text" placeholder="2 887 720"></label>
-<label>Stav po<input type="text" class="inp" id="fmAfter" inputmode="text" placeholder="4306240+153000"></label>
-<label>Minut<input type="text" class="inp" id="fmMin" inputmode="decimal" placeholder="15"></label>
+<label>Kolik jsem udělal<input type="text" class="inp" id="fmAmt" inputmode="text" placeholder="1 500 000 nebo 2m"></label>
+<label>Čeho<select class="inp" id="fmUnit"><option value="coins">coinů</option><option value="items">kusů</option></select></label>
+<label>Za jak dlouho<input type="text" class="inp" id="fmTime" inputmode="decimal" placeholder="10"></label>
+<label>Jednotka času<select class="inp" id="fmTU"><option value="60">minut</option><option value="1">sekund</option><option value="3600">hodin</option></select></label>
 <label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
-<button class="btn" type="button" id="fmSave">Uložit měření</button>
+<button class="btn" type="button" id="fmSave">Uložit</button>
 </div>
+<small>Do „Kolik“ jde napsat i součet nebo rozdíl, třeba <span class="mono">4306240+153000-2887720</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
 <p class="msg" id="fmMsg" role="status"></p>
+<div class="formgrid">
+<label>Kolik hodin budu farmit<input type="text" class="inp" id="fmHours" inputmode="decimal" placeholder="1"></label>
+<label>Cíl v coinech (nepovinné)<input type="text" class="inp" id="fmGoal" inputmode="text" placeholder="např. 50m"></label>
+</div>
 <div class="scroll" id="fmTable"></div>
 <p class="track-label">Odhad ze vzorce</p>
 <div class="formgrid">
@@ -2365,15 +2371,13 @@ window.sbExtract=sbExtract;</script>
   function dur(ms) { if (ms < 0) ms = 0; var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return d ? d + ' d ' + h + ' h' : h ? h + ' h ' + m + ' min' : m + ' min'; }
   // "2 887 720", "4306240+153000", "1,3m", "450k"
   function num(v) {
-    var tot = 0, ok = false;
-    String(v == null ? '' : v).split('+').forEach(function (part) {
-      var m = part.replace(/\s/g, '').toLowerCase().match(/^(-?[\d.,]+)([kmb]?)$/); if (!m) return;
-      var raw = m[1], x;
-      if (m[2]) x = parseFloat(raw.replace(',', '.')); else x = parseFloat(raw.replace(/[.,](?=\d{3}(\D|$))/g, '').replace(',', '.'));
-      if (isNaN(x)) return;
-      tot += x * ({ k: 1e3, m: 1e6, b: 1e9 }[m[2]] || 1); ok = true;
-    });
-    return ok ? tot : NaN;
+    var str = String(v == null ? '' : v).replace(/\s/g, '').toLowerCase().replace(/−/g, '-'), re = /([+-]?)([\d.,]+)([kmb]?)/g, m, tot = 0, ok = false, used = 0;
+    while ((m = re.exec(str))) {
+      var x = m[3] ? parseFloat(m[2].replace(',', '.')) : parseFloat(m[2].replace(/[.,](?=\d{3}(\D|$))/g, '').replace(',', '.'));
+      if (isNaN(x)) return NaN;
+      tot += (m[1] === '-' ? -1 : 1) * x * ({ k: 1e3, m: 1e6, b: 1e9 }[m[3]] || 1); ok = true; used += m[0].length;
+    }
+    return ok && used === str.length ? tot : NaN;
   }
   function App() { return window.SBApp; }
   function S() { return App().state(); }
@@ -2457,37 +2461,50 @@ window.sbExtract=sbExtract;</script>
   // ================= Měřič farmení =================
   var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 3, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 0, 0], ['moonflower', 'Moonflower', 0, 0], ['rose', 'Wild Rose', 0, 0]];
   var CB = {}; CROPS.forEach(function (c) { CB[c[0]] = c; });
+  function hrs(h) { if (!isFinite(h)) return '—'; if (h < 1) return Math.max(1, Math.round(h * 60)) + ' min'; return h < 48 ? (Math.round(h * 10) / 10).toString().replace('.', ',') + ' h' : Math.round(h / 24) + ' dní farmení v kuse'; }
   function renderFarm() {
     if (!$('fmCrop')) return;
     var s = S(), meas = s.meas || {};
-    if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join(''); $('fmCrop').value = 'melon'; $('fmPrice').value = CB.melon[2]; }
+    if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join(''); $('fmCrop').value = 'wheat'; $('fmPrice').value = CB.wheat[2]; }
+    if (document.activeElement !== $('fmHours')) $('fmHours').value = s.farmHours != null ? s.farmHours : '';
+    if (document.activeElement !== $('fmGoal')) $('fmGoal').value = s.farmGoal != null ? s.farmGoal : '';
+    var H = num($('fmHours').value); if (isNaN(H) || H <= 0) H = 1;
+    var G = num($('fmGoal').value);
     var keys = Object.keys(meas).sort(function (a, b) { return meas[b].coins - meas[a].coins; });
-    $('fmTable').innerHTML = keys.length ? '<table><tr><th>Plodina</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Měřeno</th><th></th></tr>' + keys.map(function (k, i) {
-      var m = meas[k]; return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc((CB[k] || [0, k])[1]) + '</b></td><td class="num">' + short(m.perHour) + '</td><td class="num">' + short(m.coins) + '</td><td class="note">' + m.min + ' min · ' + new Date(m.at).toLocaleDateString('cs-CZ') + '</td><td><button type="button" class="xbtn" data-fmdel="' + k + '" aria-label="Smazat měření">×</button></td></tr>';
-    }).join('') + '</table>' : '<table><tr><td class="note">Zatím žádné měření.</td></tr></table>';
+    var hl = (H + ' h').replace('.', ',');
+    $('fmTable').innerHTML = keys.length ? '<table><tr><th>Plodina</th><th>Coinů za hodinu</th><th>Kusů za hodinu</th><th>Za ' + hl + '</th>' + (G > 0 ? '<th>Do cíle ' + short(G) + '</th>' : '') + '<th>Zadáno</th><th></th></tr>' + keys.map(function (k, i) {
+      var m = meas[k];
+      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc((CB[k] || [0, k])[1]) + '</b></td><td class="num">' + (m.coins ? short(m.coins) : '—') + '</td><td class="num">' + (m.perHour ? short(m.perHour) : '—') + '</td><td class="num"><b>' + (m.coins ? short(m.coins * H) : '—') + '</b></td>' + (G > 0 ? '<td class="num">' + (m.coins ? hrs(G / m.coins) : '—') + '</td>' : '') + '<td class="note">' + esc(m.txt || (m.min + ' min')) + '</td><td style="white-space:nowrap"><button type="button" class="xbtn" data-fmedit="' + k + '">Upravit</button> <button type="button" class="xbtn" data-fmdel="' + k + '" aria-label="Smazat">×</button></td></tr>';
+    }).join('') + '</table>' : '<table><tr><td class="note">Zatím nic uloženého. Zadej první měření nahoře.</td></tr></table>';
     var ff = s.ff != null ? s.ff : '', bps = s.bps != null ? s.bps : 20;
     if (document.activeElement !== $('fcFF')) $('fcFF').value = ff;
     if (document.activeElement !== $('fcBps')) $('fcBps').value = bps;
     var F = num(ff), Bp = num(bps) || 20;
-    $('fcTable').innerHTML = isNaN(F) ? '<table><tr><td class="note">Zadej Farming Fortune a stránka dopočítá odhad pro každou plodinu.</td></tr></table>' : '<table><tr><th>Plodina</th><th>Základní drop</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Naměřeno</th></tr>' + CROPS.filter(function (c) { return c[3]; }).map(function (c) {
+    $('fcTable').innerHTML = isNaN(F) ? '<table><tr><td class="note">Zadej Farming Fortune a stránka dopočítá odhad pro každou plodinu.</td></tr></table>' : '<table><tr><th>Plodina</th><th>Základní drop</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Tvoje zadání</th></tr>' + CROPS.filter(function (c) { return c[3]; }).map(function (c) {
       var per = Bp * 3600 * c[3] * (1 + F / 100); return { c: c, per: per, coins: per * c[2] };
     }).sort(function (a, b) { return b.coins - a.coins; }).map(function (r, i) {
-      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + r.c[1] + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
+      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + r.c[1] + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] && meas[r.c[0]].coins ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
     }).join('') + '</table>';
   }
   function bindFarm() {
     if (!$('fmCrop')) return;
     $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; });
     $('fmSave').addEventListener('click', function () {
-      var a = num($('fmBefore').value), b = num($('fmAfter').value), m = num($('fmMin').value), pr = num($('fmPrice').value), k = $('fmCrop').value, msg = $('fmMsg');
-      if (isNaN(a) || isNaN(b) || isNaN(m) || m <= 0 || b <= a) { msg.textContent = 'Zadej stav před, stav po (větší než před) a počet minut.'; msg.className = 'msg err'; return; }
-      if (isNaN(pr)) pr = 0;
-      var per = (b - a) / m * 60, s = S(); if (!s.meas) s.meas = {};
-      s.meas[k] = { perHour: Math.round(per), coins: Math.round(per * pr), price: pr, min: m, at: Date.now() };
-      App().touch(); msg.textContent = CB[k][1] + ': ' + short(per) + ' kusů a ' + short(per * pr) + ' coinů za hodinu' + (pr ? '' : ' (bez ceny)') + '.'; msg.className = 'msg ok'; renderFarm();
+      var amt = num($('fmAmt').value), tv = num($('fmTime').value), tu = +$('fmTU').value, pr = num($('fmPrice').value), unit = $('fmUnit').value, k = $('fmCrop').value, msg = $('fmMsg');
+      if (isNaN(amt) || amt <= 0 || isNaN(tv) || tv <= 0) { msg.textContent = 'Zadej, kolik jsi udělal (kladné číslo) a za jak dlouho.'; msg.className = 'msg err'; return; }
+      if (isNaN(pr) || pr < 0) pr = 0;
+      var perH = amt / (tv * tu) * 3600, coins = unit === 'coins' ? perH : perH * pr, items = unit === 'items' ? perH : (pr ? perH / pr : 0), s = S(); if (!s.meas) s.meas = {};
+      var tun = { 60: 'min', 1: 's', 3600: 'h' }[tu];
+      s.meas[k] = { perHour: Math.round(items), coins: Math.round(coins), price: pr, at: Date.now(), amt: $('fmAmt').value, unit: unit, tv: $('fmTime').value, tu: tu, txt: short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun };
+      App().touch(); msg.textContent = CB[k][1] + ': ' + (coins ? short(coins) + ' coinů za hodinu' : short(items) + ' kusů za hodinu (doplň NPC cenu pro coiny)') + '.'; msg.className = 'msg ok'; renderFarm();
     });
-    document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-fmdel]'); if (!b) return; var s = S(); if (s.meas) { delete s.meas[b.getAttribute('data-fmdel')]; App().touch(); renderFarm(); } });
+    document.addEventListener('click', function (ev) {
+      var d = ev.target.closest && ev.target.closest('[data-fmdel]'), ed = ev.target.closest && ev.target.closest('[data-fmedit]'), s;
+      if (d) { s = S(); if (s.meas) { delete s.meas[d.getAttribute('data-fmdel')]; App().touch(); renderFarm(); } }
+      if (ed) { s = S(); var k = ed.getAttribute('data-fmedit'), m = (s.meas || {})[k]; if (!m) return; $('fmCrop').value = k; $('fmAmt').value = m.amt != null ? m.amt : (m.perHour || ''); $('fmUnit').value = m.unit || 'items'; $('fmTime').value = m.tv != null ? m.tv : 60; $('fmTU').value = String(m.tu || 60); $('fmPrice').value = m.price != null ? m.price : (CB[k] ? CB[k][2] : ''); $('fmAmt').focus(); $('fmMsg').textContent = 'Uprav čísla a dej Uložit. Přepíše se řádek ' + (CB[k] ? CB[k][1] : k) + '.'; $('fmMsg').className = 'msg ok'; }
+    });
     ['fcFF', 'fcBps'].forEach(function (id) { $(id).addEventListener('input', function () { var s = S(); s.ff = $('fcFF').value; s.bps = $('fcBps').value; App().touch(); renderFarm(); }); });
+    ['fmHours', 'fmGoal'].forEach(function (id) { $(id).addEventListener('input', function () { var s = S(); s.farmHours = $('fmHours').value; s.farmGoal = $('fmGoal').value; App().touch(); renderFarm(); }); });
   }
 
   // ================= Plánovač HOTM =================
