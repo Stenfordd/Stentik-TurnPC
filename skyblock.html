@@ -747,7 +747,24 @@ footer ul{margin:0;padding-left:18px}
 <label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
 <button class="btn" type="button" id="fmSave">Uložit</button>
 </div>
-<small>Do „Kolik“ jde napsat i součet nebo rozdíl, třeba <span class="mono">4306240+153000-2887720</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
+<small>Do „Kolik“ jde napsat i výpočet se závorkami, třeba <span class="mono">(76136+791680+1228800)-(76092+74880+1228800)</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
+<details id="sackBox"><summary>Zadat stav sacku (základní + enchanted)</summary><div class="body">
+<p>Opiš počty ze sacku tak, jak je vidíš ve hře, bez násobení. Stránka enchanted kusy sama přepočítá na základní a spočítá rozdíl.</p>
+<p class="track-label">Před farmením</p>
+<div class="formgrid">
+<label><span id="skL0">Základní</span><input type="text" class="inp" id="skB0" inputmode="text" placeholder="76092"></label>
+<label><span id="skL1">Enchanted</span><input type="text" class="inp" id="skB1" inputmode="text" placeholder="468"></label>
+<label><span id="skL2">2. stupeň</span><input type="text" class="inp" id="skB2" inputmode="text" placeholder="48"></label>
+</div>
+<p class="track-label">Po farmení</p>
+<div class="formgrid">
+<label><span id="skM0">Základní</span><input type="text" class="inp" id="skA0" inputmode="text"></label>
+<label><span id="skM1">Enchanted</span><input type="text" class="inp" id="skA1" inputmode="text"></label>
+<label><span id="skM2">2. stupeň</span><input type="text" class="inp" id="skA2" inputmode="text"></label>
+<button class="btn" type="button" id="skCalc">Spočítat rozdíl</button>
+</div>
+<small>Násobky (kolik základních kusů je v enchanted) jdou upravit v <a href="#data">Data → Nastavení cen a dropů</a>.</small>
+</div></details>
 <p class="msg" id="fmMsg" role="status"></p>
 <div class="formgrid">
 <label>Kolik hodin budu farmit<input type="text" class="inp" id="fmHours" inputmode="decimal" placeholder="1"></label>
@@ -2456,13 +2473,23 @@ window.sbExtract=sbExtract;</script>
   function dur(ms) { if (ms < 0) ms = 0; var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return d ? d + ' d ' + h + ' h' : h ? h + ' h ' + m + ' min' : m + ' min'; }
   // "2 887 720", "4306240+153000", "1,3m", "450k"
   function num(v) {
-    var str = String(v == null ? '' : v).replace(/\s/g, '').toLowerCase().replace(/−/g, '-'), re = /([+-]?)([\d.,]+)([kmb]?)/g, m, tot = 0, ok = false, used = 0;
-    while ((m = re.exec(str))) {
-      var x = m[3] ? parseFloat(m[2].replace(',', '.')) : parseFloat(m[2].replace(/[.,](?=\d{3}(\D|$))/g, '').replace(',', '.'));
-      if (isNaN(x)) return NaN;
-      tot += (m[1] === '-' ? -1 : 1) * x * ({ k: 1e3, m: 1e6, b: 1e9 }[m[3]] || 1); ok = true; used += m[0].length;
+    var str = String(v == null ? '' : v).replace(/\s/g, '').toLowerCase().replace(/−/g, '-');
+    if (!str) return NaN;
+    var i = 0, tot = 0, ok = false, stack = [1], pend = 1;
+    while (i < str.length) {
+      var ch = str.charAt(i);
+      if (ch === '+') { pend = 1; i++; }
+      else if (ch === '-') { pend = -1; i++; }
+      else if (ch === '(') { stack.push(stack[stack.length - 1] * pend); pend = 1; i++; }
+      else if (ch === ')') { if (stack.length < 2) return NaN; stack.pop(); pend = 1; i++; }
+      else {
+        var m = /^([\d.,]+)([kmb]?)/.exec(str.slice(i)); if (!m) return NaN;
+        var x = m[2] ? parseFloat(m[1].replace(',', '.')) : parseFloat(m[1].replace(/[.,](?=\d{3}(\D|$))/g, '').replace(',', '.'));
+        if (isNaN(x)) return NaN;
+        tot += stack[stack.length - 1] * pend * x * ({ k: 1e3, m: 1e6, b: 1e9 }[m[2]] || 1); ok = true; pend = 1; i += m[0].length;
+      }
     }
-    return ok && used === str.length ? tot : NaN;
+    return ok ? tot : NaN;
   }
   function App() { return window.SBApp; }
   function S() { return App().state(); }
@@ -2544,6 +2571,8 @@ window.sbExtract=sbExtract;</script>
   }
 
   // ================= Měřič farmení =================
+  var ENCH = { wheat: [1296, 186624, 'Enchanted Hay Bale', 'Tightly-Tied Hay Bale'], carrot: [160, 0, 'Enchanted Carrot', ''], potato: [160, 25600, 'Enchanted Potato', 'Enchanted Baked Potato'], wart: [160, 25600, 'Enchanted Nether Wart', 'Mutant Nether Wart'], cane: [160, 25600, 'Enchanted Sugar', 'Enchanted Sugar Cane'], cactus: [160, 25600, 'Enchanted Cactus Green', 'Enchanted Cactus'], cocoa: [160, 0, 'Enchanted Cocoa Bean', ''], melon: [160, 25600, 'Enchanted Melon', 'Enchanted Melon Block'], pumpkin: [160, 25600, 'Enchanted Pumpkin', 'Polished Pumpkin'], mushroom: [160, 0, 'Enchanted Mushroom', ''] };
+  function ench(k) { var d = ENCH[k] || [160, 25600, 'Enchanted', '2. stupeň'], o, c = App() ? cfg() : null; o = c ? (c.crops[k] || (c.custom.filter(function (q) { return q.k === k; })[0]) || {}) : {}; var a = num(o.e1), b = num(o.e2); return [isNaN(a) ? d[0] : a, isNaN(b) ? d[1] : b, d[2], d[3]]; }
   var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 3, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 0, 0], ['moonflower', 'Moonflower', 0, 0], ['rose', 'Wild Rose', 0, 0]];
   var CROPS_DEF = CROPS.map(function (c) { return c.slice(); }), CB = {};
   function cfg() { var c = App().state('_config'); if (!c.crops) c.crops = {}; if (!c.custom) c.custom = []; return c; }
@@ -2558,14 +2587,14 @@ window.sbExtract=sbExtract;</script>
     if (!$('cfgTable')) return;
     var c = cfg(), foc = document.activeElement && document.activeElement.closest && document.activeElement.closest('#cfgTable');
     if (foc) return;
-    $('cfgTable').innerHTML = '<table><tr><th>Item</th><th>NPC cena za kus</th><th>Základní drop za blok</th><th></th></tr>' + CROPS_DEF.map(function (d) {
+    $('cfgTable').innerHTML = '<table><tr><th>Item</th><th>NPC cena za kus</th><th>Základní drop za blok</th><th>Kusů v enchanted</th><th>Kusů ve 2. stupni</th><th></th></tr>' + CROPS_DEF.map(function (d) {
       var o = c.crops[d[0]] || {};
-      return '<tr><td><b>' + d[1] + '</b></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="price" value="' + esc(o.price != null ? o.price : '') + '" placeholder="' + d[2] + '" aria-label="NPC cena ' + d[1] + '"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="drop" value="' + esc(o.drop != null ? o.drop : '') + '" placeholder="' + String(d[3]).replace('.', ',') + '" aria-label="Základní drop ' + d[1] + '"></td><td class="note">' + (o.price != null && o.price !== '' || o.drop != null && o.drop !== '' ? 'upraveno' : 'výchozí') + '</td></tr>';
+      return '<tr><td><b>' + d[1] + '</b></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="price" value="' + esc(o.price != null ? o.price : '') + '" placeholder="' + d[2] + '" aria-label="NPC cena ' + d[1] + '"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cfg="' + d[0] + '" data-f="drop" value="' + esc(o.drop != null ? o.drop : '') + '" placeholder="' + String(d[3]).replace('.', ',') + '" aria-label="Základní drop ' + d[1] + '"></td><td><input type="text" class="inp cfgi" inputmode="numeric" data-cfg="' + d[0] + '" data-f="e1" value="' + esc(o.e1 != null ? o.e1 : '') + '" placeholder="' + (ENCH[d[0]] ? ENCH[d[0]][0] : 160) + '" aria-label="Kusů v enchanted ' + d[1] + '"></td><td><input type="text" class="inp cfgi" inputmode="numeric" data-cfg="' + d[0] + '" data-f="e2" value="' + esc(o.e2 != null ? o.e2 : '') + '" placeholder="' + (ENCH[d[0]] ? ENCH[d[0]][1] : 25600) + '" aria-label="Kusů ve 2. stupni ' + d[1] + '"></td><td class="note">' + (o.price != null && o.price !== '' || o.drop != null && o.drop !== '' ? 'upraveno' : 'výchozí') + '</td></tr>';
     }).join('') + c.custom.map(function (x) {
-      return '<tr><td><input type="text" class="inp cfgi" data-cus="' + x.k + '" data-f="n" value="' + esc(x.n) + '" aria-label="Název itemu"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="price" value="' + esc(x.price != null ? x.price : '') + '" placeholder="0" aria-label="NPC cena"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="drop" value="' + esc(x.drop != null ? x.drop : '') + '" placeholder="0" aria-label="Základní drop"></td><td><button type="button" class="xbtn" data-cusdel="' + x.k + '" aria-label="Smazat item">×</button></td></tr>';
+      return '<tr><td><input type="text" class="inp cfgi" data-cus="' + x.k + '" data-f="n" value="' + esc(x.n) + '" aria-label="Název itemu"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="price" value="' + esc(x.price != null ? x.price : '') + '" placeholder="0" aria-label="NPC cena"></td><td><input type="text" class="inp cfgi" inputmode="decimal" data-cus="' + x.k + '" data-f="drop" value="' + esc(x.drop != null ? x.drop : '') + '" placeholder="0" aria-label="Základní drop"></td><td><input type="text" class="inp cfgi" inputmode="numeric" data-cus="' + x.k + '" data-f="e1" value="' + esc(x.e1 != null ? x.e1 : '') + '" placeholder="160" aria-label="Kusů v enchanted"></td><td><input type="text" class="inp cfgi" inputmode="numeric" data-cus="' + x.k + '" data-f="e2" value="' + esc(x.e2 != null ? x.e2 : '') + '" placeholder="25600" aria-label="Kusů ve 2. stupni"></td><td><button type="button" class="xbtn" data-cusdel="' + x.k + '" aria-label="Smazat item">×</button></td></tr>';
     }).join('') + '</table>';
   }
-  function refreshCrops() { loadCfg(); var sel = $('fmCrop'); if (sel) { var v = sel.value; sel.innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join(''); sel.value = CB[v] ? v : 'wheat'; if (document.activeElement !== $('fmPrice')) $('fmPrice').value = CB[sel.value][2] || ''; } }
+  function refreshCrops() { loadCfg(); setTimeout(sackLabels, 0); var sel = $('fmCrop'); if (sel) { var v = sel.value; sel.innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join(''); sel.value = CB[v] ? v : 'wheat'; if (document.activeElement !== $('fmPrice')) $('fmPrice').value = CB[sel.value][2] || ''; } }
   function bindCfg() {
     if (!$('cfgTable')) return;
     $('cfgTable').addEventListener('input', function (ev) {
@@ -2606,9 +2635,25 @@ window.sbExtract=sbExtract;</script>
       return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc(r.c[1]) + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] && meas[r.c[0]].coins ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
     }).join('') + '</table>';
   }
+  function sackLabels() {
+    if (!$('skL1')) return;
+    var k = $('fmCrop').value, e = ench(k), n = CB[k] ? CB[k][1] : 'item';
+    $('skL0').textContent = n + ' (základní)';
+    $('skL1').textContent = (e[2] || 'Enchanted') + ' (×' + nf(e[0]) + ')';
+    $('skL2').textContent = e[1] ? (e[3] || '2. stupeň') + ' (×' + nf(e[1]) + ')' : '2. stupeň (nepoužívá se)';
+    $('skM0').textContent = $('skL0').textContent; $('skM1').textContent = $('skL1').textContent; $('skM2').textContent = $('skL2').textContent;
+  }
   function bindFarm() {
     if (!$('fmCrop')) return;
-    $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; });
+    $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; sackLabels(); });
+    $('skCalc').addEventListener('click', function () {
+      var k = $('fmCrop').value, e = ench(k), msg = $('fmMsg');
+      function tot(p) { var a = num($(p + '0').value), b = num($(p + '1').value), c = num($(p + '2').value); return (isNaN(a) ? 0 : a) + (isNaN(b) ? 0 : b) * e[0] + (isNaN(c) ? 0 : c) * e[1]; }
+      var before = tot('skB'), after = tot('skA'), d = after - before;
+      if (d <= 0) { msg.textContent = 'Stav po musí být větší než stav před. Zkontroluj čísla ze sacku.'; msg.className = 'msg err'; return; }
+      $('fmAmt').value = Math.round(d); $('fmUnit').value = 'items';
+      msg.textContent = 'Před ' + nf(before) + ', po ' + nf(after) + ' kusů v přepočtu na základní item. Rozdíl ' + nf(d) + ' je vyplněný nahoře, doplň čas a dej Uložit.'; msg.className = 'msg ok';
+    });
     $('fmSave').addEventListener('click', function () {
       var amt = num($('fmAmt').value), tv = num($('fmTime').value), tu = +$('fmTU').value, pr = num($('fmPrice').value), unit = $('fmUnit').value, k = $('fmCrop').value, msg = $('fmMsg');
       if (isNaN(amt) || amt <= 0 || isNaN(tv) || tv <= 0) { msg.textContent = 'Zadej, kolik jsi udělal (kladné číslo) a za jak dlouho.'; msg.className = 'msg err'; return; }
