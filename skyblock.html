@@ -306,6 +306,31 @@ pre.code{margin:0;max-height:240px;overflow:auto;background:var(--field);border:
 .tl-now{position:absolute;top:0;bottom:0;width:2px;background:var(--warn);box-shadow:0 0 8px var(--warn)}
 .tl-now b{position:absolute;top:-2px;left:4px;font:700 .65rem 'Pixelify Sans',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:.1em}
 
+/* ===== Hotové sekce ===== */
+section.done:not(.peek)>*:not(.head){display:none}
+section.done .head{cursor:pointer}
+section.done:not(.peek){padding-block:12px;opacity:.75}
+section.done:not(.peek):hover{opacity:1}
+section.done .counter{color:var(--accent);border-color:var(--accent)}
+section.done .head::after{content:"rozbalit";font:700 .68rem 'Pixelify Sans',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+section.done.peek .head::after{content:"sbalit"}
+
+/* ===== Ploty ===== */
+.plotwrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.plotgrid{flex:none;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:min(100%,380px)}
+.plot{--pc:var(--line-2);aspect-ratio:1;min-width:0;display:grid;place-content:center;text-align:center;font:700 .62rem/1.1 'Pixelify Sans',monospace;border-radius:8px;border:1px solid var(--line);background:var(--field);color:var(--muted);cursor:pointer;padding:2px;overflow:hidden;overflow-wrap:anywhere;transition:transform .1s,border-color .1s}
+.plot:hover{transform:scale(1.05);border-color:var(--ink)}
+.plot.crop{background:color-mix(in srgb,var(--pc) 26%,var(--surface));border-color:var(--pc);color:var(--ink)}
+.plot.empty{border-style:dashed;border-color:var(--muted)}
+.plot.locked{opacity:.55}
+.plot.hot{opacity:1;border:2px dashed var(--legendary);color:var(--legendary);font-size:1.1rem;box-shadow:0 0 14px -4px var(--legendary)}
+.plot.barn{cursor:default;background:color-mix(in srgb,var(--island-dirt) 40%,var(--surface));border-color:var(--island-dirt);color:var(--ink)}
+.plot.barn:hover{transform:none}
+.plotside{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.pbrush{--pc:var(--muted);cursor:pointer;font:600 .8rem 'Public Sans',system-ui,sans-serif;color:var(--ink);border-color:color-mix(in srgb,var(--pc) 60%,var(--line))}
+.pbrush::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--pc);margin-right:6px}
+.pbrush[aria-pressed="true"]{background:color-mix(in srgb,var(--pc) 28%,var(--surface));border-color:var(--pc);box-shadow:0 0 0 1px var(--pc)}
+
 /* ===== Patička ===== */
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
 footer ul{margin:0;padding-left:18px}
@@ -391,7 +416,7 @@ footer ul{margin:0;padding-left:18px}
 
 <section class="legendary">
 <div class="head"><h2>Denní rutina</h2><span class="counter" data-count="daily"></span></div>
-<small>Tyhle checkboxy se každý den samy vynulují.</small>
+<small>Tyhle checkboxy se každý den samy vynulují. Odškrtnuté věci se ukládají k vybranému hráči a s tokenem i na GitHub. Hotová sekce se sama sbalí, kliknutím na nadpis ji rozbalíš.</small>
 <ul class="check" data-group="daily">
 <li><label><input type="checkbox" data-daily="d1"><span><span class="t">4 commissions</span><small>První 4 za den mají bonus (mimo jiné 900 HOTM XP). Nejrychlejší cesta k dalšímu HOTM tieru.</small></span></label></li>
 <li><label><input type="checkbox" data-daily="d2"><span><span class="t">Forge: vybrat a znovu naložit</span><small>Ať v ní pořád něco běží, hlavně přes noc a přes práci.</small></span></label></li>
@@ -616,12 +641,48 @@ footer ul{margin:0;padding-left:18px}
 </ul>
 </section>
 
+<section class="legendary">
+<div class="head"><h2>Moje ploty</h2></div>
+<p>Vyber plodinu a klikáním ji přiřaď plotům, stejně jako ve hře v <span class="mono">/desk</span> → Configure Plots. Ukládá se to k vybranému hráči. Ploty se znaménkem <b>+</b> jsou ty, které se vyplatí odemknout jako další, protože prodlouží farmu rovně.</p>
+<div class="plotwrap">
+<div class="plotgrid" id="plotGrid" role="group" aria-label="Ploty v Gardenu"></div>
+<div class="plotside">
+<div class="chips" id="plotPalette" role="group" aria-label="Plodina na kliknutí"></div>
+<div class="stats" id="plotStats"></div>
+</div>
+</div>
+<p class="track-label">Co odemknout dál</p>
+<ul class="dots" id="plotTips"></ul>
+<small>Jeden plot má 96 × 96 bloků. Stránka nezná cenu ani Garden level potřebný k odemčení, to ukáže Desk.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Nastavení farem podle alecka</h2></div>
+<p>Z videa <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Yaw a pitch ukazuje F3 nebo farming HUD ve Skyblockeru.</p>
+<div class="scroll"><table>
+<tr><th>Plodina</th><th>Speed</th><th>Úhel</th><th>Klávesy</th><th>Video</th></tr>
+<tr><td><b>Wheat, Carrot, Potato, Nether Wart</b></td><td class="mono">93</td><td>yaw 90</td><td>A nebo D + Space. <b>Depth Strider III</b> na botách.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=101s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=856s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Melon, Pumpkin</b></td><td class="mono">400</td><td>yaw 90, pitch −58,5</td><td>Tam A + W + Space, zpátky D + W + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=953s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1067s" target="_blank" rel="noopener">voda</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1198s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Sugar Cane, Sunflower, Wild Rose</b></td><td class="mono">327</td><td>yaw 45</td><td>S + Space, na další řadě A + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">cane</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=823s" target="_blank" rel="noopener">konce</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=915s" target="_blank" rel="noopener">květiny</a></td></tr>
+<tr><td><b>Cactus</b></td><td class="mono">400</td><td>yaw 90, pitch 0</td><td>A + D + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=631s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Cocoa Beans</b></td><td class="mono">155</td><td>yaw 180</td><td>S + Space. Na konci řady ťukni A, ať se srovnáš, pak A + W.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=748s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Mushroom</b></td><td class="mono">327</td><td>yaw 116,5</td><td>Viz video.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1280s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1443s" target="_blank" rel="noopener">konce</a></td></tr>
+</table></div>
+<ul class="dots">
+<li><b>Voda a Depth Strider:</b> jeho farmy na wheat, carrot, potato a wart jsou zalité vodou a ty v ní plaveš (proto Space). Bez Depth Strider III na botách tě voda zpomalí a speed 93 nesedí.</li>
+<li><b>Stavíš jen jeden plot.</b> Hotový plot ulož v plot editoru a vlož na další ploty (<a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=590s" target="_blank" rel="noopener">9:50 How to Paste the Farm Plots</a>). Plodiny se zasadí z inventáře.</li>
+<li><b>Konce:</b> na první a poslední plot řady dodělej koncové úpravy (kapitoly „End Sections“), jinak se na konci neotočíš.</li>
+<li><b>Speed 400</b> je nad běžný strop. Cactus Knife v ruce zvedá Speed cap o 100.</li>
+<li>Klávesy drž <b>ručně</b>. Makra a autoclickery jsou ban.</li>
+</ul>
+</section>
+
 <section class="rare">
 <div class="head"><h2>5. Farmy a Fermento armor</h2></div>
 <p>Fermento armor potřebuje Farming 40 (teď: <b data-b="farmingLvl">…</b>). Fermento padá při farmení <b>sugar cane, cactus, mushroom a nether wart</b> v Squash armoru. Na to potřebuješ farmy:</p>
 <ol class="steps">
-<li><b>Video:</b> <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Cactus, cocoa a cane od <b>6:17</b>, mushroom od <b>21:20</b>.</li>
-<li><b>Začni sugar cane:</b> je nejjednodušší a podle fóra stačí plot 1×2. Wiki uvádí 328 Speed a úhel 45°.</li>
+<li><b>Farmy stav podle alecka</b> (tabulka výš): cactus, cocoa a cane od 6:17, mushroom od 21:20.</li>
+<li><b>Začni sugar cane:</b> je nejjednodušší a stačí na něj málo plotů. Speed, úhel a klávesy jsou v tabulce výš.</li>
 <li><b>Designy, které nemusíš přestavovat:</b> Draip farmy na cane, wart, wheat, carrot, potato a růže (<a href="https://youtu.be/gcJ5U7SyA-c" target="_blank" rel="noopener">video</a>, řady dělej 3 bloky široké, ne 5) a IdkVenom farma na melon a pumpkin (<a href="https://www.youtube.com/watch?v=s4HV0RyWcoI&amp;t=775s" target="_blank" rel="noopener">video</a>). Část hráčů má jen 4 farmy: wheat, melon, wart a sun/moonflower nebo růže, jednu na každý vzácný drop.</li>
 <li><b>Než budeš stavět:</b> zkus preset z plot editoru (<span class="mono">/desk</span>) a podívej se na <span class="mono">/visit farminghub</span>.</li>
 <li><b>Litematica</b> je OK, pokud jen zobrazuje schéma a stavíš ručně. <b>Easy Place a Printer vypni</b>, ty jsou ban.</li>
@@ -1394,6 +1455,8 @@ window.sbExtract=sbExtract;</script>
     who.innerHTML = '';
     Object.keys(profiles).forEach(function (u) { var o = el('option', { value: u }, esc(u + ' · ' + (profiles[u].profile || ''))); if (u === active) o.selected = true; who.appendChild(o); });
     document.getElementById('notStentik').hidden = !P || P.user === 'KingStentik';
+    applyChecks();
+    document.dispatchEvent(new Event('sb-render'));
     var pc = document.getElementById('players');
     if (pc) {
       pc.innerHTML = Object.keys(profiles).map(function (u) {
@@ -1563,16 +1626,43 @@ window.sbExtract=sbExtract;</script>
     try { navigator.clipboard.writeText(txt).then(function () { msg('Export skript zkopírován.'); }, fallback); } catch (e) { fallback(); }
   });
 
-  // ---------- checkboxy ----------
-  var KEY = 'pomegranate-guide-v3', DKEY = 'pomegranate-daily', saved = {}, daily = {};
+  // ---------- stav hráče: checkboxy, denní úkoly, ploty (sdílí se přes GitHub) ----------
+  var SKEY = 'sb-state-v1', states = {};
   var today = new Date().toISOString().slice(0, 10);
-  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
-  try { daily = JSON.parse(localStorage.getItem(DKEY) || '{}') || {}; if (daily.date !== today) daily = { date: today }; } catch (e) { daily = { date: today }; }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(saved)); localStorage.setItem(DKEY, JSON.stringify(daily)); } catch (e) { } }
-  function counts() { document.querySelectorAll('[data-count]').forEach(function (c) { var g = document.querySelector('[data-group="' + c.getAttribute('data-count') + '"]'); if (!g) return; c.textContent = 'Hotovo ' + g.querySelectorAll('input:checked').length + '/' + g.querySelectorAll('input').length; }); }
-  document.querySelectorAll('input[data-id]').forEach(function (b) { var id = b.getAttribute('data-id'); if (saved[id]) b.checked = true; b.addEventListener('change', function () { saved[id] = b.checked; save(); counts(); }); });
-  document.querySelectorAll('input[data-daily]').forEach(function (b) { var id = b.getAttribute('data-daily'); if (daily[id]) b.checked = true; b.addEventListener('change', function () { daily[id] = b.checked; daily.date = today; save(); counts(); }); });
-  counts();
+  try { states = JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; } catch (e) { states = {}; }
+  function stOf(u) {
+    if (!states[u]) states[u] = { v: 1, user: u, updated: 0, checks: {}, daily: { date: today }, plots: null };
+    var s = states[u];
+    if (!s.checks) s.checks = {};
+    if (!s.daily || s.daily.date !== today) s.daily = { date: today };
+    return s;
+  }
+  function st() { return stOf(active); }
+  (function migrate() {
+    if (Object.keys(states).length || !active) return;
+    try { var old = JSON.parse(localStorage.getItem('pomegranate-guide-v3') || 'null'); if (old) { stOf(active).checks = old; stOf(active).updated = Date.now(); stOf(active).dirty = true; } } catch (e) { }
+  })();
+  function saveStates() { try { localStorage.setItem(SKEY, JSON.stringify(states)); } catch (e) { } }
+  function touch() { var s = st(); s.updated = Date.now(); s.dirty = true; saveStates(); if (window.SBSync && window.SBSync.queueState) window.SBSync.queueState(active); }
+  function counts() {
+    document.querySelectorAll('[data-count]').forEach(function (c) {
+      var g = document.querySelector('[data-group="' + c.getAttribute('data-count') + '"]'); if (!g) return;
+      var n = g.querySelectorAll('input').length, k = g.querySelectorAll('input:checked').length, sec = g.closest('section'), all = n > 0 && k === n;
+      c.textContent = all ? '✓ Hotovo ' + k + '/' + n : 'Hotovo ' + k + '/' + n;
+      if (sec) { sec.classList.toggle('done', all); if (!all) sec.classList.remove('peek'); }
+    });
+  }
+  function applyChecks() {
+    var s = st();
+    document.querySelectorAll('input[data-id]').forEach(function (b) { b.checked = !!s.checks[b.getAttribute('data-id')]; });
+    document.querySelectorAll('input[data-daily]').forEach(function (b) { b.checked = !!s.daily[b.getAttribute('data-daily')]; });
+    counts();
+  }
+  document.querySelectorAll('input[data-id]').forEach(function (b) { b.addEventListener('change', function () { st().checks[b.getAttribute('data-id')] = b.checked; touch(); counts(); }); });
+  document.querySelectorAll('input[data-daily]').forEach(function (b) { b.addEventListener('change', function () { var s = st(); s.daily[b.getAttribute('data-daily')] = b.checked; s.daily.date = today; touch(); counts(); }); });
+  document.querySelectorAll('section .head').forEach(function (h) {
+    h.addEventListener('click', function (ev) { var sec = h.closest('section'); if (sec && sec.classList.contains('done') && !(ev.target.closest && ev.target.closest('a,button,input,select'))) sec.classList.toggle('peek'); });
+  });
 
   // ---------- záložky ----------
   var tabs = ['ted', 'mayor', 'eventy', 'garden', 'mining', 'combat', 'foraging', 'postava', 'data'];
@@ -1587,6 +1677,18 @@ window.sbExtract=sbExtract;</script>
   window.SBApp = {
     profiles: function () { return profiles; },
     active: function () { return profiles[active]; },
+    activeUser: function () { return active; },
+    state: function (u) { return stOf(u || active); },
+    touch: touch,
+    markClean: function (u, stamp) { var s = states[u]; if (s && s.updated === stamp) { delete s.dirty; saveStates(); } },
+    mergeState: function (r) {
+      if (!r || !r.user) return false;
+      var l = states[r.user];
+      if (l && (l.dirty || (l.updated || 0) >= (r.updated || 0))) return false;
+      delete r.dirty; states[r.user] = r; saveStates();
+      if (r.user === active) { applyChecks(); document.dispatchEvent(new Event('sb-render')); }
+      return true;
+    },
     merge: function (sum) {
       if (!sum || !sum.user) return false;
       var cur = profiles[sum.user];
@@ -1595,6 +1697,88 @@ window.sbExtract=sbExtract;</script>
     }
   };
   document.dispatchEvent(new Event('sbapp-ready'));
+})();
+</script>
+<script>// Přehled plotů: mřížka 5×5 jako ve hře, ukládá se ke hráči
+(function () {
+  var CROPS = [
+    ['locked', 'Zamčený', 'var(--line-2)'], ['empty', 'Prázdný', 'var(--muted)'],
+    ['wheat', 'Wheat', '#d9b84a'], ['carrot', 'Carrot', '#f08a2b'], ['potato', 'Potato', '#c9a15a'], ['wart', 'Nether Wart', '#c2413f'],
+    ['cane', 'Sugar Cane', '#7fd36b'], ['cactus', 'Cactus', '#3f9a4a'], ['cocoa', 'Cocoa', '#9a6238'], ['melon', 'Melon', '#74c043'],
+    ['pumpkin', 'Pumpkin', '#e8842a'], ['mushroom', 'Mushroom', '#c98b8b'], ['sunflower', 'Sunflower', '#f2cf3a'], ['moonflower', 'Moonflower', '#8e9bff'], ['rose', 'Wild Rose', '#e86aa0']
+  ];
+  var BY = {}; CROPS.forEach(function (c) { BY[c[0]] = c; });
+  var DEFAULTS = { KingStentik: { 5: 'wheat', 6: 'wheat', 7: 'wheat', 8: 'wheat', 9: 'wheat', 11: 'pumpkin', 13: 'carrot', 16: 'melon', 17: 'melon', 18: 'carrot' } };
+  var brush = 'melon';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function plots() {
+    var A = window.SBApp, s = A.state();
+    if (!s.plots) s.plots = JSON.parse(JSON.stringify(DEFAULTS[A.activeUser()] || {}));
+    return s.plots;
+  }
+  function get(p, i) { return i === 12 ? 'barn' : (p[i] || 'locked'); }
+  function isCrop(v) { return v !== 'locked' && v !== 'empty' && v !== 'barn'; }
+  function suggest(p) {
+    var out = [], dirs = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+    for (var i = 0; i < 25; i++) {
+      if (get(p, i) !== 'locked') continue;
+      var r = Math.floor(i / 5), c = i % 5, best = null;
+      dirs.forEach(function (d) {
+        var rr = r + d[0], cc = c + d[1], k = 0, crop = null;
+        while (rr >= 0 && rr < 5 && cc >= 0 && cc < 5) {
+          var v = get(p, rr * 5 + cc);
+          if (!isCrop(v) || (crop && v !== crop)) break;
+          crop = v; k++; rr += d[0]; cc += d[1];
+        }
+        if (k) { // nenavrhovat kolmé prodloužení farmy, která už běží druhým směrem
+          var ar = r + d[0], ac = c + d[1], perp = 1, pd = d[0] === 0 ? [1, 0] : [0, 1];
+          [1, -1].forEach(function (sg) { var qr = ar + pd[0] * sg, qc = ac + pd[1] * sg; while (qr >= 0 && qr < 5 && qc >= 0 && qc < 5 && get(p, qr * 5 + qc) === crop) { perp++; qr += pd[0] * sg; qc += pd[1] * sg; } });
+          if (perp > k) k = 0;
+        }
+        if (k && (!best || k > best.k)) best = { k: k, crop: crop, row: d[0] === 0 };
+      });
+      if (best) out.push({ i: i, k: best.k, crop: best.crop, row: best.row });
+    }
+    return out.sort(function (a, b) { return b.k - a.k; });
+  }
+  function runs(p) {
+    var best = {};
+    function scan(line) { var cur = null, k = 0; line.concat([-1]).forEach(function (i) { var v = i < 0 ? null : get(p, i); if (v === cur && isCrop(v)) k++; else { if (cur && isCrop(cur)) best[cur] = Math.max(best[cur] || 0, k); cur = v; k = 1; } }); }
+    for (var r = 0; r < 5; r++) { scan([0, 1, 2, 3, 4].map(function (c) { return r * 5 + c; })); scan([0, 1, 2, 3, 4].map(function (c) { return c * 5 + r; })); }
+    return best;
+  }
+  function render() {
+    if (!window.SBApp || !$('plotGrid')) return;
+    var p = plots(), sug = suggest(p), top = sug.slice(0, 4), hot = {}; top.forEach(function (s) { hot[s.i] = s; });
+    $('plotGrid').innerHTML = Array.apply(null, Array(25)).map(function (_, i) {
+      var v = get(p, i);
+      if (v === 'barn') return '<span class="plot barn" title="Barn">Barn</span>';
+      var C = BY[v] || BY.locked;
+      return '<button type="button" class="plot ' + (v === 'locked' ? 'locked' : v === 'empty' ? 'empty' : 'crop') + (hot[i] ? ' hot' : '') + '" data-i="' + i + '" style="--pc:' + C[2] + '" title="' + esc(C[1]) + '">' + (v === 'locked' ? (hot[i] ? '+' : '') : esc(C[1])) + '</button>';
+    }).join('');
+    $('plotPalette').innerHTML = CROPS.map(function (c) { return '<button type="button" class="chip pbrush" data-brush="' + c[0] + '" aria-pressed="' + (c[0] === brush) + '" style="--pc:' + c[2] + '">' + esc(c[1]) + '</button>'; }).join('');
+    var open = 0, counts = {}; for (var i = 0; i < 25; i++) { var v = get(p, i); if (v !== 'locked' && v !== 'barn') open++; if (isCrop(v)) counts[v] = (counts[v] || 0) + 1; }
+    var R = runs(p);
+    $('plotStats').innerHTML = '<div class="stat"><b>' + open + ' / 24</b><span>odemčených plotů</span></div>' + Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).map(function (k) {
+      return '<div class="stat"><b style="color:' + BY[k][2] + '">' + counts[k] + '× ' + esc(BY[k][1]) + '</b><span>nejdelší řada ' + (R[k] || 1) + ' = ' + (R[k] || 1) * 96 + ' bloků</span></div>';
+    }).join('');
+    $('plotTips').innerHTML = top.length ? top.map(function (s) {
+      var r = Math.floor(s.i / 5) + 1, c = s.i % 5 + 1;
+      return '<li>Plot v <b>řadě ' + r + ', sloupci ' + c + '</b>: když ho odemkneš a dáš na něj <b style="color:' + BY[s.crop][2] + '">' + esc(BY[s.crop][1]) + '</b>, protáhneš farmu ' + (s.row ? 'v řadě' : 've sloupci') + ' na <b>' + (s.k + 1) + ' ploty (' + (s.k + 1) * 96 + ' bloků)</b>.</li>';
+    }).join('') : '<li>Žádný zamčený plot teď nenavazuje na farmu. Nejdřív naklikej, co máš kde.</li>';
+  }
+  document.addEventListener('click', function (ev) {
+    var t = ev.target.closest && ev.target.closest('.pbrush');
+    if (t) { brush = t.getAttribute('data-brush'); render(); return; }
+    var b = ev.target.closest && ev.target.closest('#plotGrid .plot[data-i]');
+    if (!b) return;
+    var p = plots(), i = +b.getAttribute('data-i');
+    if (brush === 'locked') delete p[i]; else p[i] = brush;
+    window.SBApp.touch(); render();
+  });
+  document.addEventListener('sb-render', render);
+  render();
 })();
 </script>
 <script>// Sdílení savů přes GitHub repo (data/skyblock/<hráč>.json + index.json)
@@ -1626,11 +1810,43 @@ window.sbExtract=sbExtract;</script>
       });
   }
   // Čtení: nejdřív GitHub API (hned aktuální), pak stejné soubory přes GitHub Pages (po ~1 min)
+  // S tokenem čteme přes API (hned aktuální, velký limit). Bez tokenu přes GitHub Pages (zpoždění asi minutu, žádný limit).
+  function viaApi(path) { return gh(path).then(function (f) { return f ? JSON.parse(unb64(f.content)) : null; }); }
+  function viaPages(path) { return fetch(path + '?_=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (r.status === 404) return null; if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }); }
   function readJSON(path) {
-    return gh(path).then(function (f) { return f ? JSON.parse(unb64(f.content)) : null; })
-      .catch(function () {
-        return fetch(path + '?_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    var a = token() ? viaApi : viaPages, b = token() ? viaPages : viaApi;
+    return a(path).catch(function () { return b(path).catch(function () { return null; }); });
+  }
+  function stateFile(u) { return DIR + '/state-' + slug(u) + '.json'; }
+  var dirty = {}, timer = null, flushing = false;
+  function queueState(u) {
+    dirty[u] = 1;
+    if (!token()) { status('Odškrtnuto jen u tebe (bez tokenu)', ''); return; }
+    status('Změny čekají na uložení…', 'busy');
+    clearTimeout(timer); timer = setTimeout(flush, 10000);
+  }
+  function flush() {
+    clearTimeout(timer);
+    var users = Object.keys(dirty);
+    if (!users.length || !token() || flushing || !window.SBApp) return Promise.resolve();
+    flushing = true; dirty = {};
+    return users.reduce(function (p, u) {
+      return p.then(function () {
+        var s = window.SBApp.state(u), stamp = s.updated, copy = JSON.parse(JSON.stringify(s)); delete copy.dirty;
+        return putJSON(stateFile(u), copy, 'SkyBlock postup: ' + u).then(function () { window.SBApp.markClean(u, stamp); });
       });
+    }, Promise.resolve()).then(function () { status('Postup uložen · ' + hm(new Date()), 'ok'); })
+      .catch(function (e) { users.forEach(function (u) { dirty[u] = 1; }); status('Postup se nepodařilo uložit', 'err'); msg('Uložení postupu selhalo: ' + e.message, true); })
+      .then(function () { flushing = false; if (Object.keys(dirty).length && token()) timer = setTimeout(flush, 10000); });
+  }
+  function pullStates() {
+    if (!window.SBApp) return Promise.resolve();
+    return Promise.all(Object.keys(window.SBApp.profiles()).map(function (u) {
+      return readJSON(stateFile(u)).then(function (r) {
+        if (r) window.SBApp.mergeState(r);
+        if (window.SBApp.state(u).dirty && token()) queueState(u);
+      });
+    }));
   }
   function putJSON(path, obj, message, tries) {
     tries = tries || 0;
@@ -1657,7 +1873,7 @@ window.sbExtract=sbExtract;</script>
         status('Synchronizováno s GitHubem', 'ok');
         if (got.length) toast('Z GitHubu načteno: ' + got.join(', '));
         else if (manual) toast('Máš nejnovější data (poslední nahrání ' + hm(last) + ').');
-        return got.length;
+        return pullStates().then(function () { return got.length; });
       });
     }).catch(function (e) { status('GitHub nedostupný', 'err'); if (manual) msg('Nepodařilo se načíst: ' + e.message, true); })
       .then(function (x) { pulling = false; return x; });
@@ -1716,7 +1932,9 @@ window.sbExtract=sbExtract;</script>
     $('ghPush') && $('ghPush').addEventListener('click', function () { upload(window.SBApp && window.SBApp.active()); });
   }
 
-  window.SBSync = { pull: pull, upload: upload };
+  window.SBSync = { pull: pull, upload: upload, queueState: queueState, flush: flush };
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(); });
+  window.addEventListener('pagehide', flush);
   function start() { bind(); pull(false); }
   if (window.SBApp) start(); else document.addEventListener('sbapp-ready', start);
   var lastAuto = Date.now();
