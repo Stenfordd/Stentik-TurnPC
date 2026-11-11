@@ -741,7 +741,7 @@ footer ul{margin:0;padding-left:18px}
 <div class="formgrid">
 <label>Plodina<select class="inp" id="fmCrop"></select></label>
 <label>Kolik jsem udělal<input type="text" class="inp" id="fmAmt" inputmode="text" placeholder="1 500 000 nebo 2m"></label>
-<label>Čeho<select class="inp" id="fmUnit"><option value="items">kusů (ze sacku / collection)</option><option value="coins">coinů (z purse)</option></select></label>
+<label>Čeho<select class="inp" id="fmUnit"><option value="coins">coinů</option><option value="items">kusů</option></select></label>
 <label>Za jak dlouho<input type="text" class="inp" id="fmTime" inputmode="decimal" placeholder="10"></label>
 <label>Jednotka času<select class="inp" id="fmTU"><option value="60">minut</option><option value="1">sekund</option><option value="3600">hodin</option></select></label>
 <label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
@@ -2615,6 +2615,7 @@ window.sbExtract=sbExtract;</script>
     if (!$('fmCrop')) return;
     var s = S(), meas = s.meas || {};
     if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join(''); $('fmCrop').value = 'wheat'; $('fmPrice').value = CB.wheat[2]; }
+    if (s.fmUnit && document.activeElement !== $('fmUnit') && !$('fmAmt').value) $('fmUnit').value = s.fmUnit;
     if (document.activeElement !== $('fmHours')) $('fmHours').value = s.farmHours != null ? s.farmHours : '';
     if (document.activeElement !== $('fmGoal')) $('fmGoal').value = s.farmGoal != null ? s.farmGoal : '';
     var H = num($('fmHours').value); if (isNaN(H) || H <= 0) H = 1;
@@ -2643,6 +2644,7 @@ window.sbExtract=sbExtract;</script>
     $('skL2').textContent = e[1] ? (e[3] || '2. stupeň') + ' (×' + nf(e[1]) + ')' : '2. stupeň (nepoužívá se)';
     $('skM0').textContent = $('skL0').textContent; $('skM1').textContent = $('skL1').textContent; $('skM2').textContent = $('skL2').textContent;
   }
+  function saveUnit() { App().touch(); }
   function bindFarm() {
     if (!$('fmCrop')) return;
     $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; sackLabels(); });
@@ -2661,7 +2663,7 @@ window.sbExtract=sbExtract;</script>
       var perH = amt / (tv * tu) * 3600, coins = unit === 'coins' ? perH : perH * pr, items = unit === 'items' ? perH : (pr ? perH / pr : 0), s = S(); if (!s.meas) s.meas = {};
       var tun = { 60: 'min', 1: 's', 3600: 'h' }[tu];
       s.meas[k] = { perHour: Math.round(items), coins: Math.round(coins), price: pr, at: Date.now(), amt: $('fmAmt').value, unit: unit, tv: $('fmTime').value, tu: tu, txt: short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun };
-      App().touch(); msg.textContent = CB[k][1] + ': ' + short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun + ' → ' + (coins ? short(coins) + ' coinů za hodinu' : short(items) + ' kusů za hodinu (doplň NPC cenu pro coiny)') + (unit === 'coins' ? '. Pokud jsi zadal počet kusů ze sacku, přepni „Čeho“ na kusů.' : '.'); msg.className = 'msg ok'; renderFarm();
+      App().touch(); msg.textContent = CB[k][1] + ': ' + short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun + ' → ' + (coins ? short(coins) + ' coinů za hodinu' : short(items) + ' kusů za hodinu (doplň NPC cenu pro coiny)') + '.'; s.fmUnit = unit; saveUnit(); msg.className = 'msg ok'; renderFarm();
     });
     document.addEventListener('click', function (ev) {
       var d = ev.target.closest && ev.target.closest('[data-fmdel]'), ed = ev.target.closest && ev.target.closest('[data-fmedit]'), s;
