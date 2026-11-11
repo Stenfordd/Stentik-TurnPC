@@ -331,6 +331,31 @@ section.done.peek .head::after{content:"sbalit"}
 .pbrush::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--pc);margin-right:6px}
 .pbrush[aria-pressed="true"]{background:color-mix(in srgb,var(--pc) 28%,var(--surface));border-color:var(--pc);box-shadow:0 0 0 1px var(--pc)}
 
+/* ===== Rádce, formuláře, Forge ===== */
+.adv{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.advc{--ac:var(--accent);display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);border-left:4px solid var(--ac);background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 9%,var(--surface-2)),var(--surface-2) 70%);text-decoration:none;color:var(--ink);min-width:0;transition:transform .15s}
+.advc:hover{transform:translateY(-2px);color:var(--ink)}
+.advc b{font:700 1rem 'Pixelify Sans',monospace;color:var(--ac)}
+.advc span{font-size:.87rem}
+.advc .go{font:700 .7rem 'Pixelify Sans',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:auto}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.formgrid label{display:flex;flex-direction:column;gap:4px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.formgrid .inp,.formgrid select.inp{width:100%;font:500 .9rem 'JetBrains Mono',monospace;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:9px 11px;text-transform:none;letter-spacing:0}
+.formgrid .btn{justify-content:center;height:40px}
+.fglist{display:flex;flex-direction:column;gap:8px}
+.fg{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2)}
+.fg b{font-family:'Pixelify Sans',monospace}
+.fg .left{font:600 .85rem 'JetBrains Mono',monospace;color:var(--muted);white-space:nowrap}
+.fg.ready{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.fg.ready .left{color:var(--accent)}
+.fg .bar2{grid-column:1/-1;height:6px;border-radius:999px;background:var(--field);overflow:hidden}
+.fg .bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--legendary),var(--accent))}
+.xbtn{font:700 .8rem 'JetBrains Mono',monospace;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:8px;padding:4px 9px;cursor:pointer}
+.xbtn:hover{color:var(--warn);border-color:var(--warn)}
+.pp{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.pp h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:8px}
+.pp h3 span{font:600 .85rem 'JetBrains Mono',monospace;color:var(--muted)}
+
 /* ===== Patička ===== */
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
 footer ul{margin:0;padding-left:18px}
@@ -402,6 +427,13 @@ footer ul{margin:0;padding-left:18px}
 </div>
 
 <div data-r="inactive"></div>
+
+<section class="legendary" id="advisorBox">
+<div class="head"><h2>Teď se vyplatí</h2><span class="tag">Počítáno z dat</span></div>
+<div class="adv" id="advList"></div>
+<details><summary>Další tipy</summary><div class="body"><div class="adv" id="advMore"></div></div></details>
+<small>Skládá se ze savu vybraného hráče, aktuálního mayora, kalendáře eventů, Forge fronty a toho, co máš odškrtnuté.</small>
+</section>
 
 <section>
 <div class="head"><h2>Čtyři hlavní cíle</h2></div>
@@ -677,6 +709,28 @@ footer ul{margin:0;padding-left:18px}
 </ul>
 </section>
 
+<section class="uncommon">
+<div class="head"><h2>Měřič farmení</h2></div>
+<p>Zapiš stav collection (nebo sacku) před farmením a po něm a kolik minut jsi farmil. Stránka dopočítá kusy a coiny za hodinu a uloží to, ať můžeš plodiny porovnat. Do čísel můžeš psát i <span class="mono">4306240+153000</span> nebo <span class="mono">1,3m</span>.</p>
+<div class="formgrid">
+<label>Plodina<select class="inp" id="fmCrop"></select></label>
+<label>Stav před<input type="text" class="inp" id="fmBefore" inputmode="text" placeholder="2 887 720"></label>
+<label>Stav po<input type="text" class="inp" id="fmAfter" inputmode="text" placeholder="4306240+153000"></label>
+<label>Minut<input type="text" class="inp" id="fmMin" inputmode="decimal" placeholder="15"></label>
+<label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
+<button class="btn" type="button" id="fmSave">Uložit měření</button>
+</div>
+<p class="msg" id="fmMsg" role="status"></p>
+<div class="scroll" id="fmTable"></div>
+<p class="track-label">Odhad ze vzorce</p>
+<div class="formgrid">
+<label>Farming Fortune (celková na plodinu)<input type="text" class="inp" id="fcFF" inputmode="decimal" placeholder="např. 900"></label>
+<label>Bloků za sekundu<input type="text" class="inp" id="fcBps" inputmode="decimal" placeholder="20"></label>
+</div>
+<div class="scroll" id="fcTable"></div>
+<small>Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
+</section>
+
 <section class="rare">
 <div class="head"><h2>5. Farmy a Fermento armor</h2></div>
 <p>Fermento armor potřebuje Farming 40 (teď: <b data-b="farmingLvl">…</b>). Fermento padá při farmení <b>sugar cane, cactus, mushroom a nether wart</b> v Squash armoru. Na to potřebuješ farmy:</p>
@@ -723,6 +777,24 @@ footer ul{margin:0;padding-left:18px}
 <div class="scroll" data-r="hotmPerks"></div>
 <small data-b="hotmPowder">…</small>
 <p><b>Kam powder:</b> Mithril → <b>Mining Speed</b>, pak <b>Mining Fortune</b>. Gemstone → <b>Mole</b>, část do Gem Lover.</p>
+</section>
+
+<section class="legendary">
+<div class="head"><h2>Plánovač HOTM</h2><span class="counter" id="hpNow"></span></div>
+<div class="formgrid">
+<label>Commissions za den<input type="text" class="inp" id="hpComm" inputmode="numeric" placeholder="4"></label>
+<label>Průměr HOTM XP za commission<input type="text" class="inp" id="hpAvg" inputmode="numeric" placeholder="250"></label>
+<label>Další HOTM XP za den (eventy, corpses…)<input type="text" class="inp" id="hpExtra" inputmode="numeric" placeholder="0"></label>
+</div>
+<div class="stats" id="hpStats"></div>
+<div class="scroll" id="hpTable"></div>
+<small>Počítá se z XP v savu. Commission v Dwarven Mines dává 100–400 HOTM XP, první 4 za den mají bonus 900 dohromady. V Glacite Tunnels (od HOTM 7) dává commission 750.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Plán powderu</h2></div>
+<div id="ppBox"></div>
+<small>Ceny dalšího levelu jsou přímo ze savu. Pořadí je obecné doporučení: nejdřív rychlost a fortune, pak zbytek.</small>
 </section>
 
 <section class="legendary">
@@ -773,6 +845,20 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section class="legendary">
+<div class="head"><h2>Forge fronta</h2><span class="counter" id="fgCount"></span></div>
+<p>Když něco naložíš do Forge, zapiš to sem i s časem, který ukazuje hra (už má započítaný Quick Forge i Molten Forge). Stránka odpočítává a v „Teď se vyplatí“ ti řekne, až bude hotovo.</p>
+<div class="formgrid">
+<label>Co<input type="text" class="inp" id="fgName" list="fgNames" placeholder="Refined Titanium"></label>
+<label>Hodin<input type="text" class="inp" id="fgH" inputmode="numeric" placeholder="12"></label>
+<label>Minut<input type="text" class="inp" id="fgM" inputmode="numeric" placeholder="0"></label>
+<button class="btn" type="button" id="fgAdd">Naložit</button>
+</div>
+<datalist id="fgNames"><option value="Refined Diamond"><option value="Refined Mithril"><option value="Refined Titanium"><option value="Refined Tungsten"><option value="Refined Umber"><option value="Fuel Canister"><option value="Drill Motor"><option value="Golden Plate"><option value="Mithril Plate"><option value="Gemstone Mixture"><option value="Bejeweled Handle"><option value="Mithril Drill SX-R226"><option value="Mithril Drill SX-R326"><option value="Ruby Drill TX-15"><option value="Gemstone Drill LT-522"><option value="Topaz Drill KGR-12"><option value="Titanium Drill DR-X355"><option value="Titanium Drill DR-X455"><option value="Titanium Drill DR-X555"><option value="Titanium Drill DR-X655"><option value="Secret Railroad Pass"><option value="Blue Cheese Goblin Omelette"></datalist>
+<p class="msg" id="fgMsg" role="status"></p>
+<div class="fglist" id="fgList"></div>
+</section>
+
+<section class="legendary">
 <div class="head"><h2>Ironman mining: gear cesta</h2></div>
 <p class="track-label">Krumpáč a drill</p>
 <p>Lazy Miner's Pickaxe → Diamond Pickaxe (Fortune III) → Fractured, pak Bandaged a nakonec normální Mithril Pickaxe → <b>Mithril Drill SX-R226 → SX-R326</b> → Ruby Drill → Gemstone Drill → Topaz Drill → <b>Titanium Drill DR-X355 → 455 → 555 → 655</b> → (bokem Jasper Drill) → <b>Divan's Drill</b>.</p>
@@ -790,6 +876,64 @@ footer ul{margin:0;padding-left:18px}
 <p class="track-label">Do drillu</p>
 <p><b>Blue Cheese Goblin Omelette</b> je nejlepší upgrade skoro na všechno. Na grind powderu Spicy Goblin Omelette. Enchanty: Ultimate Wise (poloviční mana na ability), Flowstate (gemstony a zlato).</p>
 <small>Hlavní zdroj: Mining Guide 2026 z Discordu Ironman Sweats. Doplněno o Mining Guides a fandom wiki.</small>
+</section>
+
+<p class="note">Žebříčky níž si pamatují stav pro každého hráče. Co stránka pozná ze savu (armor, equipment, pets), odškrtne sama.</p>
+
+<section class="legendary">
+<div class="head"><h2>Žebříček: krumpáč a drill</h2><span class="counter" data-count="mgd"></span></div>
+<ul class="check" data-group="mgd">
+<li><label><input type="checkbox" data-id="mgd1"><span><span class="t">Mithril Pickaxe</span><small>Fractured → Bandaged → Mithril Pickaxe. Start v Dwarven Mines.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd2"><span><span class="t">Mithril Drill SX-R226</span><small>První drill. Forge, potřebuje Drill Motor a Fuel Canister.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd3"><span><span class="t">Mithril Drill SX-R326</span><small>Nejlepší levný drill na Mithril powder.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd4"><span><span class="t">Ruby Drill TX-15</span><small>Vstup do gemstone větve.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd5"><span><span class="t">Gemstone Drill LT-522</span><small>Další krok gemstone větve.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd6"><span><span class="t">Topaz Drill KGR-12</span><small>Poslední před Titanium drillem.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd7"><span><span class="t">Titanium Drill DR-X355</span><small>Titanium větev. Odsud jde upgradovat dál.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd8"><span><span class="t">Titanium Drill DR-X455</span><small>Upgrade ve Forge.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd9"><span><span class="t">Titanium Drill DR-X555</span><small>Upgrade ve Forge.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd10"><span><span class="t">Titanium Drill DR-X655</span><small>Nejlepší před Divanem. Dobrý na Glacite powder.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd11"><span><span class="t">Divan's Drill</span><small>End game.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgd12"><span><span class="t">Blue Cheese Goblin Omelette v drillu</span><small>Goblin Egg → King Yolkar. Nejlepší drill upgrade skoro na všechno.</small></span></label></li>
+</ul>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Žebříček: mining armor</h2><span class="counter" data-count="mga"></span></div>
+<ul class="check" data-group="mga">
+<li><label><input type="checkbox" data-id="mga1"><span><span class="t">Heat armor</span><small>Začátek. Vzácný drop z Deep Caverns.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mga2"><span><span class="t">Glacite armor</span><small>Od Mining 20. Glacite Walkers u Great Ice Wall.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mga3"><span><span class="t">Flamebreaker armor</span><small>Odolnost proti horku, krok k Yogu.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mga4"><span><span class="t">Yog armor</span><small>Minimum na gemstony ve velkém (Pristine).</small></span></label></li>
+<li><label><input type="checkbox" data-id="mga5"><span><span class="t">Armor of Divan</span><small>End game. Fragmenty z Mines of Divan.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mga6"><span><span class="t">Mineral armor</span><small>Jen při Cole Mining Fiesta. Na rudy a bloky.</small></span></label></li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Žebříček: mining equipment</h2><span class="counter" data-count="mge"></span></div>
+<ul class="check" data-group="mge">
+<li><label><input type="checkbox" data-id="mge1"><span><span class="t">Mithril equipment (4 kusy)</span><small>Belt, Cloak, Gauntlet, Necklace.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mge2"><span><span class="t">Royal reforge na equipmentu</span><small>Mithril powder a Mining Speed.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mge3"><span><span class="t">Titanium equipment</span><small>Suroviny jen při Cole Mining Fiesta.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mge4"><span><span class="t">Dwarven Handwarmers</span><small>Glacite Tunnels.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mge5"><span><span class="t">Pendant of Divan</span><small>End game necklace.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mge6"><span><span class="t">Ancient Cloak</span><small>Plášť na konec.</small></span></label></li>
+</ul>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Žebříček: mining pets</h2><span class="counter" data-count="mgp"></span></div>
+<ul class="check" data-group="mgp">
+<li><label><input type="checkbox" data-id="mgp1"><span><span class="t">Silverfish</span><small>Craft. Mining Wisdom a Speed na začátek.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp2"><span><span class="t">Mithril Golem</span><small>Craft. Mithril powder.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp3"><span><span class="t">Mithril Golem na levelu 100</span><small>Na levelu 1 skoro nic nedává.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp4"><span><span class="t">Armadillo</span><small>Drop z Nucleu a chestů. Commissions v Hollows.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp5"><span><span class="t">Bal</span><small>Drop z Bala v Magma Fields.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp6"><span><span class="t">Mole</span><small>Vzácně z Nucleu.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp7"><span><span class="t">Glacite Golem</span><small>Craft. Glacite powder a mineshafty.</small></span></label></li>
+<li><label><input type="checkbox" data-id="mgp8"><span><span class="t">Scatha</span><small>Vzácný drop. Nejlepší na všechno kromě gemstonů v Magma Fields.</small></span></label></li>
+</ul>
 </section>
 
 <section class="epic">
@@ -1680,6 +1824,7 @@ window.sbExtract=sbExtract;</script>
     activeUser: function () { return active; },
     state: function (u) { return stOf(u || active); },
     touch: touch,
+    applyChecks: applyChecks,
     markClean: function (u, stamp) { var s = states[u]; if (s && s.updated === stamp) { delete s.dirty; saveStates(); } },
     mergeState: function (r) {
       if (!r || !r.user) return false;
@@ -2180,6 +2325,7 @@ window.sbExtract=sbExtract;</script>
     var t = Date.now() / 1000;
     var rows = E.map(function (e) { var o = occ(e, t), on = perkOn(e); return { e: e, s: o[0], f: o[1], live: o[0] <= t, on: on }; });
     rows.sort(function (a, b) { var ka = a.on === false ? 2 : a.live ? 0 : 1, kb = b.on === false ? 2 : b.live ? 0 : 1; return ka - kb || (ka === 0 ? a.f - b.f : a.s - b.s); });
+    window.SBEvents = rows.map(function (r) { return { id: r.e.id, n: r.e.n, s: r.s, f: r.f, live: r.live, on: r.on !== false }; });
     var next = rows.filter(function (r) { return r.on !== false; });
     var nb = $('evNextBadge');
     if (nb && next[0]) nb.textContent = next[0].live ? 'Teď běží: ' + next[0].e.n : 'Další: ' + next[0].e.n + ' za ' + dur(next[0].s - t);
@@ -2205,9 +2351,239 @@ window.sbExtract=sbExtract;</script>
     }).join('');
     document.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('a.ev'); if (!a) return; ev.preventDefault(); var d = document.querySelector(a.getAttribute('href')); if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } });
   }
-  guide(); render();
+  guide(); render(); document.dispatchEvent(new Event('sb-events'));
   document.addEventListener('sb-perks', render);
   setInterval(render, 30000);
+})();
+</script>
+<script>// Nástroje: rádce „Teď se vyplatí“, měřič farmení, plánovač HOTM, plán powderu, žebříčky gearu, Forge fronta
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function nf(n) { return Math.round(n).toLocaleString('cs-CZ'); }
+  function short(n) { if (n == null || isNaN(n)) return '—'; return n >= 1e9 ? (n / 1e9).toFixed(2).replace('.', ',') + 'B' : n >= 1e6 ? (n / 1e6).toFixed(2).replace('.', ',') + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'K' : nf(n); }
+  function dur(ms) { if (ms < 0) ms = 0; var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return d ? d + ' d ' + h + ' h' : h ? h + ' h ' + m + ' min' : m + ' min'; }
+  // "2 887 720", "4306240+153000", "1,3m", "450k"
+  function num(v) {
+    var tot = 0, ok = false;
+    String(v == null ? '' : v).split('+').forEach(function (part) {
+      var m = part.replace(/\s/g, '').toLowerCase().match(/^(-?[\d.,]+)([kmb]?)$/); if (!m) return;
+      var raw = m[1], x;
+      if (m[2]) x = parseFloat(raw.replace(',', '.')); else x = parseFloat(raw.replace(/[.,](?=\d{3}(\D|$))/g, '').replace(',', '.'));
+      if (isNaN(x)) return;
+      tot += x * ({ k: 1e3, m: 1e6, b: 1e9 }[m[2]] || 1); ok = true;
+    });
+    return ok ? tot : NaN;
+  }
+  function App() { return window.SBApp; }
+  function S() { return App().state(); }
+  function P() { return App().active() || {}; }
+  function perkOn(re) { var p = window.SBPerks; return !!(p && p.perks.some(function (x) { return re.test(x); })); }
+  function ev(id) { var l = window.SBEvents || []; for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i]; return null; }
+
+  // ================= Rádce =================
+  var HOTM_NEED = { 2: 3000, 3: 9000, 4: 25000, 5: 60000, 6: 100000, 7: 150000, 8: 210000, 9: 290000, 10: 400000 };
+  function advise() {
+    var p = P(), s = S(), out = [], now = Date.now(), t = now / 1000;
+    function add(w, title, text, tab, c) { out.push({ w: w, t: title, d: text, tab: tab, c: c }); }
+    var hot = p.hotm || {}, tier = hot.tier || {}, sk = p.skills || {}, gear = p.gear || {}, pets = p.pets || [];
+    var farmer = (sk.farming && sk.farming.lvl >= 30) || (p.farming && p.farming.copper > 0);
+    var miner = tier.lvl >= 2;
+    // --- eventy
+    var e;
+    if ((e = ev('newyear')) && e.live) add(96, 'New Year Cake: vyzvedni si ho', 'Baker v Hubu rozdává dort zdarma, končí za ' + dur((e.f - t) * 1000) + '. Stojí to 10 sekund.', 'eventy', 'var(--legendary)');
+    if ((e = ev('zoo'))) { if (e.live) add(92, 'Traveling Zoo je otevřené', 'Oringo je v Hubu ještě ' + dur((e.f - t) * 1000) + '.' + (farmer ? ' Elephant je farming pet.' : '') + ' Máš ' + short(p.purse) + ' coinů v purse.', 'eventy', 'var(--legendary)'); else if (e.s - t < 6 * 3600) add(72, 'Traveling Zoo za ' + dur((e.s - t) * 1000), 'Připrav si coiny (purse ' + short(p.purse) + ').' + (farmer ? ' Elephant je farming pet.' : ''), 'eventy', 'var(--legendary)'); }
+    if ((e = ev('spooky'))) { if (e.live) add(90, 'Spooky Festival běží', 'Ještě ' + dur((e.f - t) * 1000) + '. Zabíjej moby kvůli Green a Purple Candy, pak k Fear Mongererovi.', 'eventy', 'var(--legendary)'); else if (e.s - t < 3 * 3600) add(66, 'Spooky Festival za ' + dur((e.s - t) * 1000), 'Hodina farmení candy. Připrav si combat gear.', 'eventy', 'var(--legendary)'); }
+    if ((e = ev('jerry')) && e.live) add(84, 'Season of Jerry běží', 'Obrana Jerry\'s Workshopu, ještě ' + dur((e.f - t) * 1000) + '.', 'eventy', 'var(--rare)');
+    if ((e = ev('workshop'))) { if (e.live) add(64, "Jerry's Workshop je otevřený", 'Gifty dávají Jerry talismany (Magical Power, máš ' + ((p.mp && p.mp.total) || '?') + '). Zavírá za ' + dur((e.f - t) * 1000) + '.', 'eventy', 'var(--rare)'); else if (e.s - t < 6 * 3600) add(40, "Jerry's Workshop za " + dur((e.s - t) * 1000), 'Zimní ostrov na 10 hodin: gifty a talismany.', 'eventy', 'var(--rare)'); }
+    if (farmer && (e = ev('jacob'))) { if (e.live) add(58, "Jacob's Contest právě běží", 'Ještě ' + dur((e.f - t) * 1000) + '. Mrkni do Calendar, jestli je mezi plodinami ta tvoje.', 'eventy', 'var(--uncommon)'); else if (e.s - t < 15 * 60) add(52, "Jacob's Contest za " + dur((e.s - t) * 1000), 'Zkontroluj plodiny v Calendar a buď na farmě včas.', 'eventy', 'var(--uncommon)'); }
+    if ((e = ev('hoppity')) && e.live) add(24, "Hoppity's Hunt běží", 'Sbírej vajíčka a utrácej čokoládu v Chocolate Factory (/cf).', 'eventy', 'var(--mythic)');
+    if ((e = ev('election')) && e.live) add(18, 'Běží volby', 'Hlasuj v Hubu. Kdo je pro vás nejlepší, je na záložce Mayor.', 'mayor', 'var(--legendary)');
+    // --- mayor perky
+    var equipStr = (gear.equip || []).join(' ');
+    if (perkOn(/mining fiesta/i) && miner) add(/titanium/i.test(equipStr) ? 60 : 88, 'Mining Fiesta: jdi minovat', /titanium/i.test(equipStr) ? 'Bonus Mining Wisdom a Fortune, navíc Refined Minerals a Glossy Gemstones.' : 'Teď padají Refined Minerals: jediná šance na Titanium equipment. Ty ho ještě nemáš.', 'mining', 'var(--rare)');
+    if (perkOn(/molten forge/i) && miner) add(42, 'Molten Forge: Forge je rychlejší', 'Nalož teď dlouhé recepty (Refined Titanium, drill díly).', 'mining', 'var(--rare)');
+    if (perkOn(/mining xp buff/i) && miner) add(50, 'Mining XP Buff', 'Víc Mining Wisdom na veřejných ostrovech. Dobrý týden na commissions.', 'mining', 'var(--rare)');
+    if (perkOn(/pet xp buff/i)) { var low = pets.filter(function (x) { return x.on && x.lvl < 100; })[0]; add(low ? 62 : 30, 'Pet XP Buff: leveluj pety', low ? 'Aktivní ' + low.n + ' je na levelu ' + low.lvl + '. Teď roste rychleji.' : 'Víc Pet XP. Nasaď peta, kterého chceš vytáhnout.', 'postava', 'var(--legendary)'); }
+    if (perkOn(/turbo minions/i)) add(82, 'Derpy: minioni jedou dvakrát rychleji', 'Dolij palivo, vyprázdni truhly a nech je běžet.', 'postava', 'var(--special)');
+    if (perkOn(/moar skillz/i)) add(80, 'Derpy: víc skill XP', 'Nejlepší doba na grind skillů.', 'ted', 'var(--special)');
+    if (perkOn(/blooming business|pest eradicator|farming simulator/i) && farmer) add(60, 'Farming perk od mayora je aktivní', 'Víc Copperu od visitorů nebo silnější farming bonusy. Farmi a obsluhuj visitory.', 'garden', 'var(--uncommon)');
+    if (perkOn(/slashed pricing|slayer xp buff/i)) add(48, 'Aatrox: slayery se vyplatí', 'Levnější bossové nebo víc Slayer XP. Odjeď pár Revenantů a Tarantul.', 'combat', 'var(--warn)');
+    if (perkOn(/fishing festival/i) && (e = ev('fishfest')) && e.live) add(46, 'Fishing Festival běží', 'Žraloci: Shark Fins a zuby. Ještě ' + dur((e.f - t) * 1000) + '.', 'eventy', 'var(--rare)');
+    if (perkOn(/mythological ritual/i)) add(34, 'Diana: Mythological Ritual', 'Griffin burrows v Hubu, pokud máš Ancestral Spade a Griffina.', 'eventy', 'var(--legendary)');
+    // --- Forge
+    var fg = s.forge || [], ready = fg.filter(function (x) { return x.end <= now; }), soon = fg.filter(function (x) { return x.end > now && x.end - now < 30 * 60000; });
+    if (ready.length) add(89, 'Forge: hotovo ' + ready.length + '×', ready.map(function (x) { return x.n; }).join(', ') + '. Vyber a nalož další.', 'mining', 'var(--accent)');
+    else if (soon.length) add(45, 'Forge: brzy hotovo', soon[0].n + ' za ' + dur(soon[0].end - now) + '.', 'mining', 'var(--accent)');
+    else if (miner && !fg.length) add(38, 'Forge fronta je prázdná', 'Pokud ve Forge nic neběží, nalož něco. Když běží, zapiš to do Forge fronty a stránka to pohlídá.', 'mining', 'var(--epic)');
+    // --- HOTM
+    if (hot.tokens && hot.tokens.available > 0) add(86, 'Neutracené HOTM tokeny: ' + hot.tokens.available, 'Otevři /hotm a vyber perk.', 'mining', 'var(--epic)');
+    if (p.forage && p.forage.tokens && p.forage.tokens.available > 0) add(56, 'Neutracený Forest token', 'Heart of the Forest má ' + p.forage.tokens.available + ' volný token.', 'foraging', 'var(--uncommon)');
+    if (miner && tier.lvl < 10 && !tier.maxed && !(s.daily && s.daily.d1)) add(tier.lvl < 7 ? 76 : 50, 'Dnešní 4 commissions', 'Bonus 900 HOTM XP navíc. Do HOTM ' + (tier.lvl + 1) + ' zbývá ' + nf(tier.next - tier.cur) + ' XP.', 'mining', 'var(--epic)');
+    (function () {
+      var pw = hot.powder || {}, order = { Mithril: PP_ORDER.Mithril, Gemstone: PP_ORDER.Gemstone };
+      ['Mithril', 'Gemstone'].forEach(function (kind) {
+        var bal = pw[kind.toLowerCase()] ? pw[kind.toLowerCase()].total : 0;
+        var list = (hot.perks || []).filter(function (x) { return x.powder === kind && x.cost && x.lvl < x.max; }).sort(function (a, b) { return rank(order[kind], a.n) - rank(order[kind], b.n); });
+        var first = list.filter(function (x) { return x.cost <= bal; })[0];
+        if (first) add(44, kind + ' powder: stačí na ' + first.n, 'Máš ' + nf(bal) + ', další level stojí ' + nf(first.cost) + '.', 'mining', 'var(--epic)');
+      });
+    })();
+    var act = pets.filter(function (x) { return x.on; })[0];
+    if (act && act.lvl < 20 && /LEGENDARY|EPIC|MYTHIC/.test(act.r)) add(63, 'Aktivní pet ' + act.n + ' je na levelu ' + act.lvl, 'Na nízkém levelu skoro nic nedává. Nech ho nasazeného při grindu, ať roste.', 'postava', 'var(--legendary)');
+    // --- Garden
+    if (farmer) {
+      var bee = pets.filter(function (x) { return x.n === 'Bee' && x.lvl >= 90; })[0];
+      if (bee && !s.checks.gq1) add(70, 'Yellow Bandana na Bee', '+30 Farming Fortune za Copper (máš ' + ((p.farming && p.farming.copper) || 0) + ').', 'garden', 'var(--uncommon)');
+      if (/squash/i.test(gear.set || '') && sk.farming.lvl >= 40) add(54, 'Farmi na Fermento armor', 'Ve Squash setu padá Fermento z cane, cactusu, mushroomů a wartu. Nasbírej na všechny 4 kusy.', 'garden', 'var(--uncommon)');
+      if (/bustling/i.test((gear.armor || []).join(' '))) add(28, 'Přereforguj armor na Mossy', 'Bustling je slabý, Mossy dává nejvíc Farming Fortune.', 'garden', 'var(--uncommon)');
+    }
+    // --- obecné
+    if (sk.combat && sk.combat.lvl < 24) add(36, 'Combat ' + sk.combat.lvl + ' → 24', 'Crimson Isle se odemyká na Combat 24.' + (sk.combat.approx ? '' : ' Do dalšího levelu zbývá ' + short(sk.combat.next - sk.combat.cur) + ' XP.'), 'combat', 'var(--warn)');
+    var cheap = (p.missing || []).filter(function (m) { return m.p && m.p <= (p.purse || 0); }).sort(function (a, b) { return a.p - b.p; })[0];
+    if (cheap) add(26, 'Accessory na dosah: ' + cheap.n, 'Hodnota kolem ' + short(cheap.p) + ' (na ironmanovi craft nebo drop). Každá accessory zvedá Magical Power.', 'data', 'var(--mythic)');
+    var age = (now - new Date(p.exported).getTime()) / 86400000;
+    if (age > 3) add(22, 'Data jsou ' + Math.floor(age) + ' dní stará', 'Nahraj nový export ze SkyCryptu, ať rady sedí.', 'data', 'var(--muted)');
+    return out.sort(function (a, b) { return b.w - a.w; });
+  }
+  function advCard(x) { return '<a class="advc" href="#' + x.tab + '" style="--ac:' + (x.c || 'var(--accent)') + '"><b>' + esc(x.t) + '</b><span>' + esc(x.d) + '</span><span class="go">Otevřít →</span></a>'; }
+  function renderAdvisor() {
+    if (!App() || !$('advList')) return;
+    var l = advise();
+    $('advList').innerHTML = l.slice(0, 6).map(advCard).join('') || '<p class="note">Teď nic nehoří. Pokračuj podle hlavních cílů níž.</p>';
+    var more = l.slice(6); $('advMore').innerHTML = more.map(advCard).join(''); $('advMore').closest('details').hidden = !more.length;
+  }
+
+  // ================= Měřič farmení =================
+  var CROPS = [['wheat', 'Wheat', 6, 1], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 3, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 0, 0], ['moonflower', 'Moonflower', 0, 0], ['rose', 'Wild Rose', 0, 0]];
+  var CB = {}; CROPS.forEach(function (c) { CB[c[0]] = c; });
+  function renderFarm() {
+    if (!$('fmCrop')) return;
+    var s = S(), meas = s.meas || {};
+    if (!$('fmCrop').options.length) { $('fmCrop').innerHTML = CROPS.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join(''); $('fmCrop').value = 'melon'; $('fmPrice').value = CB.melon[2]; }
+    var keys = Object.keys(meas).sort(function (a, b) { return meas[b].coins - meas[a].coins; });
+    $('fmTable').innerHTML = keys.length ? '<table><tr><th>Plodina</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Měřeno</th><th></th></tr>' + keys.map(function (k, i) {
+      var m = meas[k]; return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc((CB[k] || [0, k])[1]) + '</b></td><td class="num">' + short(m.perHour) + '</td><td class="num">' + short(m.coins) + '</td><td class="note">' + m.min + ' min · ' + new Date(m.at).toLocaleDateString('cs-CZ') + '</td><td><button type="button" class="xbtn" data-fmdel="' + k + '" aria-label="Smazat měření">×</button></td></tr>';
+    }).join('') + '</table>' : '<table><tr><td class="note">Zatím žádné měření.</td></tr></table>';
+    var ff = s.ff != null ? s.ff : '', bps = s.bps != null ? s.bps : 20;
+    if (document.activeElement !== $('fcFF')) $('fcFF').value = ff;
+    if (document.activeElement !== $('fcBps')) $('fcBps').value = bps;
+    var F = num(ff), Bp = num(bps) || 20;
+    $('fcTable').innerHTML = isNaN(F) ? '<table><tr><td class="note">Zadej Farming Fortune a stránka dopočítá odhad pro každou plodinu.</td></tr></table>' : '<table><tr><th>Plodina</th><th>Základní drop</th><th>Kusů za hodinu</th><th>Coinů za hodinu (NPC)</th><th>Naměřeno</th></tr>' + CROPS.filter(function (c) { return c[3]; }).map(function (c) {
+      var per = Bp * 3600 * c[3] * (1 + F / 100); return { c: c, per: per, coins: per * c[2] };
+    }).sort(function (a, b) { return b.coins - a.coins; }).map(function (r, i) {
+      return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + r.c[1] + '</b></td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
+    }).join('') + '</table>';
+  }
+  function bindFarm() {
+    if (!$('fmCrop')) return;
+    $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; });
+    $('fmSave').addEventListener('click', function () {
+      var a = num($('fmBefore').value), b = num($('fmAfter').value), m = num($('fmMin').value), pr = num($('fmPrice').value), k = $('fmCrop').value, msg = $('fmMsg');
+      if (isNaN(a) || isNaN(b) || isNaN(m) || m <= 0 || b <= a) { msg.textContent = 'Zadej stav před, stav po (větší než před) a počet minut.'; msg.className = 'msg err'; return; }
+      if (isNaN(pr)) pr = 0;
+      var per = (b - a) / m * 60, s = S(); if (!s.meas) s.meas = {};
+      s.meas[k] = { perHour: Math.round(per), coins: Math.round(per * pr), price: pr, min: m, at: Date.now() };
+      App().touch(); msg.textContent = CB[k][1] + ': ' + short(per) + ' kusů a ' + short(per * pr) + ' coinů za hodinu' + (pr ? '' : ' (bez ceny)') + '.'; msg.className = 'msg ok'; renderFarm();
+    });
+    document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-fmdel]'); if (!b) return; var s = S(); if (s.meas) { delete s.meas[b.getAttribute('data-fmdel')]; App().touch(); renderFarm(); } });
+    ['fcFF', 'fcBps'].forEach(function (id) { $(id).addEventListener('input', function () { var s = S(); s.ff = $('fcFF').value; s.bps = $('fcBps').value; App().touch(); renderFarm(); }); });
+  }
+
+  // ================= Plánovač HOTM =================
+  function renderHotm() {
+    if (!$('hpStats')) return;
+    var p = P(), s = S(), tier = (p.hotm || {}).tier || {}, pl = s.hotmPlan || {};
+    [['hpComm', 'c', 4], ['hpAvg', 'a', 250], ['hpExtra', 'x', 0]].forEach(function (f) { if (document.activeElement !== $(f[0])) $(f[0]).value = pl[f[1]] != null ? pl[f[1]] : f[2]; });
+    var c = num($('hpComm').value), a = num($('hpAvg').value), x = num($('hpExtra').value);
+    if (isNaN(c)) c = 0; if (isNaN(a)) a = 0; if (isNaN(x)) x = 0;
+    var perDay = c * a + Math.min(c, 4) * 225 + x;
+    $('hpNow').textContent = tier.lvl != null ? 'HOTM ' + tier.lvl + ' · ' + nf(tier.cur || 0) + ' / ' + nf(tier.next || 0) + ' XP' : '';
+    if (tier.lvl == null || tier.maxed || tier.lvl >= 10) { $('hpStats').innerHTML = '<div class="stat"><b>Max</b><span>HOTM</span></div>'; $('hpTable').innerHTML = ''; return; }
+    var rows = [], left = (tier.next || HOTM_NEED[tier.lvl + 1]) - (tier.cur || 0), cum = 0;
+    for (var L = tier.lvl + 1; L <= 10; L++) { cum += L === tier.lvl + 1 ? left : HOTM_NEED[L]; rows.push({ L: L, xp: cum, days: perDay > 0 ? cum / perDay : Infinity }); }
+    var d7 = rows.filter(function (r) { return r.L === 7; })[0], n = rows[0];
+    function when(days) { return isFinite(days) ? new Date(Date.now() + days * 86400000).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) : '—'; }
+    function dd(days) { return isFinite(days) ? (days < 1 ? 'dnes' : Math.ceil(days) + ' dní') : '—'; }
+    $('hpStats').innerHTML = '<div class="stat"><b>' + nf(perDay) + '</b><span>HOTM XP za den</span></div>'
+      + '<div class="stat"><b>' + dd(n.days) + '</b><span>do HOTM ' + n.L + ' (' + nf(n.xp) + ' XP)</span></div>'
+      + (d7 && d7 !== n ? '<div class="stat"><b>' + dd(d7.days) + '</b><span>do HOTM 7 a Glacite Tunnels</span></div>' : '')
+      + '<div class="stat"><b>' + (isFinite(n.days) && c > 0 ? nf(Math.ceil(n.days * c)) : '—') + '</b><span>commissions do HOTM ' + n.L + '</span></div>';
+    $('hpTable').innerHTML = '<table><tr><th>Tier</th><th>Zbývá XP</th><th>Dní tímhle tempem</th><th>Kdy</th><th>Co odemkne</th></tr>' + rows.map(function (r) {
+      var un = { 5: 'Crystal Hollows', 6: 'Další perky a Core of the Mountain', 7: 'Glacite Tunnels (Secret Railroad Pass)', 8: 'Horní část stromu', 9: 'Horní část stromu', 10: 'Maximum' }[r.L] || '';
+      return '<tr><td><b>HOTM ' + r.L + '</b></td><td class="num">' + nf(r.xp) + '</td><td class="num">' + (isFinite(r.days) ? Math.ceil(r.days) : '—') + '</td><td class="num">' + when(r.days) + '</td><td class="note">' + un + '</td></tr>';
+    }).join('') + '</table>';
+  }
+  function bindHotm() {
+    ['hpComm', 'hpAvg', 'hpExtra'].forEach(function (id) { if ($(id)) $(id).addEventListener('input', function () { var s = S(); s.hotmPlan = { c: $('hpComm').value, a: $('hpAvg').value, x: $('hpExtra').value }; App().touch(); renderHotm(); renderAdvisor(); }); });
+  }
+
+  // ================= Plán powderu =================
+  var PP_ORDER = { Mithril: ['Mining Speed', 'Mining Fortune', 'Efficient Miner', 'Titanium Insanium', 'Quick Forge', 'Seasoned Mineman', 'Daily Powder', 'Powder Buff'], Gemstone: ['Mole', 'Professional', 'Gem Lover', 'Great Explorer', 'Powder Buff', 'Fortunate', 'Old-School'], Glacite: [] };
+  function rank(list, n) { var i = (list || []).indexOf(n); return i < 0 ? 99 : i; }
+  function renderPowder() {
+    if (!$('ppBox')) return;
+    var hot = P().hotm || {}, pw = hot.powder || {};
+    $('ppBox').innerHTML = '<div class="pp">' + ['Mithril', 'Gemstone', 'Glacite'].map(function (kind) {
+      var bal = pw[kind.toLowerCase()] ? pw[kind.toLowerCase()].total || 0 : 0;
+      var list = (hot.perks || []).filter(function (x) { return x.powder === kind && x.cost; }).sort(function (a, b) { return rank(PP_ORDER[kind], a.n) - rank(PP_ORDER[kind], b.n); });
+      if (!list.length && !bal) return '';
+      var firstBuy = true;
+      return '<div><h3>' + kind + ' powder <span>máš ' + nf(bal) + '</span></h3><div class="scroll"><table style="min-width:0"><tr><th>Perk</th><th>Level</th><th>Další level</th><th></th></tr>' + (list.map(function (x) {
+        var can = x.cost <= bal, done = x.lvl >= x.max, tag = done ? '<span class="note">max</span>' : can ? '<span class="ok">' + (firstBuy ? 'kup teď' : 'stačí') + '</span>' : '<span class="no">chybí ' + nf(x.cost - bal) + '</span>';
+        if (can && !done) firstBuy = false;
+        return '<tr><td><b>' + esc(x.n) + '</b></td><td class="num">' + x.lvl + ' / ' + x.max + '</td><td class="num">' + (done ? '—' : nf(x.cost)) + '</td><td>' + tag + '</td></tr>';
+      }).join('') || '<tr><td class="note" colspan="4">Žádné perky na tenhle powder.</td></tr>') + '</table></div></div>';
+    }).join('') + '</div>';
+  }
+
+  // ================= Žebříčky gearu: předvyplnění ze savu =================
+  var KNOWN = { KingAdamoss: ['mgd1', 'mgd4', 'mgd7'], KingStentik: ['mgd1', 'mga1'] };
+  function autoGear() {
+    var p = P(), s = S(), g = p.gear || {}, set = (g.set || '') + ' ' + (g.armor || []).join(' '), eq = g.equip || [], pets = p.pets || [], ids = (KNOWN[p.user] || []).slice(), changed = false;
+    [[/heat/i, 'mga1'], [/glacite/i, 'mga2'], [/flamebreaker/i, 'mga3'], [/yog/i, 'mga4'], [/divan/i, 'mga5'], [/mineral/i, 'mga6']].forEach(function (r) { if (r[0].test(set)) ids.push(r[1]); });
+    if (eq.length >= 4 && eq.every(function (x) { return /mithril|titanium/i.test(x); })) ids.push('mge1');
+    if (eq.some(function (x) { return /^royal/i.test(x); })) ids.push('mge2');
+    if (eq.some(function (x) { return /titanium/i.test(x); })) ids.push('mge3');
+    if (eq.some(function (x) { return /handwarmers/i.test(x); })) ids.push('mge4');
+    if (eq.some(function (x) { return /pendant of divan/i.test(x); })) ids.push('mge5');
+    if (eq.some(function (x) { return /ancient cloak/i.test(x); })) ids.push('mge6');
+    [['Silverfish', 'mgp1'], ['Mithril Golem', 'mgp2'], ['Armadillo', 'mgp4'], ['Bal', 'mgp5'], ['Mole', 'mgp6'], ['Glacite Golem', 'mgp7'], ['Scatha', 'mgp8']].forEach(function (r) { if (pets.some(function (x) { return x.n === r[0]; })) ids.push(r[1]); });
+    if (pets.some(function (x) { return x.n === 'Mithril Golem' && x.lvl >= 100; })) ids.push('mgp3');
+    ids.forEach(function (id) { if (s.checks[id] === undefined) { s.checks[id] = true; changed = true; } });
+    if (changed) App().applyChecks();
+  }
+
+  // ================= Forge fronta =================
+  function renderForge() {
+    if (!$('fgList')) return;
+    var s = S(), fg = (s.forge || []).slice().sort(function (a, b) { return a.end - b.end; }), now = Date.now(), rdy = fg.filter(function (x) { return x.end <= now; }).length;
+    $('fgCount').textContent = fg.length ? (rdy ? rdy + '× hotovo · ' : '') + fg.length + ' ve frontě' : 'Prázdná';
+    $('fgList').innerHTML = fg.length ? fg.map(function (x) {
+      var done = x.end <= now, pct = Math.max(0, Math.min(100, (now - x.start) / Math.max(1, x.end - x.start) * 100));
+      return '<div class="fg' + (done ? ' ready' : '') + '"><b>' + esc(x.n) + '</b><span class="left">' + (done ? 'Hotovo, vyber' : 'za ' + dur(x.end - now) + ' · ' + new Date(x.end).toLocaleString('cs-CZ', { weekday: 'short', hour: '2-digit', minute: '2-digit' })) + '</span><button type="button" class="xbtn" data-fgdel="' + x.id + '" aria-label="Odebrat ' + esc(x.n) + '">' + (done ? 'Vybráno' : '×') + '</button><span class="bar2"><i style="width:' + pct.toFixed(1) + '%"></i></span></div>';
+    }).join('') : '<p class="note">Nic zapsaného. V savu ze SkyCryptu bylo ve Forge: ' + esc(((P().hotm || {}).forge || []).join(', ') || 'nic') + '.</p>';
+  }
+  function bindForge() {
+    if (!$('fgAdd')) return;
+    $('fgAdd').addEventListener('click', function () {
+      var n = $('fgName').value.trim(), h = num($('fgH').value), m = num($('fgM').value), msg = $('fgMsg');
+      if (isNaN(h)) h = 0; if (isNaN(m)) m = 0;
+      if (!n || h * 60 + m <= 0) { msg.textContent = 'Napiš, co jsi naložil, a čas ze hry.'; msg.className = 'msg err'; return; }
+      var s = S(); if (!s.forge) s.forge = [];
+      s.forge.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), n: n, start: Date.now(), end: Date.now() + (h * 60 + m) * 60000 });
+      App().touch(); $('fgName').value = ''; $('fgH').value = ''; $('fgM').value = ''; msg.textContent = n + ' naloženo.'; msg.className = 'msg ok'; renderForge(); renderAdvisor();
+    });
+    document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-fgdel]'); if (!b) return; var s = S(); s.forge = (s.forge || []).filter(function (x) { return x.id !== b.getAttribute('data-fgdel'); }); App().touch(); renderForge(); renderAdvisor(); });
+  }
+
+  function renderAll() { if (!App()) return; autoGear(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderAdvisor(); }
+  bindFarm(); bindHotm(); bindForge(); renderAll();
+  document.addEventListener('sb-render', renderAll);
+  document.addEventListener('sb-perks', renderAdvisor);
+  document.addEventListener('sb-events', renderAdvisor);
+  document.addEventListener('change', function (ev) { if (ev.target && ev.target.matches && ev.target.matches('input[type=checkbox]')) renderAdvisor(); });
+  setInterval(function () { renderForge(); renderAdvisor(); }, 30000);
 })();
 </script>
 </body>
