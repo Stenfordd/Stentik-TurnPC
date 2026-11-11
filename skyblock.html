@@ -44,7 +44,7 @@ color-scheme:dark}
 /* ===== Základ ===== */
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth;scroll-padding-top:80px}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
 body{margin:0;color:var(--ink);font:16px/1.6 'Public Sans',system-ui,sans-serif;
 background:radial-gradient(1100px 620px at 85% -8%,var(--glow-1),transparent 62%),radial-gradient(900px 560px at -12% 8%,var(--glow-2),transparent 60%),radial-gradient(700px 500px at 50% 110%,var(--glow-3),transparent 60%),linear-gradient(180deg,var(--bg-2),var(--bg) 40%);background-color:var(--bg);background-attachment:fixed;
 padding-block:0 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-height:100vh}
@@ -55,7 +55,7 @@ background-size:420px 300px;animation:twinkle 9s ease-in-out infinite alternate}
 @keyframes twinkle{from{opacity:var(--star-o)}to{opacity:calc(var(--star-o)*.55)}}
 main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 h1,h2,h3{font-family:'Pixelify Sans',monospace;margin:0;text-wrap:balance;line-height:1.12;letter-spacing:.01em}
-h1{font-size:clamp(2.1rem,6vw,3.6rem)}h2{font-size:1.45rem}h3{font-size:1.1rem}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:1.45rem}h3{font-size:1.1rem}
 p{margin:0}
 a{color:var(--rare);text-underline-offset:3px}
 a:hover{color:var(--accent)}
@@ -71,7 +71,7 @@ small,.note{display:block;color:var(--muted);font-size:.86rem}
 .sitenav a.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent);font-weight:700}
 
 /* ===== Hero ===== */
-.hero{position:relative;padding-top:26px;display:flex;flex-direction:column;gap:18px}
+.hero{position:relative;padding-top:18px;display:flex;flex-direction:column;gap:12px}
 .hero-row{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .hero-text{flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:8px}
 .eyebrow{display:inline-flex;gap:8px;align-items:center;font:700 .72rem 'Pixelify Sans',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--legendary)}
@@ -79,7 +79,7 @@ small,.note{display:block;color:var(--muted);font-size:.86rem}
 .hero h1 span.x{color:var(--muted);font-size:.6em;vertical-align:.25em;padding:0 .2em}
 .hero h1 .pome{background:linear-gradient(90deg,var(--stentik),var(--mythic));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero h1 .coco{background:linear-gradient(90deg,var(--rare),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-.island{flex:0 1 220px;max-width:220px;width:100%;filter:drop-shadow(0 18px 24px var(--shadow))}
+.island{flex:0 1 150px;max-width:150px;width:100%;filter:drop-shadow(0 18px 24px var(--shadow))}
 .island svg{width:100%;height:auto;display:block;animation:bob 6s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .island .g1{fill:var(--island-grass)}.island .g2{fill:var(--island-grass-2)}.island .d1{fill:var(--island-dirt)}.island .d2{fill:var(--island-dirt-2)}.island .st{fill:var(--island-stone)}.island .lf{fill:var(--island-leaf)}.island .tr{fill:var(--island-trunk)}.island .gem{fill:var(--legendary)}.island .gem2{fill:var(--epic)}
@@ -122,7 +122,10 @@ small,.note{display:block;color:var(--muted);font-size:.86rem}
 .mstrip .go{font:700 .8rem 'Pixelify Sans',monospace;color:var(--legendary);white-space:nowrap}
 
 /* ===== Záložky ===== */
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;margin-inline:-6px;padding:10px 6px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid var(--line);border-radius:0 0 14px 14px}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;margin-inline:-8px;padding:8px;display:flex;flex-direction:column;gap:6px;background:var(--glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid var(--line);border-top:0;border-radius:0 0 16px 16px}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.strips{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.strips>*{min-width:0}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs a{flex:1 0 auto;display:inline-flex;gap:7px;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);font:700 .92rem 'Pixelify Sans',monospace;padding:8px 13px;border-radius:10px;border:1px solid transparent;white-space:nowrap;transition:color .15s,background .15s}
 nav.tabs a svg{width:17px;height:17px;flex:none}
@@ -131,7 +134,7 @@ nav.tabs a[aria-current="page"]{color:var(--on-accent);background:linear-gradien
 
 /* ===== Panely a sekce ===== */
 .panel{display:flex;flex-direction:column;gap:18px;animation:rise .35s ease both}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0}to{opacity:1}}
 section{--c:var(--line-2);position:relative;isolation:isolate;background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:inset 0 1px 0 var(--hl),0 14px 36px -26px var(--shadow);overflow:hidden}
 section::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 30%,transparent) 60%,transparent);z-index:-1}
 section::after{content:"";position:absolute;top:-80px;left:-60px;width:260px;height:200px;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 18%,transparent),transparent);z-index:-1;pointer-events:none}
@@ -306,14 +309,38 @@ pre.code{margin:0;max-height:240px;overflow:auto;background:var(--field);border:
 .tl-now{position:absolute;top:0;bottom:0;width:2px;background:var(--warn);box-shadow:0 0 8px var(--warn)}
 .tl-now b{position:absolute;top:-2px;left:4px;font:700 .65rem 'Pixelify Sans',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:.1em}
 
-/* ===== Hotové sekce ===== */
-section.done:not(.peek)>*:not(.head){display:none}
-section.done .head{cursor:pointer}
-section.done:not(.peek){padding-block:12px;opacity:.75}
-section.done:not(.peek):hover{opacity:1}
+/* ===== Sbalování sekcí ===== */
+section>.fold{cursor:pointer;user-select:none}
+section>.fold::after{content:"";flex:none;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:0 4px 4px 8px;transition:transform .2s}
+section>.head.fold{flex-wrap:nowrap}
+section>.head.fold>h2{flex:1;min-width:0}
+section.closed>.fold::after{transform:rotate(-45deg);margin-bottom:0}
+section.closed>*:not(.fold){display:none}
+section.closed{padding-block:13px}
+section.closed::after{display:none}
+section.done.closed{opacity:.7}
+section.done.closed:hover{opacity:1}
 section.done .counter{color:var(--accent);border-color:var(--accent)}
-section.done .head::after{content:"rozbalit";font:700 .68rem 'Pixelify Sans',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-section.done.peek .head::after{content:"sbalit"}
+section>.fold:focus-visible{outline:3px solid var(--rare);outline-offset:4px;border-radius:6px}
+
+/* ===== Obsah záložky ===== */
+h3.divider{display:flex;align-items:center;gap:12px;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+h3.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.toc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem}
+.toc-t{font:700 .68rem 'Pixelify Sans',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.toc-d{font:700 .64rem 'Pixelify Sans',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--legendary);margin:0 2px 0 8px}
+.toc a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--glass);border-radius:999px;padding:3px 11px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.toc a:hover{border-color:var(--line-2);color:var(--ink)}
+.toc a.on{border-color:var(--accent);color:var(--accent)}
+.toc-b{display:inline-flex;gap:6px;margin-left:auto}
+@media(min-width:1500px){
+.toc{position:fixed;top:132px;left:calc(50% - 490px - 244px);width:220px;max-height:calc(100vh - 160px);overflow:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:3px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--glass);backdrop-filter:blur(10px)}
+.toc a{border:0;background:transparent;border-radius:8px;padding:5px 9px;white-space:normal;border-left:2px solid transparent}
+.toc a.on{background:var(--field);border-left-color:var(--accent)}
+.toc-d{margin:8px 0 2px 9px}
+.toc-t{margin:0 0 4px 9px}
+.toc-b{margin:10px 0 0;flex-direction:column}
+}
 
 /* ===== Ploty ===== */
 .plotwrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
@@ -360,10 +387,10 @@ td .inp.cfgi{width:100%;min-width:90px;font:500 .88rem 'JetBrains Mono',monospac
 td .inp.cfgi::placeholder{color:var(--muted);opacity:.7}
 
 /* ===== Hledání ===== */
-.qwrap{position:relative;display:flex;align-items:center;gap:10px;border-radius:12px;padding:0 14px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);z-index:7}
+.qwrap{position:relative;display:flex;align-items:center;gap:10px;border-radius:10px;padding:0 12px;border:1px solid var(--line);background:var(--field);z-index:7}
 .qwrap:focus-within{border-color:var(--rare);box-shadow:0 0 0 2px color-mix(in srgb,var(--rare) 35%,transparent)}
 .qwrap>svg{width:18px;height:18px;color:var(--muted);flex:none}
-.qwrap input{flex:1;min-width:0;border:0;background:transparent;font:500 .95rem 'Public Sans',system-ui,sans-serif;padding:11px 0;color:var(--ink);outline:none;width:auto}
+.qwrap input{flex:1;min-width:0;border:0;background:transparent;font:500 .92rem 'Public Sans',system-ui,sans-serif;padding:8px 0;color:var(--ink);outline:none;width:auto}
 .qwrap kbd{font:600 .72rem 'JetBrains Mono',monospace;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
 .qres{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:0 22px 50px -18px var(--shadow);max-height:min(70vh,520px);overflow:auto;padding:6px;display:flex;flex-direction:column;gap:2px}
 .qr{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;font:inherit;color:var(--ink);background:transparent;border:0;border-radius:8px;padding:9px 12px;cursor:pointer}
@@ -385,7 +412,7 @@ footer ul{margin:0;padding-left:18px}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{border-color:var(--warn);color:var(--warn)}
 
-@media(max-width:700px){.mayors{grid-template-columns:1fr}.cand{grid-template-columns:100px 1fr 64px}}
+@media(max-width:700px){.strips{grid-template-columns:1fr}.mayors{grid-template-columns:1fr}.cand{grid-template-columns:100px 1fr 64px}}
 @media(max-width:600px){.path,.tree,.two{grid-template-columns:1fr}.bar{grid-template-columns:96px 1fr 62px}section{padding:16px}.island{display:none}.mstrip{grid-template-columns:auto 1fr}.mstrip .go{display:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -399,8 +426,7 @@ footer ul{margin:0;padding-left:18px}
 <div class="hero-text">
 <span class="eyebrow">Ironman coop · Hypixel SkyBlock</span>
 <h1><span class="pome">Pomegranate</span> <span class="x">×</span> <span class="coco">Coconut</span></h1>
-<p class="sub">Návody, čísla a plán pro Stentika a Adama. Data ze SkyCryptu, sdílená přes GitHub, takže každý vidí oba.</p>
-<div class="row-actions"><button class="iconbtn" type="button" id="themeBtn" aria-label="Přepnout motiv"></button></div>
+<p class="sub">Návody, čísla a plán pro Stentika a Adama.</p>
 </div>
 <div class="island" aria-hidden="true"><svg viewBox="0 0 220 170">
 <rect class="tr" x="60" y="38" width="10" height="34"/><rect class="lf" x="40" y="14" width="50" height="28"/><rect class="lf" x="50" y="4" width="30" height="12"/><rect class="g2" x="46" y="18" width="10" height="6"/>
@@ -413,22 +439,26 @@ footer ul{margin:0;padding-left:18px}
 </div>
 <div class="players" id="players" role="group" aria-label="Vybrat hráče"></div>
 <div class="dataline">
-<span>Hráč: <select id="who" aria-label="Vybrat hráče"></select></span>
+<select id="who" aria-label="Vybrat hráče" hidden></select>
 <span>Data z <b data-b="exported">…</b></span>
 <span class="sync" id="syncStatus" role="status">GitHub…</span>
 <a href="#data">Aktualizovat data →</a>
+<button class="iconbtn" type="button" id="themeBtn" aria-label="Přepnout motiv"></button>
 </div>
+<div class="strips">
 <a class="mstrip" id="mstrip" href="#mayor"><svg class="crown" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span class="mt"><b id="mstripTitle">Mayor se načítá…</b><span id="mstripText">Hypixel API</span></span><span class="go">Detail →</span></a>
 <a class="evstrip" href="#eventy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="evNextBadge">Eventy…</span><span class="go">Kalendář →</span></a>
+</div>
+<p class="note" id="notStentik" hidden>Texty návodů jsou psané pro Stentika (gear, loadouty). Čísla, tabulky a cíle se ale počítají pro vybraného hráče.</p>
+</header>
+
+<div class="topbar">
 <div class="qwrap" role="search">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
 <input type="search" id="q" placeholder="Hledat na celé stránce: speed, angle, forge, mayor…" autocomplete="off" aria-label="Hledat na stránce" aria-controls="qRes">
 <kbd>/</kbd>
 <div class="qres" id="qRes" hidden></div>
 </div>
-<p class="note" id="notStentik" hidden>Texty návodů jsou psané pro Stentika (gear, loadouty). Čísla, tabulky a cíle se ale počítají pro vybraného hráče.</p>
-</header>
-
 <nav class="tabs" aria-label="Sekce">
 <a href="#ted" data-tab="ted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Teď</a>
 <a href="#mayor" data-tab="mayor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Mayor</a>
@@ -440,6 +470,7 @@ footer ul{margin:0;padding-left:18px}
 <a href="#postava" data-tab="postava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Postava</a>
 <a href="#data" data-tab="data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Data</a>
 </nav>
+</div>
 
 <!-- ======================= TEĎ ======================= -->
 <div class="panel" data-panel="ted">
@@ -474,7 +505,7 @@ footer ul{margin:0;padding-left:18px}
 
 <section class="legendary">
 <div class="head"><h2>Denní rutina</h2><span class="counter" data-count="daily"></span></div>
-<small>Tyhle checkboxy se každý den samy vynulují. Odškrtnuté věci se ukládají k vybranému hráči a s tokenem i na GitHub. Hotová sekce se sama sbalí, kliknutím na nadpis ji rozbalíš.</small>
+<small>Tyhle checkboxy se každý den samy vynulují. Odškrtnuté věci se ukládají k vybranému hráči a s tokenem i na GitHub. Hotová sekce se sama sbalí. Každou sekci sbalíš a rozbalíš kliknutím na nadpis.</small>
 <ul class="check" data-group="daily">
 <li><label><input type="checkbox" data-daily="d1"><span><span class="t">4 commissions</span><small>První 4 za den mají bonus (mimo jiné 900 HOTM XP). Nejrychlejší cesta k dalšímu HOTM tieru.</small></span></label></li>
 <li><label><input type="checkbox" data-daily="d2"><span><span class="t">Forge: vybrat a znovu naložit</span><small>Ať v ní pořád něco běží, hlavně přes noc a přes práci.</small></span></label></li>
@@ -486,7 +517,7 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section>
-<h2>Návrh týdne</h2>
+<div class="head"><h2>Návrh týdne</h2></div>
 <div class="week">
 <div class="day"><b>Po</b>Commissions + Forge, večer meloun</div>
 <div class="day"><b>Út</b>Greenhouse: zasadit krok 1 mutací</div>
@@ -583,6 +614,101 @@ footer ul{margin:0;padding-left:18px}
 <div class="stat"><b data-b="sunflower">…</b><span>Sunflower coll.</span></div>
 </div>
 
+<h3 class="divider">Nástroje</h3>
+
+<section class="legendary">
+<div class="head"><h2>Rychlé výhry v Gardenu</h2><span class="counter" data-count="gq"></span></div>
+<ul class="check" data-group="gq">
+<li><label><input type="checkbox" data-id="gq1"><span><span class="t">Yellow Bandana na Bee peta</span><small>Kupuje se za Copper na Desku a na petovi od levelu 90 dává +30 Farming Fortune. Tvůj Bee je na 100.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq2"><span><span class="t">Cactus Knife do ruky na lane farmách</span><small>Když ho držíš v Gardenu, zvedá Speed cap o 100. Odemyká se na Garden levelu 7.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq3"><span><span class="t">Plot editor místo stavění</span><small><span class="mono">/desk</span> → plot editor má 10 presetů, jeden na každou plodinu. Vlastní plot si můžeš uložit a vložit jinam: zasadí se z plodin v inventáři a zbytek ti vrátí. Hotové designy si můžeš prohlédnout na <span class="mono">/visit farminghub</span>.</small></span></label></li>
+<li><label><input type="checkbox" data-id="gq4"><span><span class="t">Fermento armor najednou, ne po kusech</span><small>Každý set (Melon → Cropie → Squash → Fermento → Helianthus) má vlastní schopnost a sety se nesčítají. 2 kusy Fermenta a 2 kusy Squashe jsou horší než 4 kusy jednoho setu. Nasbírej na všechny 4 a pak přepni.</small></span></label></li>
+</ul>
+</section>
+
+<section class="legendary">
+<div class="head"><h2>Moje ploty</h2></div>
+<p>Vyber plodinu (nebo <b>víc plodin najednou</b>, když je máš v jednom plotu) a klikáním ji přiřaď plotům. Ukládá se to k vybranému hráči. Ploty se znaménkem <b>+</b> jsou ty, které se vyplatí odemknout jako další, protože prodlouží farmu rovně.</p>
+<div class="plotwrap">
+<div class="plotgrid" id="plotGrid" role="group" aria-label="Ploty v Gardenu"></div>
+<div class="plotside">
+<div class="chips" id="plotPalette" role="group" aria-label="Plodina na kliknutí"></div>
+<div class="stats" id="plotStats"></div>
+</div>
+</div>
+<p class="track-label">Co odemknout dál</p>
+<ul class="dots" id="plotTips"></ul>
+<small>Jeden plot má 96 × 96 bloků. Stránka nezná cenu ani Garden level potřebný k odemčení, to ukáže Desk.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Nastavení farem podle alecka</h2></div>
+<p>Z videa <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Yaw a pitch ukazuje F3 nebo farming HUD ve Skyblockeru.</p>
+<div class="scroll"><table>
+<tr><th>Plodina</th><th>Speed</th><th>Úhel</th><th>Klávesy</th><th>Video</th></tr>
+<tr><td><b>Wheat, Carrot, Potato, Nether Wart</b></td><td class="mono">93</td><td>yaw 90</td><td>A nebo D + Space. <b>Depth Strider III</b> na botách.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=101s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=856s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Melon, Pumpkin</b></td><td class="mono">400</td><td>yaw 90, pitch −58,5</td><td>Tam A + W + Space, zpátky D + W + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=953s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1067s" target="_blank" rel="noopener">voda</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1198s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Sugar Cane, Sunflower, Wild Rose</b></td><td class="mono">327</td><td>yaw 45</td><td>S + Space, na další řadě A + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">cane</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=823s" target="_blank" rel="noopener">konce</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=915s" target="_blank" rel="noopener">květiny</a></td></tr>
+<tr><td><b>Cactus</b></td><td class="mono">400</td><td>yaw 90, pitch 0</td><td>A + D + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=631s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Cocoa Beans</b></td><td class="mono">155</td><td>yaw 180</td><td>S + Space. Na konci řady ťukni A, ať se srovnáš, pak A + W.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=748s" target="_blank" rel="noopener">konce</a></td></tr>
+<tr><td><b>Mushroom</b></td><td class="mono">327</td><td>yaw 116,5</td><td>Viz video.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1280s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1443s" target="_blank" rel="noopener">konce</a></td></tr>
+</table></div>
+<ul class="dots">
+<li><b>Voda a Depth Strider:</b> jeho farmy na wheat, carrot, potato a wart jsou zalité vodou a ty v ní plaveš (proto Space). Bez Depth Strider III na botách tě voda zpomalí a speed 93 nesedí.</li>
+<li><b>Stavíš jen jeden plot.</b> Hotový plot ulož v plot editoru a vlož na další ploty (<a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=590s" target="_blank" rel="noopener">9:50 How to Paste the Farm Plots</a>). Plodiny se zasadí z inventáře.</li>
+<li><b>Konce:</b> na první a poslední plot řady dodělej koncové úpravy (kapitoly „End Sections“), jinak se na konci neotočíš.</li>
+<li><b>Speed 400</b> je běžný strop, takže ho potřebuješ nasbírat ve statu Speed. Cactus Knife zvedá jen strop (na 500), samotný Speed nepřidává. Kde Speed vzít: tuning body v Accessory Bagu (Speed), Speed potion, enchant Sugar Rush na botách a Speed talismany. Rancher's Boots ti dovolí nastavit přesnou hodnotu. S nižším Speedem farma funguje taky, jen jedeš pomaleji.</li>
+<li>Klávesy drž <b>ručně</b>. Makra a autoclickery jsou ban.</li>
+</ul>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Kalkulačka výdělku z farmení</h2></div>
+<p>Napiš, kolik jsi udělal a za jak dlouho. Třeba „za 10 minut 1 500 000 coinů z wheatu“ nebo „za jednu lajnu 2M“ a jak dlouho lajna trvá. Stránka dopočítá výdělek za hodinu, uloží ho a porovná plodiny. Uložené řádky jdou kdykoli upravit.</p>
+<div class="formgrid">
+<label>Plodina<select class="inp" id="fmCrop"></select></label>
+<label>Kolik jsem udělal<input type="text" class="inp" id="fmAmt" inputmode="text" placeholder="1 500 000 nebo 2m"></label>
+<label>Čeho<select class="inp" id="fmUnit"><option value="coins">coinů</option><option value="items">kusů</option></select></label>
+<label>Za jak dlouho<input type="text" class="inp" id="fmTime" inputmode="decimal" placeholder="10"></label>
+<label>Jednotka času<select class="inp" id="fmTU"><option value="60">minut</option><option value="1">sekund</option><option value="3600">hodin</option></select></label>
+<label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
+<button class="btn" type="button" id="fmSave">Uložit</button>
+</div>
+<small>Do „Kolik“ jde napsat i výpočet se závorkami, třeba <span class="mono">(76136+791680+1228800)-(76092+74880+1228800)</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
+<details id="sackBox"><summary>Zadat stav sacku (základní + enchanted)</summary><div class="body">
+<p>Opiš počty ze sacku tak, jak je vidíš ve hře, bez násobení. Stránka enchanted kusy sama přepočítá na základní a spočítá rozdíl.</p>
+<p class="track-label">Před farmením</p>
+<div class="formgrid">
+<label><span id="skL0">Základní</span><input type="text" class="inp" id="skB0" inputmode="text" placeholder="76092"></label>
+<label><span id="skL1">Enchanted</span><input type="text" class="inp" id="skB1" inputmode="text" placeholder="468"></label>
+<label><span id="skL2">2. stupeň</span><input type="text" class="inp" id="skB2" inputmode="text" placeholder="48"></label>
+</div>
+<p class="track-label">Po farmení</p>
+<div class="formgrid">
+<label><span id="skM0">Základní</span><input type="text" class="inp" id="skA0" inputmode="text"></label>
+<label><span id="skM1">Enchanted</span><input type="text" class="inp" id="skA1" inputmode="text"></label>
+<label><span id="skM2">2. stupeň</span><input type="text" class="inp" id="skA2" inputmode="text"></label>
+<button class="btn" type="button" id="skCalc">Spočítat rozdíl</button>
+</div>
+<small>Násobky (kolik základních kusů je v enchanted) jdou upravit v <a href="#data">Data → Nastavení cen a dropů</a>.</small>
+</div></details>
+<p class="msg" id="fmMsg" role="status"></p>
+<div class="formgrid">
+<label>Kolik hodin budu farmit<input type="text" class="inp" id="fmHours" inputmode="decimal" placeholder="1"></label>
+<label>Cíl v coinech (nepovinné)<input type="text" class="inp" id="fmGoal" inputmode="text" placeholder="např. 50m"></label>
+</div>
+<div class="scroll" id="fmTable"></div>
+<p class="track-label">Odhad ze vzorce</p>
+<div class="formgrid">
+<label>Farming Fortune (celková na plodinu)<input type="text" class="inp" id="fcFF" inputmode="decimal" placeholder="např. 900"></label>
+<label>Bloků za sekundu<input type="text" class="inp" id="fcBps" inputmode="decimal" placeholder="20"></label>
+</div>
+<div class="scroll" id="fcTable"></div>
+<small>NPC ceny a základní dropy si můžeš přepsat v záložce <a href="#data">Data → Nastavení cen a dropů</a>. Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
+</section>
+
+<h3 class="divider">Návody</h3>
+
 <section class="legendary">
 <div class="head"><h2>1. Odemknout Greenhouse</h2><span class="counter" data-count="gh"></span></div>
 <ul class="check" data-group="gh">
@@ -670,127 +796,6 @@ footer ul{margin:0;padding-left:18px}
 </ul>
 </section>
 
-<section class="legendary">
-<div class="head"><h2>Rychlé výhry v Gardenu</h2><span class="counter" data-count="gq"></span></div>
-<ul class="check" data-group="gq">
-<li><label><input type="checkbox" data-id="gq1"><span><span class="t">Yellow Bandana na Bee peta</span><small>Kupuje se za Copper na Desku a na petovi od levelu 90 dává +30 Farming Fortune. Tvůj Bee je na 100.</small></span></label></li>
-<li><label><input type="checkbox" data-id="gq2"><span><span class="t">Cactus Knife do ruky na lane farmách</span><small>Když ho držíš v Gardenu, zvedá Speed cap o 100. Odemyká se na Garden levelu 7.</small></span></label></li>
-<li><label><input type="checkbox" data-id="gq3"><span><span class="t">Plot editor místo stavění</span><small><span class="mono">/desk</span> → plot editor má 10 presetů, jeden na každou plodinu. Vlastní plot si můžeš uložit a vložit jinam: zasadí se z plodin v inventáři a zbytek ti vrátí. Hotové designy si můžeš prohlédnout na <span class="mono">/visit farminghub</span>.</small></span></label></li>
-<li><label><input type="checkbox" data-id="gq4"><span><span class="t">Fermento armor najednou, ne po kusech</span><small>Každý set (Melon → Cropie → Squash → Fermento → Helianthus) má vlastní schopnost a sety se nesčítají. 2 kusy Fermenta a 2 kusy Squashe jsou horší než 4 kusy jednoho setu. Nasbírej na všechny 4 a pak přepni.</small></span></label></li>
-</ul>
-</section>
-
-<section class="rare">
-<div class="head"><h2>Armor, equipment a pets</h2></div>
-<div class="scroll"><table>
-<tr><th>Set</th><th>Čím farmíš</th><th>Co padá</th></tr>
-<tr><td>Melon (Tater)</td><td>Wheat, Carrot, Potato</td><td>Cropie</td></tr>
-<tr><td>Cropie</td><td>Cocoa, Melon, Pumpkin</td><td>Squash</td></tr>
-<tr><td><b>Squash (máš)</b></td><td>Nether Wart, Sugar Cane, Cactus, Mushroom</td><td><b>Fermento</b></td></tr>
-<tr><td>Fermento</td><td>Wild Rose, Sunflower, Moonflower</td><td>Helianthus</td></tr>
-<tr><td>Helianthus</td><td>cokoli</td><td>všechny tři</td></tr>
-</table></div>
-<ul class="dots">
-<li><b>Equipment:</b> Lotus → Blossom (obojí za Copper na Desku, fortune podle počtu obsloužených visitorů). Na pesty Pesthunter's equipment od Phillipa. Zorro's Cape z Chocolate Factory má při Jacob contestu dvojnásobné staty.</li>
-<li><b>Reforge:</b> na armor je nejlepší <b>Mossy</b>. Bustling (to máš) z Desku se podle guidu kupovat nevyplatí. Na equipment je Blooming zadarmo, ale nejslabší. Nejlepší je Rooted (z Greenhouse). Na nástroje Bountiful (wheat a melon), Overpriced nebo Earthy (stejná fortune + víc Sowdustu).</li>
-<li><b>Pets:</b> Epic nebo Legendary Rabbit, dokud levelíš Farming. Pak <b>Mooshroom Cow</b> (craft z Mycelium collection, Mycelium vás zase čeká přes Crimson Isle). Elephant je Legendary od Oringa (chodí jednou za ~62 hodin). Na pesty Slug, Mosquito (craft ze Spider slayeru) a Hedgehog (Phillip).</li>
-<li><b>Enchanty:</b> Turbo-plodina za bronz a lepší v contestu. Dedication a Sunder do tieru 5 za Copper. Crop Fever z Moonflower collection (vrací Roll 'em ability). Green Thumb na equipment za Copper.</li>
-<li><b>Overclocker 3000</b> padá z plodin, z Greenhouse, od visitorů, z contestů i z pestů. 10 kusů = nástroj z levelu 40 na 50.</li>
-</ul>
-</section>
-
-<section class="legendary">
-<div class="head"><h2>Moje ploty</h2></div>
-<p>Vyber plodinu (nebo <b>víc plodin najednou</b>, když je máš v jednom plotu) a klikáním ji přiřaď plotům. Ukládá se to k vybranému hráči. Ploty se znaménkem <b>+</b> jsou ty, které se vyplatí odemknout jako další, protože prodlouží farmu rovně.</p>
-<div class="plotwrap">
-<div class="plotgrid" id="plotGrid" role="group" aria-label="Ploty v Gardenu"></div>
-<div class="plotside">
-<div class="chips" id="plotPalette" role="group" aria-label="Plodina na kliknutí"></div>
-<div class="stats" id="plotStats"></div>
-</div>
-</div>
-<p class="track-label">Co odemknout dál</p>
-<ul class="dots" id="plotTips"></ul>
-<small>Jeden plot má 96 × 96 bloků. Stránka nezná cenu ani Garden level potřebný k odemčení, to ukáže Desk.</small>
-</section>
-
-<section class="epic">
-<div class="head"><h2>Nastavení farem podle alecka</h2></div>
-<p>Z videa <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo" target="_blank" rel="noopener">aleck – The BEST Farm Design for EVERY Crop</a>. Yaw a pitch ukazuje F3 nebo farming HUD ve Skyblockeru.</p>
-<div class="scroll"><table>
-<tr><th>Plodina</th><th>Speed</th><th>Úhel</th><th>Klávesy</th><th>Video</th></tr>
-<tr><td><b>Wheat, Carrot, Potato, Nether Wart</b></td><td class="mono">93</td><td>yaw 90</td><td>A nebo D + Space. <b>Depth Strider III</b> na botách.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=101s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=856s" target="_blank" rel="noopener">konce</a></td></tr>
-<tr><td><b>Melon, Pumpkin</b></td><td class="mono">400</td><td>yaw 90, pitch −58,5</td><td>Tam A + W + Space, zpátky D + W + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=953s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1067s" target="_blank" rel="noopener">voda</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1198s" target="_blank" rel="noopener">konce</a></td></tr>
-<tr><td><b>Sugar Cane, Sunflower, Wild Rose</b></td><td class="mono">327</td><td>yaw 45</td><td>S + Space, na další řadě A + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">cane</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=823s" target="_blank" rel="noopener">konce</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=915s" target="_blank" rel="noopener">květiny</a></td></tr>
-<tr><td><b>Cactus</b></td><td class="mono">400</td><td>yaw 90, pitch 0</td><td>A + D + Space.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=631s" target="_blank" rel="noopener">konce</a></td></tr>
-<tr><td><b>Cocoa Beans</b></td><td class="mono">155</td><td>yaw 180</td><td>S + Space. Na konci řady ťukni A, ať se srovnáš, pak A + W.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=377s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=748s" target="_blank" rel="noopener">konce</a></td></tr>
-<tr><td><b>Mushroom</b></td><td class="mono">327</td><td>yaw 116,5</td><td>Viz video.</td><td><a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1280s" target="_blank" rel="noopener">stavba</a>, <a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=1443s" target="_blank" rel="noopener">konce</a></td></tr>
-</table></div>
-<ul class="dots">
-<li><b>Voda a Depth Strider:</b> jeho farmy na wheat, carrot, potato a wart jsou zalité vodou a ty v ní plaveš (proto Space). Bez Depth Strider III na botách tě voda zpomalí a speed 93 nesedí.</li>
-<li><b>Stavíš jen jeden plot.</b> Hotový plot ulož v plot editoru a vlož na další ploty (<a href="https://www.youtube.com/watch?v=2EHxmlMnIZo&amp;t=590s" target="_blank" rel="noopener">9:50 How to Paste the Farm Plots</a>). Plodiny se zasadí z inventáře.</li>
-<li><b>Konce:</b> na první a poslední plot řady dodělej koncové úpravy (kapitoly „End Sections“), jinak se na konci neotočíš.</li>
-<li><b>Speed 400</b> je běžný strop, takže ho potřebuješ nasbírat ve statu Speed. Cactus Knife zvedá jen strop (na 500), samotný Speed nepřidává. Kde Speed vzít: tuning body v Accessory Bagu (Speed), Speed potion, enchant Sugar Rush na botách a Speed talismany. Rancher's Boots ti dovolí nastavit přesnou hodnotu. S nižším Speedem farma funguje taky, jen jedeš pomaleji.</li>
-<li>Klávesy drž <b>ručně</b>. Makra a autoclickery jsou ban.</li>
-</ul>
-</section>
-
-<section class="uncommon">
-<div class="head"><h2>Kalkulačka výdělku z farmení</h2></div>
-<p>Napiš, kolik jsi udělal a za jak dlouho. Třeba „za 10 minut 1 500 000 coinů z wheatu“ nebo „za jednu lajnu 2M“ a jak dlouho lajna trvá. Stránka dopočítá výdělek za hodinu, uloží ho a porovná plodiny. Uložené řádky jdou kdykoli upravit.</p>
-<div class="formgrid">
-<label>Plodina<select class="inp" id="fmCrop"></select></label>
-<label>Kolik jsem udělal<input type="text" class="inp" id="fmAmt" inputmode="text" placeholder="1 500 000 nebo 2m"></label>
-<label>Čeho<select class="inp" id="fmUnit"><option value="coins">coinů</option><option value="items">kusů</option></select></label>
-<label>Za jak dlouho<input type="text" class="inp" id="fmTime" inputmode="decimal" placeholder="10"></label>
-<label>Jednotka času<select class="inp" id="fmTU"><option value="60">minut</option><option value="1">sekund</option><option value="3600">hodin</option></select></label>
-<label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
-<button class="btn" type="button" id="fmSave">Uložit</button>
-</div>
-<small>Do „Kolik“ jde napsat i výpočet se závorkami, třeba <span class="mono">(76136+791680+1228800)-(76092+74880+1228800)</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
-<details id="sackBox"><summary>Zadat stav sacku (základní + enchanted)</summary><div class="body">
-<p>Opiš počty ze sacku tak, jak je vidíš ve hře, bez násobení. Stránka enchanted kusy sama přepočítá na základní a spočítá rozdíl.</p>
-<p class="track-label">Před farmením</p>
-<div class="formgrid">
-<label><span id="skL0">Základní</span><input type="text" class="inp" id="skB0" inputmode="text" placeholder="76092"></label>
-<label><span id="skL1">Enchanted</span><input type="text" class="inp" id="skB1" inputmode="text" placeholder="468"></label>
-<label><span id="skL2">2. stupeň</span><input type="text" class="inp" id="skB2" inputmode="text" placeholder="48"></label>
-</div>
-<p class="track-label">Po farmení</p>
-<div class="formgrid">
-<label><span id="skM0">Základní</span><input type="text" class="inp" id="skA0" inputmode="text"></label>
-<label><span id="skM1">Enchanted</span><input type="text" class="inp" id="skA1" inputmode="text"></label>
-<label><span id="skM2">2. stupeň</span><input type="text" class="inp" id="skA2" inputmode="text"></label>
-<button class="btn" type="button" id="skCalc">Spočítat rozdíl</button>
-</div>
-<small>Násobky (kolik základních kusů je v enchanted) jdou upravit v <a href="#data">Data → Nastavení cen a dropů</a>.</small>
-</div></details>
-<p class="msg" id="fmMsg" role="status"></p>
-<div class="formgrid">
-<label>Kolik hodin budu farmit<input type="text" class="inp" id="fmHours" inputmode="decimal" placeholder="1"></label>
-<label>Cíl v coinech (nepovinné)<input type="text" class="inp" id="fmGoal" inputmode="text" placeholder="např. 50m"></label>
-</div>
-<div class="scroll" id="fmTable"></div>
-<p class="track-label">Odhad ze vzorce</p>
-<div class="formgrid">
-<label>Farming Fortune (celková na plodinu)<input type="text" class="inp" id="fcFF" inputmode="decimal" placeholder="např. 900"></label>
-<label>Bloků za sekundu<input type="text" class="inp" id="fcBps" inputmode="decimal" placeholder="20"></label>
-</div>
-<div class="scroll" id="fcTable"></div>
-<small>NPC ceny a základní dropy si můžeš přepsat v záložce <a href="#data">Data → Nastavení cen a dropů</a>. Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
-</section>
-
-<section class="rare">
-<div class="head"><h2>Pesti, Field Mouse a vinyly</h2></div>
-<ul class="dots">
-<li><b>Field Mouse</b> se spawnuje <b>jen z Pest Trapů</b>, sprej ani farmení ho nepřivolá. Vermin Trap má čtyřikrát vyšší šanci na myš. Každý chycený pest spotřebuje jednu návnadu (bait).</li>
-<li><b>Dropy z Field Mouse:</b> Squeaky Toy (2,5 %), Squeaky Mousemat (0,5 %), k tomu vždy Enchanted plodina a návnady.</li>
-<li><b>Vinyly</b> se přehrávají přes nejlepší vysavač <b>InfiniVacuum Hooverius</b>. Nezvyšují počet pestů, jen šanci, že spawnutý pest bude ten z vinylu.</li>
-<li>Jaký pest z pasti vyleze, ovlivňuje návnada v pasti a přehrávaný vinyl.</li>
-</ul>
-<small>Zdroj: <a href="https://wiki.eliteskyblock.com/Pest_Farming" target="_blank" rel="noopener">Elite wiki – Introduction to Pest Farming</a>.</small>
-</section>
-
 <section class="rare">
 <div class="head"><h2>5. Farmy a Fermento armor</h2></div>
 <p>Fermento armor potřebuje Farming 40 (teď: <b data-b="farmingLvl">…</b>). Fermento padá při farmení <b>sugar cane, cactus, mushroom a nether wart</b> v Squash armoru. Na to potřebuješ farmy:</p>
@@ -819,6 +824,36 @@ footer ul{margin:0;padding-left:18px}
 <tr><td>Pesti</td><td>Body u Pesthunter Phillipa → Pesthunter Badge. Z pestů padá Wild Rose a Sunflower.</td></tr>
 </table></div>
 </section>
+
+<section class="rare">
+<div class="head"><h2>Armor, equipment a pets</h2></div>
+<div class="scroll"><table>
+<tr><th>Set</th><th>Čím farmíš</th><th>Co padá</th></tr>
+<tr><td>Melon (Tater)</td><td>Wheat, Carrot, Potato</td><td>Cropie</td></tr>
+<tr><td>Cropie</td><td>Cocoa, Melon, Pumpkin</td><td>Squash</td></tr>
+<tr><td><b>Squash (máš)</b></td><td>Nether Wart, Sugar Cane, Cactus, Mushroom</td><td><b>Fermento</b></td></tr>
+<tr><td>Fermento</td><td>Wild Rose, Sunflower, Moonflower</td><td>Helianthus</td></tr>
+<tr><td>Helianthus</td><td>cokoli</td><td>všechny tři</td></tr>
+</table></div>
+<ul class="dots">
+<li><b>Equipment:</b> Lotus → Blossom (obojí za Copper na Desku, fortune podle počtu obsloužených visitorů). Na pesty Pesthunter's equipment od Phillipa. Zorro's Cape z Chocolate Factory má při Jacob contestu dvojnásobné staty.</li>
+<li><b>Reforge:</b> na armor je nejlepší <b>Mossy</b>. Bustling (to máš) z Desku se podle guidu kupovat nevyplatí. Na equipment je Blooming zadarmo, ale nejslabší. Nejlepší je Rooted (z Greenhouse). Na nástroje Bountiful (wheat a melon), Overpriced nebo Earthy (stejná fortune + víc Sowdustu).</li>
+<li><b>Pets:</b> Epic nebo Legendary Rabbit, dokud levelíš Farming. Pak <b>Mooshroom Cow</b> (craft z Mycelium collection, Mycelium vás zase čeká přes Crimson Isle). Elephant je Legendary od Oringa (chodí jednou za ~62 hodin). Na pesty Slug, Mosquito (craft ze Spider slayeru) a Hedgehog (Phillip).</li>
+<li><b>Enchanty:</b> Turbo-plodina za bronz a lepší v contestu. Dedication a Sunder do tieru 5 za Copper. Crop Fever z Moonflower collection (vrací Roll 'em ability). Green Thumb na equipment za Copper.</li>
+<li><b>Overclocker 3000</b> padá z plodin, z Greenhouse, od visitorů, z contestů i z pestů. 10 kusů = nástroj z levelu 40 na 50.</li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Pesti, Field Mouse a vinyly</h2></div>
+<ul class="dots">
+<li><b>Field Mouse</b> se spawnuje <b>jen z Pest Trapů</b>, sprej ani farmení ho nepřivolá. Vermin Trap má čtyřikrát vyšší šanci na myš. Každý chycený pest spotřebuje jednu návnadu (bait).</li>
+<li><b>Dropy z Field Mouse:</b> Squeaky Toy (2,5 %), Squeaky Mousemat (0,5 %), k tomu vždy Enchanted plodina a návnady.</li>
+<li><b>Vinyly</b> se přehrávají přes nejlepší vysavač <b>InfiniVacuum Hooverius</b>. Nezvyšují počet pestů, jen šanci, že spawnutý pest bude ten z vinylu.</li>
+<li>Jaký pest z pasti vyleze, ovlivňuje návnada v pasti a přehrávaný vinyl.</li>
+</ul>
+<small>Zdroj: <a href="https://wiki.eliteskyblock.com/Pest_Farming" target="_blank" rel="noopener">Elite wiki – Introduction to Pest Farming</a>.</small>
+</section>
 </div>
 
 <!-- ======================= MINING ======================= -->
@@ -831,6 +866,23 @@ footer ul{margin:0;padding-left:18px}
 <div class="stat"><b data-b="commMs">…</b><span>Milestone (profil)</span></div>
 <div class="stat"><b data-b="nucleus">…</b><span>Nucleus runs</span></div>
 </div>
+
+<section class="legendary">
+<div class="head"><h2 data-b="hotmPathTitle">Cesta k HOTM 5</h2><span class="counter" data-count="hotm"></span></div>
+<ul class="check" data-group="hotm">
+<li><label><input type="checkbox" data-id="h1"><span><span class="t">Vybraná ability v /hotm</span><small>Teď: <span data-b="ability">…</span>. Mining guide doporučuje jako hlavní <b>Pickobulus</b>. Spouští se pravým tlačítkem s krumpáčem, jen na mining ostrovech.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h2"><span><span class="t">Commissions každý den</span><small>Dwarven Mines dávají 100–400 HOTM XP za kus. První 4 denně mají bonus včetně 900 HOTM XP. Mining eventy (Goblin Raid a podobně) dávají 200–600 XP. King Talisman XP zvyšuje.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h3"><span><span class="t">Commission milestones</span><small>Počet commissions na SkyCryptu je za celý účet (všechny profily), milestone je ale jen za tenhle profil. Milestone IV dává warp do Dwarven Mines, VI do Crystal Nucleus. V Commissions menu → Milestones zkontroluj, jestli nějaký nečeká na vyzvednutí.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h4"><span><span class="t">Utrácet powder hned, jak přibude</span><small>Mining Speed zrychlí všechno, i commissions.</small></span></label></li>
+<li><label><input type="checkbox" data-id="h5"><span><span class="t">HOTM 5 → Core of the Mountain</span><small>Core dá 5 Tokens of the Mountain, víc powderu, vyšší level ability, šanci na mineshaft a <b>slot na commission navíc</b>. Bonusy z Core jsou trvalé, nejdou resetovat.</small></span></label></li>
+</ul>
+<div class="callout">
+<b>Jak dlouho to potrvá</b>
+<p data-b="hotmEta">…</p>
+</div>
+</section>
+
+<h3 class="divider">Nástroje</h3>
 
 <section>
 <div class="head"><h2>Tvůj HOTM</h2></div>
@@ -858,53 +910,6 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section class="legendary">
-<div class="head"><h2 data-b="hotmPathTitle">Cesta k HOTM 5</h2><span class="counter" data-count="hotm"></span></div>
-<ul class="check" data-group="hotm">
-<li><label><input type="checkbox" data-id="h1"><span><span class="t">Vybraná ability v /hotm</span><small>Teď: <span data-b="ability">…</span>. Mining guide doporučuje jako hlavní <b>Pickobulus</b>. Spouští se pravým tlačítkem s krumpáčem, jen na mining ostrovech.</small></span></label></li>
-<li><label><input type="checkbox" data-id="h2"><span><span class="t">Commissions každý den</span><small>Dwarven Mines dávají 100–400 HOTM XP za kus. První 4 denně mají bonus včetně 900 HOTM XP. Mining eventy (Goblin Raid a podobně) dávají 200–600 XP. King Talisman XP zvyšuje.</small></span></label></li>
-<li><label><input type="checkbox" data-id="h3"><span><span class="t">Commission milestones</span><small>Počet commissions na SkyCryptu je za celý účet (všechny profily), milestone je ale jen za tenhle profil. Milestone IV dává warp do Dwarven Mines, VI do Crystal Nucleus. V Commissions menu → Milestones zkontroluj, jestli nějaký nečeká na vyzvednutí.</small></span></label></li>
-<li><label><input type="checkbox" data-id="h4"><span><span class="t">Utrácet powder hned, jak přibude</span><small>Mining Speed zrychlí všechno, i commissions.</small></span></label></li>
-<li><label><input type="checkbox" data-id="h5"><span><span class="t">HOTM 5 → Core of the Mountain</span><small>Core dá 5 Tokens of the Mountain, víc powderu, vyšší level ability, šanci na mineshaft a <b>slot na commission navíc</b>. Bonusy z Core jsou trvalé, nejdou resetovat.</small></span></label></li>
-</ul>
-<div class="callout">
-<b>Jak dlouho to potrvá</b>
-<p data-b="hotmEta">…</p>
-</div>
-</section>
-
-<section class="epic">
-<div class="head"><h2>Commissions krok za krokem</h2></div>
-<ol class="steps">
-<li><b>Gear:</b> Heat armor, Mithril equipment (necklace, cloak, belt, gauntlet), Bee pet (+30 Mining Fortune). Ulož si to jako loadout.</li>
-<li><span class="mono">/warp forge</span> (nebo <span class="mono">/warp mines</span>, až ho odemkneš) a jdi k <b>Emissary</b>. Vezmi commissions.</li>
-<li>Typy:
-<ul class="dots">
-<li><b>Mithril:</b> těž šedé, zelené a modré bloky (vlna a prizmarin). Royal Mines, Cliffside Veins.</li>
-<li><b>Titanium:</b> náhodně se objeví místo vytěženého Mithrilu (bílý blok jako hladký diorit). Šanci zvyšuje Titanium Insanium.</li>
-<li><b>Goblin kills:</b> Goblin Burrows.</li>
-<li><b>Event (Goblin Raid):</b> nedá se rerollnout. Čekej na event, SkyHanni má Mining Event tracker (<span class="mono">/sh</span> → „mining event“).</li>
-</ul></li>
-<li>Hotovou commission hned odevzdej u Emissary.</li>
-<li>Až máš 4 odevzdané, bonus je tvůj. Dál pokračuj, jak dlouho chceš.</li>
-</ol>
-</section>
-
-<section class="epic">
-<div class="head"><h2>Forge</h2></div>
-<p><span class="mono">/warp forge</span>. Ať tam <b>pořád něco běží</b>. Teď ve Forge: <b data-b="forge">…</b>. Co jde vyrobit, záleží na HOTM tieru a surovinách, menu ukáže dostupné recepty.</p>
-<div class="scroll"><table>
-<tr><th>Věc</th><th>Čas</th><th>Poznámka</th></tr>
-<tr><td>Refined Diamond</td><td class="mono">8 h</td><td>Z Enchanted Diamond Blocků, diamanty máte z minionů.</td></tr>
-<tr><td>Refined Mithril</td><td class="mono">6 h</td><td>Ze Enchanted Mithril.</td></tr>
-<tr><td>Refined Titanium</td><td class="mono">12 h</td><td>Z Titania z commissions.</td></tr>
-<tr><td>Fuel Canister</td><td class="mono">10 h</td><td>Palivo do drillů.</td></tr>
-<tr><td>Ruby Drill TX-15</td><td class="mono">1 h</td><td>Nejlevnější drill. Pak Gemstone Drill LT-522 → Topaz → Jasper.</td></tr>
-<tr><td>Mithril Drill SX-R226</td><td class="mono">4 h</td><td>Druhá větev drillů, pak SX-R326.</td></tr>
-</table></div>
-<small>Časy z wiki The Forge. Perk Quick Forge je zkracuje.</small>
-</section>
-
-<section class="legendary">
 <div class="head"><h2>Forge fronta</h2><span class="counter" id="fgCount"></span></div>
 <p>Když něco naložíš do Forge, zapiš to sem i s časem, který ukazuje hra (už má započítaný Quick Forge i Molten Forge). Stránka odpočítává a v „Teď se vyplatí“ ti řekne, až bude hotovo.</p>
 <div class="formgrid">
@@ -917,28 +922,6 @@ footer ul{margin:0;padding-left:18px}
 <p class="msg" id="fgMsg" role="status"></p>
 <div class="fglist" id="fgList"></div>
 </section>
-
-<section class="legendary">
-<div class="head"><h2>Ironman mining: gear cesta</h2></div>
-<p class="track-label">Krumpáč a drill</p>
-<p>Lazy Miner's Pickaxe → Diamond Pickaxe (Fortune III) → Fractured, pak Bandaged a nakonec normální Mithril Pickaxe → <b>Mithril Drill SX-R226 → SX-R326</b> → Ruby Drill → Gemstone Drill → Topaz Drill → <b>Titanium Drill DR-X355 → 455 → 555 → 655</b> → (bokem Jasper Drill) → <b>Divan's Drill</b>.</p>
-<p class="track-label">Armor</p>
-<div class="scroll"><table>
-<tr><th>Set</th><th>Kdy</th><th>Poznámka</th></tr>
-<tr><td>Heat</td><td>začátek</td><td>Imunní na horko, na mining ostrovech trojnásobná Strength a Defense. Vzácný drop z Deep Caverns.</td></tr>
-<tr><td>Glacite</td><td>od Mining 20</td><td>Je lepší než Heat. Glacite Walkers u Great Ice Wall.</td></tr>
-<tr><td>Flamebreaker → <b>Yog</b></td><td>před gemstony</td><td>Odolnost proti horku. Yog má Pristine a je minimum na těžbu gemstonů ve velkém.</td></tr>
-<tr><td><b>Divan</b></td><td>end game</td><td>Vyplatí se nad Yog až s Topaz slotem. Fragmenty z Mines of Divan.</td></tr>
-<tr><td>Mineral / Glossy Mineral</td><td>jen při Cole Mining Fiesta</td><td>Na rudy a bloky. Adam má celý Mineral set.</td></tr>
-</table></div>
-<p class="track-label">Equipment</p>
-<p><b>Mithril</b> (hned) → <b>Titanium</b> (suroviny jen při Cole Mining Fiesta) → Gemstone equipment (taky Fiesta, malý rozdíl). Konec: <b>Dwarven Handwarmers</b> (Glacite Tunnels) a <b>Pendant of Divan</b>. Plášť: Ancient Cloak, v Endu Dragonfade Cloak.</p>
-<p class="track-label">Do drillu</p>
-<p><b>Blue Cheese Goblin Omelette</b> je nejlepší upgrade skoro na všechno. Na grind powderu Spicy Goblin Omelette. Enchanty: Ultimate Wise (poloviční mana na ability), Flowstate (gemstony a zlato).</p>
-<small>Hlavní zdroj: Mining Guide 2026 z Discordu Ironman Sweats. Doplněno o Mining Guides a fandom wiki.</small>
-</section>
-
-<p class="note">Žebříčky níž si pamatují stav pro každého hráče. Co stránka pozná ze savu (armor, equipment, pets), odškrtne sama.</p>
 
 <section class="legendary">
 <div class="head"><h2>Žebříček: krumpáč a drill</h2><span class="counter" data-count="mgd"></span></div>
@@ -994,6 +977,75 @@ footer ul{margin:0;padding-left:18px}
 <li><label><input type="checkbox" data-id="mgp7"><span><span class="t">Glacite Golem</span><small>Craft. Glacite powder a mineshafty.</small></span></label></li>
 <li><label><input type="checkbox" data-id="mgp8"><span><span class="t">Scatha</span><small>Vzácný drop. Nejlepší na všechno kromě gemstonů v Magma Fields.</small></span></label></li>
 </ul>
+</section>
+
+<h3 class="divider">Návody</h3>
+
+<section class="uncommon">
+<div class="head"><h2>Pro Adama: kde teď je</h2></div>
+<p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
+<ul class="dots">
+<li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
+<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
+<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
+<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
+<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Armadillo a Mole.</li>
+<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
+<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
+<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
+</ul>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Commissions krok za krokem</h2></div>
+<ol class="steps">
+<li><b>Gear:</b> Heat armor, Mithril equipment (necklace, cloak, belt, gauntlet), Bee pet (+30 Mining Fortune). Ulož si to jako loadout.</li>
+<li><span class="mono">/warp forge</span> (nebo <span class="mono">/warp mines</span>, až ho odemkneš) a jdi k <b>Emissary</b>. Vezmi commissions.</li>
+<li>Typy:
+<ul class="dots">
+<li><b>Mithril:</b> těž šedé, zelené a modré bloky (vlna a prizmarin). Royal Mines, Cliffside Veins.</li>
+<li><b>Titanium:</b> náhodně se objeví místo vytěženého Mithrilu (bílý blok jako hladký diorit). Šanci zvyšuje Titanium Insanium.</li>
+<li><b>Goblin kills:</b> Goblin Burrows.</li>
+<li><b>Event (Goblin Raid):</b> nedá se rerollnout. Čekej na event, SkyHanni má Mining Event tracker (<span class="mono">/sh</span> → „mining event“).</li>
+</ul></li>
+<li>Hotovou commission hned odevzdej u Emissary.</li>
+<li>Až máš 4 odevzdané, bonus je tvůj. Dál pokračuj, jak dlouho chceš.</li>
+</ol>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Forge</h2></div>
+<p><span class="mono">/warp forge</span>. Ať tam <b>pořád něco běží</b>. Teď ve Forge: <b data-b="forge">…</b>. Co jde vyrobit, záleží na HOTM tieru a surovinách, menu ukáže dostupné recepty.</p>
+<div class="scroll"><table>
+<tr><th>Věc</th><th>Čas</th><th>Poznámka</th></tr>
+<tr><td>Refined Diamond</td><td class="mono">8 h</td><td>Z Enchanted Diamond Blocků, diamanty máte z minionů.</td></tr>
+<tr><td>Refined Mithril</td><td class="mono">6 h</td><td>Ze Enchanted Mithril.</td></tr>
+<tr><td>Refined Titanium</td><td class="mono">12 h</td><td>Z Titania z commissions.</td></tr>
+<tr><td>Fuel Canister</td><td class="mono">10 h</td><td>Palivo do drillů.</td></tr>
+<tr><td>Ruby Drill TX-15</td><td class="mono">1 h</td><td>Nejlevnější drill. Pak Gemstone Drill LT-522 → Topaz → Jasper.</td></tr>
+<tr><td>Mithril Drill SX-R226</td><td class="mono">4 h</td><td>Druhá větev drillů, pak SX-R326.</td></tr>
+</table></div>
+<small>Časy z wiki The Forge. Perk Quick Forge je zkracuje.</small>
+</section>
+
+<section class="legendary">
+<div class="head"><h2>Ironman mining: gear cesta</h2></div>
+<p class="track-label">Krumpáč a drill</p>
+<p>Lazy Miner's Pickaxe → Diamond Pickaxe (Fortune III) → Fractured, pak Bandaged a nakonec normální Mithril Pickaxe → <b>Mithril Drill SX-R226 → SX-R326</b> → Ruby Drill → Gemstone Drill → Topaz Drill → <b>Titanium Drill DR-X355 → 455 → 555 → 655</b> → (bokem Jasper Drill) → <b>Divan's Drill</b>.</p>
+<p class="track-label">Armor</p>
+<div class="scroll"><table>
+<tr><th>Set</th><th>Kdy</th><th>Poznámka</th></tr>
+<tr><td>Heat</td><td>začátek</td><td>Imunní na horko, na mining ostrovech trojnásobná Strength a Defense. Vzácný drop z Deep Caverns.</td></tr>
+<tr><td>Glacite</td><td>od Mining 20</td><td>Je lepší než Heat. Glacite Walkers u Great Ice Wall.</td></tr>
+<tr><td>Flamebreaker → <b>Yog</b></td><td>před gemstony</td><td>Odolnost proti horku. Yog má Pristine a je minimum na těžbu gemstonů ve velkém.</td></tr>
+<tr><td><b>Divan</b></td><td>end game</td><td>Vyplatí se nad Yog až s Topaz slotem. Fragmenty z Mines of Divan.</td></tr>
+<tr><td>Mineral / Glossy Mineral</td><td>jen při Cole Mining Fiesta</td><td>Na rudy a bloky. Adam má celý Mineral set.</td></tr>
+</table></div>
+<p class="track-label">Equipment</p>
+<p><b>Mithril</b> (hned) → <b>Titanium</b> (suroviny jen při Cole Mining Fiesta) → Gemstone equipment (taky Fiesta, malý rozdíl). Konec: <b>Dwarven Handwarmers</b> (Glacite Tunnels) a <b>Pendant of Divan</b>. Plášť: Ancient Cloak, v Endu Dragonfade Cloak.</p>
+<p class="track-label">Do drillu</p>
+<p><b>Blue Cheese Goblin Omelette</b> je nejlepší upgrade skoro na všechno. Na grind powderu Spicy Goblin Omelette. Enchanty: Ultimate Wise (poloviční mana na ability), Flowstate (gemstony a zlato).</p>
+<small>Hlavní zdroj: Mining Guide 2026 z Discordu Ironman Sweats. Doplněno o Mining Guides a fandom wiki.</small>
 </section>
 
 <section class="epic">
@@ -1068,21 +1120,6 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section class="uncommon">
-<div class="head"><h2>Pro Adama: kde teď je</h2></div>
-<p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
-<ul class="dots">
-<li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
-<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
-<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
-<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
-<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Armadillo a Mole.</li>
-<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
-<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
-<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
-</ul>
-</section>
-
-<section class="uncommon">
 <div class="head"><h2>Glacite Tunnels (HOTM 7+)</h2></div>
 <ul class="dots">
 <li>Vstup: <b>HOTM 7</b> a Secret Railroad Pass (Dulin Sprite, Forge).</li>
@@ -1090,7 +1127,6 @@ footer ul{margin:0;padding-left:18px}
 <li>Gemstony Peridot, Onyx, Aquamarine a Citrine, a Glacite powder na horní HOTM tiery.</li>
 </ul>
 </section>
-
 </div>
 
 <!-- ======================= FORAGING ======================= -->
@@ -1674,6 +1710,55 @@ window.sbExtract=sbExtract;</script>
   var tt; window.sbToast = function (t, err) { var el = document.getElementById('toast'); if (!el) return; el.textContent = t; el.className = 'toast on' + (err ? ' err' : ''); clearTimeout(tt); tt = setTimeout(function () { el.className = 'toast' + (err ? ' err' : ''); }, 3200); };
 })();
 </script>
+<script>// Sbalování sekcí a obsah záložky
+(function () {
+  var KEY = 'sb-closed-v1', st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { st = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { } }
+  function key(sec) { var p = sec.closest('.panel'), h = sec.querySelector('h2'); return (p ? p.getAttribute('data-panel') : '') + '|' + (h ? (h.getAttribute('data-b') || h.textContent.trim()) : ''); }
+  window.SBUi = { userOpen: function (sec) { return st[key(sec)] === false; } };
+  var n = 0;
+  document.querySelectorAll('.panel section').forEach(function (sec) {
+    var head = sec.querySelector(':scope > .head') || sec.querySelector(':scope > h2'); if (!head) return;
+    if (!sec.id) sec.id = 's-' + (++n);
+    head.classList.add('fold'); head.setAttribute('role', 'button'); head.setAttribute('tabindex', '0');
+    if (st[key(sec)] === true) sec.classList.add('closed');
+    function toggle(ev) {
+      if (ev.target.closest && ev.target.closest('a,button,input,select,textarea,label')) return;
+      var c = sec.classList.toggle('closed'); st[key(sec)] = c; save(); head.setAttribute('aria-expanded', String(!c));
+    }
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(ev); } });
+  });
+  // obsah záložky
+  document.querySelectorAll('.panel').forEach(function (panel) {
+    var items = panel.querySelectorAll(':scope > section, :scope > h3.divider'); if (items.length < 4) return;
+    var toc = document.createElement('nav'); toc.className = 'toc'; toc.setAttribute('aria-label', 'Obsah záložky');
+    var html = '<span class="toc-t">V této záložce</span>';
+    items.forEach(function (it) {
+      if (it.tagName === 'H3') { html += '<span class="toc-d">' + it.textContent + '</span>'; return; }
+      var h = it.querySelector('h2'); if (!h) return;
+      html += '<a href="#' + it.id + '" data-sec="' + it.id + '">' + h.textContent.trim().replace(/[<&]/g, '') + '</a>';
+    });
+    html += '<span class="toc-b"><button type="button" class="xbtn" data-fold="1">Sbalit vše</button><button type="button" class="xbtn" data-fold="0">Rozbalit vše</button></span>';
+    toc.innerHTML = html; panel.insertBefore(toc, panel.firstChild);
+    toc.addEventListener('click', function (ev) {
+      var a = ev.target.closest('a[data-sec]'), b = ev.target.closest('[data-fold]');
+      if (a) { ev.preventDefault(); var sec = document.getElementById(a.getAttribute('data-sec')); if (!sec) return; if (sec.classList.contains('closed')) { sec.classList.remove('closed'); st[key(sec)] = false; save(); } sec.scrollIntoView({ block: 'start', behavior: 'instant' }); sec.classList.remove('flash'); void sec.offsetWidth; sec.classList.add('flash'); }
+      if (b) { var close = b.getAttribute('data-fold') === '1'; panel.querySelectorAll(':scope > section').forEach(function (sec) { sec.classList.toggle('closed', close); st[key(sec)] = close; }); save(); }
+    });
+    // názvy plněné z dat (data-b) se mění, proto je čas od času srovnáme
+    function relabel() { toc.querySelectorAll('a[data-sec]').forEach(function (a) { var sec = document.getElementById(a.getAttribute('data-sec')), h = sec && sec.querySelector('h2'); if (h && a.textContent !== h.textContent.trim()) a.textContent = h.textContent.trim(); }); }
+    document.addEventListener('sb-render', function () { setTimeout(relabel, 0); }); setTimeout(relabel, 0);
+  });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (!e.isIntersecting) return; var a = document.querySelector('.toc a[data-sec="' + e.target.id + '"]'); if (!a) return; a.parentNode.querySelectorAll('a.on').forEach(function (x) { x.classList.remove('on'); }); a.classList.add('on'); });
+    }, { rootMargin: '-20% 0px -65% 0px' });
+    document.querySelectorAll('.panel > section').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
 <script>(function () {
   // ---------- pomocné ----------
   var SKILL_XP = [50,125,200,300,500,750,1000,1500,2000,3500,5000,7500,10000,15000,20000,30000,50000,75000,100000,200000,300000,400000,500000,600000,700000,800000,900000,1000000,1100000,1200000,1300000,1400000,1500000,1600000,1700000,1800000,1900000,2000000,2100000,2200000,2300000,2400000,2500000,2600000,2750000,2900000,3100000,3400000,3700000,4000000,4300000,4600000,4900000,5200000,5500000,5800000,6100000,6400000,6700000,7000000];
@@ -1900,7 +1985,7 @@ window.sbExtract=sbExtract;</script>
       var g = document.querySelector('[data-group="' + c.getAttribute('data-count') + '"]'); if (!g) return;
       var n = g.querySelectorAll('input').length, k = g.querySelectorAll('input:checked').length, sec = g.closest('section'), all = n > 0 && k === n;
       c.textContent = all ? '✓ Hotovo ' + k + '/' + n : 'Hotovo ' + k + '/' + n;
-      if (sec) { sec.classList.toggle('done', all); if (!all) sec.classList.remove('peek'); }
+      if (sec) { if (all && !sec.classList.contains('done') && !(window.SBUi && window.SBUi.userOpen(sec))) sec.classList.add('closed'); sec.classList.toggle('done', all); }
     });
   }
   function applyChecks() {
@@ -1911,10 +1996,6 @@ window.sbExtract=sbExtract;</script>
   }
   document.querySelectorAll('input[data-id]').forEach(function (b) { b.addEventListener('change', function () { st().checks[b.getAttribute('data-id')] = b.checked; touch(); counts(); }); });
   document.querySelectorAll('input[data-daily]').forEach(function (b) { b.addEventListener('change', function () { var s = st(); s.daily[b.getAttribute('data-daily')] = b.checked; s.daily.date = today; touch(); counts(); }); });
-  document.querySelectorAll('section .head').forEach(function (h) {
-    h.addEventListener('click', function (ev) { var sec = h.closest('section'); if (sec && sec.classList.contains('done') && !(ev.target.closest && ev.target.closest('a,button,input,select'))) sec.classList.toggle('peek'); });
-  });
-
   // ---------- záložky ----------
   var tabs = ['ted', 'mayor', 'eventy', 'garden', 'mining', 'combat', 'foraging', 'postava', 'data'];
   function show() {
@@ -2884,7 +2965,7 @@ window.sbExtract=sbExtract;</script>
     if (location.hash !== '#' + r.it.tab) location.hash = r.it.tab;
     setTimeout(function () {
       if (r.it.det) el.open = true;
-      if (el.classList.contains('done')) el.classList.add('peek');
+      el.classList.remove('closed');
       el.scrollIntoView({ block: 'start', behavior: 'instant' });
       el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
     }, 80);
