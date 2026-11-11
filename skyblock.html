@@ -1232,6 +1232,41 @@ footer ul{margin:0;padding-left:18px}
 <div data-r="pets"></div>
 </section>
 
+<section class="legendary">
+<div class="head"><h2>Co s tvými pety</h2><span class="tag">Počítáno z dat</span></div>
+<ul class="dots" id="petTips"></ul>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Pety: jak fungují</h2></div>
+<ul class="dots">
+<li><b>XP:</b> pet dostává XP z toho, co děláš. Když skill odpovídá jeho typu (farming pet při farmení), dostane plnou dávku. Z jiných skillů jen zlomek. Takže peta leveluj činností, ke které patří.</li>
+<li><b>Nasazený je jen jeden.</b> Bonusy dává jen aktivní pet, ostatní jen leží v menu (<span class="mono">/pets</span>).</li>
+<li><b>Rarita se zvedá u Kat</b> (Hub, Pet Sitter): coiny, materiály a čekání. Level zůstane, jen spadne o pár levelů, protože vyšší rarita chce víc XP. Čekání zkrátí Kat Flower.</li>
+<li><b>Pet item:</b> každý pet unese jeden item (Yellow Bandana, Quick Claw, Exp Share a další). Dá se vyměnit, starý item se tím zničí.</li>
+<li><b>Exp Share:</b> část XP aktivního peta jde i petům ve sdílených slotech. Nejlepší způsob, jak levelovat peta, kterého zrovna nepoužíváš.</li>
+<li><b>Pet Candy:</b> rychlé XP, ale každý pet jich sní jen 10. Nedávej je na pety, které stejně budeš měnit.</li>
+<li><b>Diana jako mayor</b> dává Pet XP Buff. Hlídej záložku Mayor, to je čas na levelování.</li>
+<li><b>Autopet:</b> pravidla, která peta přepínají sama (třeba při nasazení armoru). Kupují se za Bits.</li>
+</ul>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Který pet na co</h2></div>
+<div class="scroll"><table>
+<tr><th>Činnost</th><th>Začátek</th><th>Pak</th><th>Kde ho vzít</th></tr>
+<tr><td><b>Farming</b></td><td>Rabbit, Bee</td><td>Elephant, Mooshroom Cow</td><td>Rabbit a Bee craft. Elephant od Oringa (Traveling Zoo). Mooshroom Cow z Mycelium collection.</td></tr>
+<tr><td><b>Pesti</b></td><td>Slug</td><td>Mosquito, Hedgehog</td><td>Slug a Hedgehog přes Phillipa a pesty, Mosquito craft ze Spider slayeru.</td></tr>
+<tr><td><b>Mining</b></td><td>Silverfish, Mithril Golem</td><td>Armadillo, Bal, Scatha</td><td>Silverfish a Golem craft. Armadillo z Nucleu, Bal z bosse, Scatha drop.</td></tr>
+<tr><td><b>Combat</b></td><td>Lion, Tiger</td><td>Enderman (v Endu), Ender Dragon</td><td>Lion a Tiger od Oringa. Enderman drop z Endermanů, Ender Dragon drop z draků.</td></tr>
+<tr><td><b>Foraging</b></td><td>Ocelot</td><td>Monkey</td><td>Ocelot craft, Monkey od Oringa.</td></tr>
+<tr><td><b>Fishing</b></td><td>Squid</td><td>Dolphin, Flying Fish</td><td>Drop ze sea creatures a craft podle collection.</td></tr>
+<tr><td><b>Dungeony</b></td><td>Blue Whale (tank), Sheep (mage)</td><td>podle classy</td><td>Blue Whale od Oringa.</td></tr>
+<tr><td><b>Skoro všude</b></td><td>Rock, Grandma Wolf</td><td></td><td>Rock je dárek za natěžené rudy, Grandma Wolf za combo při zabíjení.</td></tr>
+</table></div>
+<small>Obecný přehled z hlavy, ne z wiki. Přesné staty a recepty si ověř ve hře (<span class="mono">/viewrecipe</span>) nebo na wiki.</small>
+</section>
+
 <section class="rare">
 <div class="head"><h2>Minioni</h2></div>
 <p data-b="minionLine">…</p>
@@ -2679,7 +2714,38 @@ window.sbExtract=sbExtract;</script>
     document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('[data-fgdel]'); if (!b) return; var s = S(); s.forge = (s.forge || []).filter(function (x) { return x.id !== b.getAttribute('data-fgdel'); }); App().touch(); renderForge(); renderAdvisor(); });
   }
 
-  function renderAll() { if (!App()) return; autoGear(); refreshCrops(); renderCfg(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderAdvisor(); }
+  // ================= Pety =================
+  var PET_ROLE = { Bee: 'farming', Rabbit: 'farming', Elephant: 'farming', 'Mooshroom Cow': 'farming', Slug: 'pesti', Mosquito: 'pesti', Hedgehog: 'pesti', Silverfish: 'mining', 'Mithril Golem': 'mining', Armadillo: 'mining', Bal: 'mining', Scatha: 'mining', Mole: 'mining', 'Glacite Golem': 'mining', Rock: 'mining', Lion: 'combat', Tiger: 'combat', Enderman: 'combat', 'Ender Dragon': 'combat', 'Grandma Wolf': 'combat', Wolf: 'combat', Monkey: 'foraging', Ocelot: 'foraging', Giraffe: 'foraging', Squid: 'fishing', Dolphin: 'fishing', 'Flying Fish': 'fishing', Guardian: 'combat', 'Blue Whale': 'dungeony', Sheep: 'dungeony' };
+  var RAR = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'], RCZ = { COMMON: 'Common', UNCOMMON: 'Uncommon', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary', MYTHIC: 'Mythic' };
+  function renderPets() {
+    if (!$('petTips')) return;
+    var p = P(), pets = p.pets || [], sk = p.skills || {}, tier = ((p.hotm || {}).tier || {}).lvl || 0, out = [];
+    function has(n) { return pets.some(function (x) { return x.n === n; }); }
+    function best(n) { return pets.filter(function (x) { return x.n === n; }).sort(function (a, b) { return RAR.indexOf(b.r) - RAR.indexOf(a.r) || b.lvl - a.lvl; })[0]; }
+    var act = pets.filter(function (x) { return x.on; })[0];
+    if (act) out.push('Nasazený máš <b>' + esc(act.n) + '</b> (' + RCZ[act.r] + ', level ' + act.lvl + ')' + (PET_ROLE[act.n] ? ', to je pet na <b>' + PET_ROLE[act.n] + '</b>. Na jinou činnost si ho přepni.' : '.'));
+    if (act && act.lvl < 20 && RAR.indexOf(act.r) >= 3) out.push('<b>' + esc(act.n) + '</b> je na levelu ' + act.lvl + ', takže zatím skoro nic nedává. Leveluj ho činností, ke které patří (' + (PET_ROLE[act.n] || 'jeho skill') + '), nebo ho dej do Exp Share slotu.');
+    pets.filter(function (x) { return x.lvl >= 100 && RAR.indexOf(x.r) < 4 && RAR.indexOf(x.r) >= 2; }).forEach(function (x) {
+      var b = best(x.n); if (b !== x) return;
+      out.push('<b>' + esc(x.n) + '</b> je level 100, ale jen ' + RCZ[x.r] + '. Dá se u Kat zvednout na ' + RCZ[RAR[RAR.indexOf(x.r) + 1]] + ': víc statů a často i nový perk. Stojí to coiny, materiály a čekání.');
+    });
+    var farmer = (sk.farming && sk.farming.lvl >= 30) || (p.farming && p.farming.copper > 0);
+    if (farmer) {
+      if (!has('Elephant') && !has('Mooshroom Cow')) out.push('Na farmení ti chybí <b>Elephant</b> nebo <b>Mooshroom Cow</b>. Elephanta prodává Oringo při Traveling Zoo (odpočet je v záložce Eventy), Mooshroom Cow je z Mycelium collection.');
+      if (!has('Rabbit') && sk.farming.lvl < 50) out.push('<b>Rabbit</b> zrychluje levelování Farming skillu. Hodí se, dokud nemáš Farming 50.');
+      if (!has('Slug') && !has('Hedgehog') && !has('Mosquito')) out.push('Na pesty nemáš žádného peta. <b>Slug</b> je nejsnazší začátek.');
+    }
+    if (tier >= 2) {
+      if (!has('Silverfish') && !has('Mithril Golem') && !has('Scatha')) out.push('Na mining nemáš pořádného peta. <b>Silverfish</b> nebo <b>Mithril Golem</b> jdou craftnout.');
+      if (tier >= 5 && !has('Bal') && !has('Scatha')) out.push('Od HOTM 5 stojí za to <b>Bal</b> (boss v Magma Fields) a časem <b>Scatha</b>.');
+      var arm = best('Armadillo'); if (arm && RAR.indexOf(arm.r) < 4) out.push('<b>Armadillo</b> máš jen jako ' + RCZ[arm.r] + '. Legendary je nejlepší pet na Gemstone powder, padá z Nucleu.');
+    }
+    var junk = pets.filter(function (x) { return x.lvl <= 1 && RAR.indexOf(x.r) <= 1; }).length;
+    if (junk >= 3) out.push('Máš ' + junk + ' petů na levelu 1 v Common nebo Uncommon. Nic nedělají, klidně je nech ležet, jen nečekej, že pomůžou.');
+    $('petTips').innerHTML = (out.length ? out : ['V savu nevidím žádné pety. Zkus nahrát nový export.']).map(function (x) { return '<li>' + x + '</li>'; }).join('');
+  }
+
+  function renderAll() { if (!App()) return; autoGear(); refreshCrops(); renderCfg(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderPets(); renderAdvisor(); }
   bindFarm(); bindHotm(); bindForge(); bindCfg(); renderAll();
   document.addEventListener('sb-render', renderAll);
   document.addEventListener('sb-perks', renderAdvisor);
