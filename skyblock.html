@@ -359,6 +359,23 @@ section.done.peek .head::after{content:"sbalit"}
 td .inp.cfgi{width:100%;min-width:90px;font:500 .88rem 'JetBrains Mono',monospace;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
 td .inp.cfgi::placeholder{color:var(--muted);opacity:.7}
 
+/* ===== Hledání ===== */
+.qwrap{position:relative;display:flex;align-items:center;gap:10px;border-radius:12px;padding:0 14px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);z-index:7}
+.qwrap:focus-within{border-color:var(--rare);box-shadow:0 0 0 2px color-mix(in srgb,var(--rare) 35%,transparent)}
+.qwrap>svg{width:18px;height:18px;color:var(--muted);flex:none}
+.qwrap input{flex:1;min-width:0;border:0;background:transparent;font:500 .95rem 'Public Sans',system-ui,sans-serif;padding:11px 0;color:var(--ink);outline:none;width:auto}
+.qwrap kbd{font:600 .72rem 'JetBrains Mono',monospace;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+.qres{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:0 22px 50px -18px var(--shadow);max-height:min(70vh,520px);overflow:auto;padding:6px;display:flex;flex-direction:column;gap:2px}
+.qr{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;font:inherit;color:var(--ink);background:transparent;border:0;border-radius:8px;padding:9px 12px;cursor:pointer}
+.qr:hover,.qr.on{background:var(--field)}
+.qr .qt{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.qr .qt b{font-family:'Pixelify Sans',monospace;font-size:1rem}
+.qr .qt .tag{color:var(--muted);font-size:.6rem}
+.qr .qs{font-size:.84rem;color:var(--muted)}
+.qr mark{background:color-mix(in srgb,var(--legendary) 35%,transparent);color:var(--ink);border-radius:3px;padding:0 2px}
+section.flash,details.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,60%{box-shadow:0 0 0 3px var(--legendary),0 0 40px -6px var(--legendary)}100%{box-shadow:none}}
+
 /* ===== Patička ===== */
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
 footer ul{margin:0;padding-left:18px}
@@ -403,6 +420,12 @@ footer ul{margin:0;padding-left:18px}
 </div>
 <a class="mstrip" id="mstrip" href="#mayor"><svg class="crown" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span class="mt"><b id="mstripTitle">Mayor se načítá…</b><span id="mstripText">Hypixel API</span></span><span class="go">Detail →</span></a>
 <a class="evstrip" href="#eventy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="evNextBadge">Eventy…</span><span class="go">Kalendář →</span></a>
+<div class="qwrap" role="search">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+<input type="search" id="q" placeholder="Hledat na celé stránce: speed, angle, forge, mayor…" autocomplete="off" aria-label="Hledat na stránce" aria-controls="qRes">
+<kbd>/</kbd>
+<div class="qres" id="qRes" hidden></div>
+</div>
 <p class="note" id="notStentik" hidden>Texty návodů jsou psané pro Stentika (gear, loadouty). Čísla, tabulky a cíle se ale počítají pro vybraného hráče.</p>
 </header>
 
@@ -738,6 +761,17 @@ footer ul{margin:0;padding-left:18px}
 </div>
 <div class="scroll" id="fcTable"></div>
 <small>NPC ceny a základní dropy si můžeš přepsat v záložce <a href="#data">Data → Nastavení cen a dropů</a>. Vzorec: bloky za sekundu × základní drop × (1 + Farming Fortune ÷ 100) × NPC cena. Farming Fortune najdeš ve hře ve statistikách, pro každou plodinu je jiná (nástroj, upgrady). Bez speciálních dropů a bez Sowdustu, takže měření je přesnější než odhad.</small>
+</section>
+
+<section class="rare">
+<div class="head"><h2>Pesti, Field Mouse a vinyly</h2></div>
+<ul class="dots">
+<li><b>Field Mouse</b> se spawnuje <b>jen z Pest Trapů</b>, sprej ani farmení ho nepřivolá. Vermin Trap má čtyřikrát vyšší šanci na myš. Každý chycený pest spotřebuje jednu návnadu (bait).</li>
+<li><b>Dropy z Field Mouse:</b> Squeaky Toy (2,5 %), Squeaky Mousemat (0,5 %), k tomu vždy Enchanted plodina a návnady.</li>
+<li><b>Vinyly</b> se přehrávají přes nejlepší vysavač <b>InfiniVacuum Hooverius</b>. Nezvyšují počet pestů, jen šanci, že spawnutý pest bude ten z vinylu.</li>
+<li>Jaký pest z pasti vyleze, ovlivňuje návnada v pasti a přehrávaný vinyl.</li>
+</ul>
+<small>Zdroj: <a href="https://wiki.eliteskyblock.com/Pest_Farming" target="_blank" rel="noopener">Elite wiki – Introduction to Pest Farming</a>.</small>
 </section>
 
 <section class="rare">
@@ -2652,6 +2686,110 @@ window.sbExtract=sbExtract;</script>
   document.addEventListener('sb-events', renderAdvisor);
   document.addEventListener('change', function (ev) { if (ev.target && ev.target.matches && ev.target.matches('input[type=checkbox]')) renderAdvisor(); });
   setInterval(function () { renderForge(); renderAdvisor(); }, 30000);
+})();
+</script>
+<script>// Vyhledávání přes celou stránku: sekce všech záložek, bez diakritiky, se synonymy CZ/EN
+(function () {
+  var inp = document.getElementById('q'), box = document.getElementById('qRes');
+  if (!inp || !box) return;
+  var TABN = { ted: 'Teď', mayor: 'Mayor', eventy: 'Eventy', garden: 'Garden', mining: 'Mining', combat: 'Combat', foraging: 'Foraging', postava: 'Postava', data: 'Data' };
+  var SYN = [
+    ['speed', 'rychlost', 'spd', 'rychly'], ['angle', 'uhel', 'yaw', 'pitch', 'jar', 'jaw', 'natoceni', 'smer'], ['row', 'rada', 'rady', 'lane', 'lajna', 'lina', 'radek'],
+    ['farm', 'farma', 'farmy', 'farming', 'farmeni', 'farmit', 'plodina', 'crop'], ['key', 'keys', 'klavesy', 'klavesa', 'drzet', 'ovladani'],
+    ['money', 'coin', 'coiny', 'coins', 'vydelek', 'penize', 'profit', 'kalkulacka'], ['pest', 'pesti', 'skudce', 'mouse', 'mys', 'vinyl', 'disk', 'disky', 'trap', 'past'],
+    ['mayor', 'starosta', 'minister', 'volby', 'election'], ['event', 'eventy', 'festival', 'kalendar', 'calendar', 'jerry', 'spooky', 'zoo'],
+    ['pet', 'pets', 'mazlicek', 'zvire'], ['armor', 'brneni', 'zbroj', 'gear', 'vybava', 'equipment', 'set'], ['drill', 'krumpac', 'pickaxe', 'vrtak'],
+    ['powder', 'prach', 'mithril', 'gemstone'], ['forge', 'kovarna'], ['commission', 'commissions', 'komise', 'comms', 'hotm'],
+    ['token', 'github', 'sync', 'sdileni', 'ulozit', 'save'], ['plot', 'ploty', 'pozemek', 'pozemky'], ['price', 'cena', 'ceny', 'npc'], ['config', 'nastaveni', 'settings'],
+    ['accessory', 'accessories', 'talisman', 'talismany', 'mp', 'magical'], ['slayer', 'slayery', 'boss', 'revenant', 'tarantula', 'sven'],
+    ['water', 'voda', 'depth', 'strider', 'plavat'], ['tree', 'strom', 'foraging', 'drevo', 'kaceni', 'sekera', 'axe'], ['mining', 'tezba', 'kopani', 'minovani'],
+    ['combat', 'boj', 'zealot', 'drak', 'dragon'], ['greenhouse', 'sklenik', 'mutace', 'mutation', 'chloronite', 'sundial'], ['copper', 'med', 'visitor', 'visitori'],
+    ['time', 'cas', 'odpocet', 'countdown', 'kdy'], ['import', 'export', 'skycrypt', 'data', 'nahrat'], ['reforge', 'enchant', 'enchanty'], ['build', 'stavet', 'postavit', 'stavba', 'design', 'schema'],
+    ['fortune', 'ff', 'drop', 'dropy'], ['dungeon', 'dungeony', 'catacombs', 'cata'], ['minion', 'minioni'], ['warp', 'scroll', 'teleport', 'cestovani']
+  ];
+  function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function expand(tok) { var out = [tok]; SYN.forEach(function (g) { if (g.some(function (w) { return w === tok || (tok.length >= 3 && w.indexOf(tok) === 0); })) g.forEach(function (w) { if (out.indexOf(w) < 0) out.push(w); }); }); return out; }
+  // shoda jen na začátku slova, ať „row“ nenajde „narrow“
+  function at(hay, w, from) { var i = from - 1, whole = w.length <= 3; while ((i = hay.indexOf(w, i + 1)) >= 0) { if ((i === 0 || !/[a-z0-9]/.test(hay.charAt(i - 1))) && (!whole || !/[a-z0-9]/.test(hay.charAt(i + w.length)))) return i; } return -1; }
+  var n = 0;
+  function items() {
+    var out = [];
+    document.querySelectorAll('.panel').forEach(function (panel) {
+      var tab = panel.getAttribute('data-panel');
+      panel.querySelectorAll('section').forEach(function (sec) {
+        var h = sec.querySelector('h2'); if (!h) return;
+        if (!sec.id) sec.id = 'sec-' + (++n);
+        out.push({ el: sec, tab: tab, title: h.textContent.trim(), text: sec.textContent });
+      });
+      panel.querySelectorAll('#evGuide details').forEach(function (d) {
+        var b = d.querySelector('summary b'); out.push({ el: d, tab: tab, title: b ? b.textContent.trim() : 'Event', text: d.textContent, det: true });
+      });
+    });
+    return out;
+  }
+  var cur = [], sel = 0;
+  function search(q) {
+    var toks = norm(q).split(/[^a-z0-9]+/).filter(function (t) { return t.length >= 2; });
+    if (!toks.length) return [];
+    var groups = toks.map(expand);
+    return items().map(function (it) {
+      var T = norm(it.title), X = norm(it.text), score = 0, hit = null, all = true;
+      groups.forEach(function (g, gi) {
+        var best = 0;
+        g.forEach(function (w, wi) {
+          var own = wi === 0 ? 1 : 0.6, s = 0;
+          if (at(T, w, 0) >= 0) s = 12 * own;
+          var c = 0, i = -1; while ((i = at(X, w, i + 1)) >= 0 && c < 8) c++;
+          if (c) { s += (2 + Math.min(c, 8)) * own; if (hit == null || wi === 0) hit = hit == null || wi === 0 ? w : hit; }
+          if (s > best) best = s;
+        });
+        if (!best) all = false; score += best;
+      });
+      if (all && groups.length > 1) score *= 1.6;
+      return { it: it, score: score, hit: hit };
+    }).filter(function (r) { return r.score > 0; }).sort(function (a, b) { return b.score - a.score; }).slice(0, 8);
+  }
+  function snippet(it, w) {
+    var raw = it.text.replace(/\s+/g, ' ').trim(), X = norm(raw), i = w ? at(X, w, 0) : -1;
+    if (i < 0) return esc(raw.slice(it.title.length, it.title.length + 110)) + '…';
+    var a = Math.max(0, i - 45), b = Math.min(raw.length, i + w.length + 70);
+    return (a ? '…' : '') + esc(raw.slice(a, i)) + '<mark>' + esc(raw.slice(i, i + w.length)) + '</mark>' + esc(raw.slice(i + w.length, b)) + (b < raw.length ? '…' : '');
+  }
+  function render() {
+    var q = inp.value.trim();
+    if (!q) { box.hidden = true; box.innerHTML = ''; cur = []; return; }
+    cur = search(q); if (sel >= cur.length) sel = 0;
+    box.hidden = false;
+    box.innerHTML = cur.length ? cur.map(function (r, i) {
+      return '<button type="button" class="qr' + (i === sel ? ' on' : '') + '" data-i="' + i + '"><span class="qt"><b>' + esc(r.it.title) + '</b><span class="tag">' + (TABN[r.it.tab] || r.it.tab) + '</span></span><span class="qs">' + snippet(r.it, r.hit) + '</span></button>';
+    }).join('') : '<p class="note" style="padding:10px 14px">Nic jsem nenašel. Zkus jiné slovo, třeba anglicky (speed, angle, forge).</p>';
+  }
+  function go(i) {
+    var r = cur[i]; if (!r) return;
+    var el = r.it.el; box.hidden = true; inp.blur();
+    if (location.hash !== '#' + r.it.tab) location.hash = r.it.tab;
+    setTimeout(function () {
+      if (r.it.det) el.open = true;
+      if (el.classList.contains('done')) el.classList.add('peek');
+      el.scrollIntoView({ block: 'start', behavior: 'instant' });
+      el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    }, 80);
+  }
+  inp.addEventListener('input', function () { sel = 0; render(); });
+  inp.addEventListener('focus', render);
+  inp.addEventListener('keydown', function (ev) {
+    if (ev.key === 'ArrowDown') { sel = Math.min(cur.length - 1, sel + 1); render(); ev.preventDefault(); }
+    else if (ev.key === 'ArrowUp') { sel = Math.max(0, sel - 1); render(); ev.preventDefault(); }
+    else if (ev.key === 'Enter') { go(sel); ev.preventDefault(); }
+    else if (ev.key === 'Escape') { inp.value = ''; render(); inp.blur(); }
+  });
+  box.addEventListener('mousedown', function (ev) { var b = ev.target.closest('.qr'); if (b) { ev.preventDefault(); go(+b.getAttribute('data-i')); } });
+  document.addEventListener('click', function (ev) { if (!ev.target.closest('.qwrap')) box.hidden = true; });
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT');
+    if ((ev.key === '/' && !typing) || ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'k')) { ev.preventDefault(); inp.focus(); inp.select(); }
+  });
 })();
 </script>
 </body>
