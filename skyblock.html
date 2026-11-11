@@ -674,6 +674,13 @@ footer ul{margin:0;padding-left:18px}
 <label>NPC cena za kus<input type="text" class="inp" id="fmPrice" inputmode="decimal"></label>
 <button class="btn" type="button" id="fmSave">Uložit</button>
 </div>
+<div id="seedBox" hidden>
+<ul class="check"><li><label><input type="checkbox" id="fmSeedOn"><span><span class="t">Počítat i seeds</span><small>Z wheatu padají i seeds. Zaškrtni a zadej, kolik jsi jich udělal za stejnou dobu. Sečte se to s wheatem.</small></span></label></li></ul>
+<div class="formgrid" id="seedRow" hidden>
+<label>Kolik seeds jsem udělal<input type="text" class="inp" id="fmSeedAmt" inputmode="text" placeholder="stejná jednotka jako u wheatu"></label>
+<label>NPC cena za seed<input type="text" class="inp" id="fmSeedPrice" inputmode="decimal" placeholder="3"></label>
+</div>
+</div>
 <small>Do „Kolik“ jde napsat i výpočet se závorkami, třeba <span class="mono">(76136+791680+1228800)-(76092+74880+1228800)</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
 <details id="sackBox"><summary>Zadat stav sacku (základní + enchanted)</summary><div class="body">
 <p>Opiš počty ze sacku tak, jak je vidíš ve hře, bez násobení. Stránka enchanted kusy sama přepočítá na základní a spočítá rozdíl.</p>
@@ -689,6 +696,21 @@ footer ul{margin:0;padding-left:18px}
 <label><span id="skM1">Enchanted</span><input type="text" class="inp" id="skA1" inputmode="text"></label>
 <label><span id="skM2">2. stupeň</span><input type="text" class="inp" id="skA2" inputmode="text"></label>
 <button class="btn" type="button" id="skCalc">Spočítat rozdíl</button>
+</div>
+<div id="skSeeds" hidden>
+<p class="track-label">Seeds před farmením</p>
+<div class="formgrid">
+<label>Seeds (základní)<input type="text" class="inp" id="skSB0" inputmode="text"></label>
+<label>Enchanted Seeds (×160)<input type="text" class="inp" id="skSB1" inputmode="text"></label>
+<label>Box of Seeds (×25 600)<input type="text" class="inp" id="skSB2" inputmode="text"></label>
+</div>
+<p class="track-label">Seeds po farmení</p>
+<div class="formgrid">
+<label>Seeds (základní)<input type="text" class="inp" id="skSA0" inputmode="text"></label>
+<label>Enchanted Seeds (×160)<input type="text" class="inp" id="skSA1" inputmode="text"></label>
+<label>Box of Seeds (×25 600)<input type="text" class="inp" id="skSA2" inputmode="text"></label>
+</div>
+<small>Vyplň a dej znovu „Spočítat rozdíl“. Seeds se vyplní do pole nahoře.</small>
 </div>
 <small>Násobky (kolik základních kusů je v enchanted) jdou upravit v <a href="#data">Data → Nastavení cen a dropů</a>.</small>
 </div></details>
@@ -1450,7 +1472,7 @@ footer ul{margin:0;padding-left:18px}
 <button class="btn ghost" type="button" id="cfgReset">Obnovit výchozí hodnoty</button>
 </div>
 <p class="msg" id="cfgMsg" role="status"></p>
-<small><b>Vedlejší drop</b> je to, co padá k plodině navíc. U wheatu jsou to seeds: 1,5 kusu po 3 coinech, tedy 4,5 coinu za blok. Počítá se v odhadu ze vzorce a při zadání v kusech. Když zadáváš coiny, započítej si seeds sám. Výchozí NPC ceny a základní dropy jsou z <a href="https://hypixel.net/threads/balancing-crop-npc-sell-prices.6036271/" target="_blank" rel="noopener">přehledu na Hypixel fóru (prosinec 2025)</a>. Vlastní item (třeba Enchanted Melon) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
+<small><b>Vedlejší drop</b> je to, co padá k plodině navíc. U wheatu jsou to seeds: zhruba 1,5 kusu po 3 coinech, tedy 4,5 coinu za blok. Používá ho jen odhad ze vzorce. V kalkulačce si u wheatu zaškrtni „Počítat i seeds“ a zadej skutečný počet. Výchozí NPC ceny a základní dropy jsou z <a href="https://hypixel.net/threads/balancing-crop-npc-sell-prices.6036271/" target="_blank" rel="noopener">přehledu na Hypixel fóru (prosinec 2025)</a>. Vlastní item (třeba Enchanted Melon) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
 </section>
 
 <section class="mythic" id="syncBox">
@@ -2717,7 +2739,15 @@ window.sbExtract=sbExtract;</script>
       return '<tr><td><b' + (i === 0 ? ' class="legendary"' : '') + '>' + esc(r.c[1]) + '</b>' + (r.c[4] ? ' <small style="display:inline">+ vedlejší drop</small>' : '') + '</td><td class="num">' + String(r.c[3]).replace('.', ',') + '</td><td class="num">' + short(r.per) + '</td><td class="num">' + short(r.coins) + '</td><td class="num">' + (meas[r.c[0]] && meas[r.c[0]].coins ? short(meas[r.c[0]].coins) : '—') + '</td></tr>';
     }).join('') + '</table>';
   }
+  function hasSeeds(k) { return !!(CB[k] && CB[k][4]); }
+  function seedUi() {
+    if (!$('seedBox')) return;
+    var on = hasSeeds($('fmCrop').value);
+    $('seedBox').hidden = !on; $('seedRow').hidden = !(on && $('fmSeedOn').checked); $('skSeeds').hidden = !(on && $('fmSeedOn').checked);
+    if (!$('fmSeedPrice').value && S().seedPrice != null) $('fmSeedPrice').value = S().seedPrice;
+  }
   function sackLabels() {
+    seedUi();
     if (!$('skL1')) return;
     var k = $('fmCrop').value, e = ench(k), n = CB[k] ? CB[k][1] : 'item';
     $('skL0').textContent = n + ' (základní)';
@@ -2729,27 +2759,32 @@ window.sbExtract=sbExtract;</script>
   function bindFarm() {
     if (!$('fmCrop')) return;
     $('fmCrop').addEventListener('change', function () { var c = CB[$('fmCrop').value]; $('fmPrice').value = c[2] || ''; sackLabels(); });
+    $('fmSeedOn').addEventListener('change', seedUi);
     $('skCalc').addEventListener('click', function () {
       var k = $('fmCrop').value, e = ench(k), msg = $('fmMsg');
       function tot(p) { var a = num($(p + '0').value), b = num($(p + '1').value), c = num($(p + '2').value); return (isNaN(a) ? 0 : a) + (isNaN(b) ? 0 : b) * e[0] + (isNaN(c) ? 0 : c) * e[1]; }
       var before = tot('skB'), after = tot('skA'), d = after - before;
       if (d <= 0) { msg.textContent = 'Stav po musí být větší než stav před. Zkontroluj čísla ze sacku.'; msg.className = 'msg err'; return; }
       $('fmAmt').value = Math.round(d); $('fmUnit').value = 'items';
-      msg.textContent = 'Před ' + nf(before) + ', po ' + nf(after) + ' kusů v přepočtu na základní item. Rozdíl ' + nf(d) + ' je vyplněný nahoře, doplň čas a dej Uložit.'; msg.className = 'msg ok';
+      var sNote = '';
+      if (hasSeeds(k) && $('fmSeedOn').checked) { var st = function (p) { var a = num($(p + '0').value), b = num($(p + '1').value), c = num($(p + '2').value); return (isNaN(a) ? 0 : a) + (isNaN(b) ? 0 : b) * 160 + (isNaN(c) ? 0 : c) * 25600; }, sd = st('skSA') - st('skSB'); if (sd > 0) { $('fmSeedAmt').value = Math.round(sd); sNote = ' Seeds: rozdíl ' + nf(sd) + '.'; } }
+      msg.textContent = 'Před ' + nf(before) + ', po ' + nf(after) + ' kusů v přepočtu na základní item. Rozdíl ' + nf(d) + ' je vyplněný nahoře, doplň čas a dej Uložit.' + sNote; msg.className = 'msg ok';
     });
     $('fmSave').addEventListener('click', function () {
       var amt = num($('fmAmt').value), tv = num($('fmTime').value), tu = +$('fmTU').value, pr = num($('fmPrice').value), unit = $('fmUnit').value, k = $('fmCrop').value, msg = $('fmMsg');
       if (isNaN(amt) || amt <= 0 || isNaN(tv) || tv <= 0) { msg.textContent = 'Zadej, kolik jsi udělal (kladné číslo) a za jak dlouho.'; msg.className = 'msg err'; return; }
       if (isNaN(pr) || pr < 0) pr = 0;
-      var side = CB[k] && CB[k][3] ? (CB[k][4] || 0) / CB[k][3] : 0, perH = amt / (tv * tu) * 3600, coins = unit === 'coins' ? perH : perH * (pr + side), items = unit === 'items' ? perH : (pr ? perH / pr : 0), s = S(); if (!s.meas) s.meas = {};
+      var seedOn = hasSeeds(k) && $('fmSeedOn').checked, sAmt = seedOn ? num($('fmSeedAmt').value) : 0, sPr = num($('fmSeedPrice').value); if (isNaN(sPr) || sPr < 0) sPr = 3;
+      if (seedOn && (isNaN(sAmt) || sAmt < 0)) { msg.textContent = 'Zadej, kolik seeds jsi udělal, nebo odškrtni „Počítat i seeds“.'; msg.className = 'msg err'; return; }
+      var seedCoinsH = seedOn ? (unit === 'coins' ? sAmt : sAmt * sPr) / (tv * tu) * 3600 : 0, perH = amt / (tv * tu) * 3600, coins = (unit === 'coins' ? perH : perH * pr) + seedCoinsH, items = unit === 'items' ? perH : (pr ? perH / pr : 0), s = S(); if (!s.meas) s.meas = {};
       var tun = { 60: 'min', 1: 's', 3600: 'h' }[tu];
-      s.meas[k] = { perHour: Math.round(items), coins: Math.round(coins), price: pr, at: Date.now(), amt: $('fmAmt').value, unit: unit, tv: $('fmTime').value, tu: tu, txt: short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun };
-      App().touch(); msg.textContent = CB[k][1] + ': ' + short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun + ' → ' + (coins ? short(coins) + ' coinů za hodinu' + (unit === 'items' && side ? ' (včetně vedlejšího dropu, u wheatu seeds)' : '') : short(items) + ' kusů za hodinu (doplň NPC cenu pro coiny)') + '.'; s.fmUnit = unit; saveUnit(); msg.className = 'msg ok'; renderFarm();
+      s.meas[k] = { perHour: Math.round(items), coins: Math.round(coins), price: pr, at: Date.now(), amt: $('fmAmt').value, unit: unit, tv: $('fmTime').value, tu: tu, seedOn: seedOn, seedAmt: seedOn ? $('fmSeedAmt').value : '', seedPrice: sPr, txt: short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + (seedOn ? ' + ' + short(sAmt) + ' seeds' : '') + ' za ' + String(tv).replace('.', ',') + ' ' + tun }; s.seedPrice = sPr;
+      App().touch(); msg.textContent = CB[k][1] + ': ' + short(amt) + ' ' + (unit === 'coins' ? 'coinů' : 'kusů') + ' za ' + String(tv).replace('.', ',') + ' ' + tun + ' → ' + (coins ? short(coins) + ' coinů za hodinu' + (seedOn ? ' (z toho seeds ' + short(seedCoinsH) + ')' : hasSeeds(k) ? ' (bez seeds)' : '') : short(items) + ' kusů za hodinu (doplň NPC cenu pro coiny)') + '.'; s.fmUnit = unit; saveUnit(); msg.className = 'msg ok'; renderFarm();
     });
     document.addEventListener('click', function (ev) {
       var d = ev.target.closest && ev.target.closest('[data-fmdel]'), ed = ev.target.closest && ev.target.closest('[data-fmedit]'), s;
       if (d) { s = S(); if (s.meas) { delete s.meas[d.getAttribute('data-fmdel')]; App().touch(); renderFarm(); } }
-      if (ed) { s = S(); var k = ed.getAttribute('data-fmedit'), m = (s.meas || {})[k]; if (!m) return; $('fmCrop').value = k; $('fmAmt').value = m.amt != null ? m.amt : (m.perHour || ''); $('fmUnit').value = m.unit || 'items'; $('fmTime').value = m.tv != null ? m.tv : 60; $('fmTU').value = String(m.tu || 60); $('fmPrice').value = m.price != null ? m.price : (CB[k] ? CB[k][2] : ''); $('fmAmt').focus(); $('fmMsg').textContent = 'Uprav čísla a dej Uložit. Přepíše se řádek ' + (CB[k] ? CB[k][1] : k) + '.'; $('fmMsg').className = 'msg ok'; }
+      if (ed) { s = S(); var k = ed.getAttribute('data-fmedit'), m = (s.meas || {})[k]; if (!m) return; $('fmCrop').value = k; $('fmAmt').value = m.amt != null ? m.amt : (m.perHour || ''); $('fmUnit').value = m.unit || 'items'; $('fmTime').value = m.tv != null ? m.tv : 60; $('fmTU').value = String(m.tu || 60); $('fmPrice').value = m.price != null ? m.price : (CB[k] ? CB[k][2] : ''); $('fmSeedOn').checked = !!m.seedOn; $('fmSeedAmt').value = m.seedAmt || ''; if (m.seedPrice != null) $('fmSeedPrice').value = m.seedPrice; seedUi(); $('fmAmt').focus(); $('fmMsg').textContent = 'Uprav čísla a dej Uložit. Přepíše se řádek ' + (CB[k] ? CB[k][1] : k) + '.'; $('fmMsg').className = 'msg ok'; }
     });
     ['fcFF', 'fcBps'].forEach(function (id) { $(id).addEventListener('input', function () { var s = S(); s.ff = $('fcFF').value; s.bps = $('fcBps').value; App().touch(); renderFarm(); }); });
     ['fmHours', 'fmGoal'].forEach(function (id) { $(id).addEventListener('input', function () { var s = S(); s.farmHours = $('fmHours').value; s.farmGoal = $('fmGoal').value; App().touch(); renderFarm(); }); });
