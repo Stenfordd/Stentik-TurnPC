@@ -1,5 +1,6 @@
 {
   "values": [
-    "ctccore:research_station"
+    "ctccore:research_station",
+    "ctccore:research_casing"
   ]
 }

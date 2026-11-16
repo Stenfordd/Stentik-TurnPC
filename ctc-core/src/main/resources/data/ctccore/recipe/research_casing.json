@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "TAT",
+    " T "
+  ],
+  "key": {
+    "T": {
+      "item": "northstar:titanium_sheet"
+    },
+    "A": {
+      "item": "create:andesite_casing"
+    }
+  },
+  "result": {
+    "id": "ctccore:research_casing",
+    "count": 4
+  }
+}

@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
       "model": "ctccore:block/research_station"
+    },
+    "formed=true": {
+      "model": "ctccore:block/research_station_on"
     }
   }
 }

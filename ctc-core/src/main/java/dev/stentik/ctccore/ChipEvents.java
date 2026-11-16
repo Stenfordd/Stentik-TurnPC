@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -87,6 +88,7 @@ public class ChipEvents {
                 event.setCanceled(true);
                 return;
             }
+            if (armor.contains(ChipType.LUNAR) && event.getSource().is(DamageTypeTags.IS_FALL)) amount *= 0.4f;
             if (armor.contains(ChipType.MERCURY)) amount *= 0.85f;
             if (armor.contains(ChipType.GUARDIAN)) amount *= 0.75f;
             if (attacker != null && attacker != target) {
@@ -104,7 +106,7 @@ public class ChipEvents {
         if (player.level().isClientSide || player.tickCount % 40 != 0) return;
 
         Set<ChipType> armor = armorChips(player);
-        if (armor.contains(ChipType.LUNAR)) { effect(player, MobEffects.SLOW_FALLING, 100, 0); effect(player, MobEffects.JUMP, 100, 1); }
+        if (armor.contains(ChipType.LUNAR)) { effect(player, MobEffects.MOVEMENT_SPEED, 100, 0); effect(player, MobEffects.JUMP, 100, 1); }
         if (armor.contains(ChipType.IGNIS)) effect(player, MobEffects.FIRE_RESISTANCE, 100, 0);
         if (armor.contains(ChipType.LEVIATHAN)) { effect(player, MobEffects.WATER_BREATHING, 100, 0); effect(player, MobEffects.DOLPHINS_GRACE, 100, 0); }
         if (armor.contains(ChipType.REMNANT)) effect(player, MobEffects.REGENERATION, 100, 0);

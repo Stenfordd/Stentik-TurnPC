@@ -19,21 +19,27 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-/** Implants a chip into a piece of gear. Needs FE and one reactor fuel rod per implant. */
+/**
+ * Implants a chip into a piece of gear. Needs FE and one reactor fuel rod per implant, and only works inside its frame:
+ * a 3x3 floor of Research Casing, four casing pillars at the corners, a 3x3 casing roof with a glass block in the middle.
+ */
 public class ResearchStationBlockEntity extends BlockEntity implements MenuProvider {
-    public static final int SLOT_GEAR = 0, SLOT_CHIP = 1, SLOT_FUEL = 2, SLOT_OUT = 3;
+    public static final int SLOT_GEAR = 0, SLOT_CHIP = 1, SLOT_FUEL = 2, SLOT_OUT = 3, SLOT_REFUND = 4;
     public static final int CAPACITY = 200_000, ENERGY_PER_IMPLANT = 60_000, DURATION = 200;
+    public static final int FRAME_BLOCKS = 22;
     public static final ResourceLocation FUEL = ResourceLocation.fromNamespaceAndPath("createnuclear", "uranium_rod");
 
     /** Status shown in the screen. */
-    public static final int OK = 0, NO_GEAR = 1, NO_CHIP = 2, HAS_CHIP = 3, NO_FUEL = 4, NO_ENERGY = 5, OUT_FULL = 6, WORKING = 7;
+    public static final int OK = 0, NO_GEAR = 1, NO_CHIP = 2, HAS_CHIP = 3, NO_FUEL = 4, NO_ENERGY = 5, OUT_FULL = 6, WORKING = 7, NOT_FORMED = 8;
 
-    public final ItemStackHandler items = new ItemStackHandler(4) {
+    public final ItemStackHandler items = new ItemStackHandler(5) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -54,6 +60,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     public final Battery energy = new Battery();
     private int progress;
     private boolean running;
+    private int missing = FRAME_BLOCKS;
 
     public final ContainerData data = new ContainerData() {
         @Override
@@ -62,6 +69,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
                 case 0 -> progress;
                 case 1 -> energy.getEnergyStored() / 100;      // synced as a short: hundreds of FE
                 case 2 -> status();
+                case 3 -> missing;
                 default -> 0;
             };
         }
@@ -72,7 +80,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     };
 
@@ -89,16 +97,41 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(FUEL);
     }
 
+    /** Counts the frame blocks that are missing and switches the core on or off. */
+    public void checkStructure() {
+        if (level == null) return;
+        int miss = 0;
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (!level.getBlockState(p.setWithOffset(worldPosition, dx, -1, dz)).is(CtcCore.CASING.get())) miss++;          // floor
+                boolean centre = dx == 0 && dz == 0;
+                BlockState roof = level.getBlockState(p.setWithOffset(worldPosition, dx, 1, dz));
+                if (centre ? !roof.is(Tags.Blocks.GLASS_BLOCKS) : !roof.is(CtcCore.CASING.get())) miss++;                       // roof
+                if (dx != 0 && dz != 0 && !level.getBlockState(p.setWithOffset(worldPosition, dx, 0, dz)).is(CtcCore.CASING.get())) miss++;  // pillars
+            }
+        }
+        missing = miss;
+        BlockState state = getBlockState();
+        boolean formed = miss == 0;
+        if (state.hasProperty(ResearchStationBlock.FORMED) && state.getValue(ResearchStationBlock.FORMED) != formed) {
+            level.setBlock(worldPosition, state.setValue(ResearchStationBlock.FORMED, formed), Block.UPDATE_ALL);
+            if (formed) level.playSound(null, worldPosition, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.4f);
+        }
+    }
+
     public int status() {
+        if (missing > 0) return NOT_FORMED;
         ItemStack gear = items.getStackInSlot(SLOT_GEAR), chip = items.getStackInSlot(SLOT_CHIP);
         if (Gear.of(gear) == Gear.NONE) return NO_GEAR;
         if (!(chip.getItem() instanceof ChipItem chipItem)) return NO_CHIP;
         if (ChipType.has(gear, chipItem.type)) return HAS_CHIP;
         if (fuelRequired() && items.getStackInSlot(SLOT_FUEL).isEmpty()) return NO_FUEL;
         if (energy.getEnergyStored() < ENERGY_PER_IMPLANT && !running) return NO_ENERGY;
+        if (!items.getStackInSlot(SLOT_OUT).isEmpty()) return OUT_FULL;
         List<ChipType> current = ChipType.of(gear);
         if (current.size() >= Gear.SLOTS) {
-            ItemStack out = items.getStackInSlot(SLOT_OUT), refund = current.get(0).refund();
+            ItemStack out = items.getStackInSlot(SLOT_REFUND), refund = current.get(0).refund();
             if (!out.isEmpty() && (!ItemStack.isSameItemSameComponents(out, refund) || out.getCount() >= out.getMaxStackSize())) return OUT_FULL;
         }
         return running ? WORKING : OK;
@@ -115,6 +148,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ResearchStationBlockEntity be) {
+        if (level.getGameTime() % 20 == 0) be.checkStructure();
         if (!be.running) {
             if (be.progress != 0) be.progress = 0;
             return;
@@ -127,15 +161,14 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         }
         if (++be.progress >= DURATION) {
             be.finish(level, pos);
-        }
-        if (be.progress % 20 == 0) {
+        } else if (be.progress % 20 == 0) {
             level.playSound(null, pos, SoundEvents.BEACON_AMBIENT, SoundSource.BLOCKS, 0.6f, 1.6f);
         }
         be.setChanged();
     }
 
     private void finish(Level level, BlockPos pos) {
-        ItemStack gear = items.getStackInSlot(SLOT_GEAR);
+        ItemStack gear = items.getStackInSlot(SLOT_GEAR).copy();
         ChipItem chip = (ChipItem) items.getStackInSlot(SLOT_CHIP).getItem();
         List<String> ids = new ArrayList<>();
         List<String> old = gear.get(CtcCore.CHIPS.get());
@@ -143,19 +176,22 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         if (ids.size() >= Gear.SLOTS) {          // full: the oldest chip is replaced and part of its material comes back
             ChipType removed = ChipType.byId(ids.remove(0));
             if (removed != null) {
-                ItemStack out = items.getStackInSlot(SLOT_OUT), refund = removed.refund();
-                if (out.isEmpty()) items.setStackInSlot(SLOT_OUT, refund);
+                ItemStack out = items.getStackInSlot(SLOT_REFUND), refund = removed.refund();
+                if (out.isEmpty()) items.setStackInSlot(SLOT_REFUND, refund);
                 else out.grow(1);
             }
         }
         ids.add(chip.type.id);
         gear.set(CtcCore.CHIPS.get(), List.copyOf(ids));
-        items.getStackInSlot(SLOT_CHIP).shrink(1);
-        if (fuelRequired()) items.getStackInSlot(SLOT_FUEL).shrink(1);
         running = false;
         progress = 0;
+        items.getStackInSlot(SLOT_CHIP).shrink(1);
+        if (fuelRequired()) items.getStackInSlot(SLOT_FUEL).shrink(1);
+        items.setStackInSlot(SLOT_OUT, gear);                 // the finished piece moves to the output
+        items.setStackInSlot(SLOT_GEAR, ItemStack.EMPTY);
+        running = false;
         level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0f, 1.2f);
-        level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.8f, 1.8f);
+        level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.8f, 1.8f);
     }
 
     @Override
@@ -170,7 +206,11 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        if (tag.contains("items")) items.deserializeNBT(registries, tag.getCompound("items"));
+        if (tag.contains("items")) {
+            CompoundTag saved = tag.getCompound("items");
+            saved.putInt("Size", 5);              // stations saved by version 0.1 had four slots
+            items.deserializeNBT(registries, saved);
+        }
         energy.set(tag.getInt("energy"));
         progress = tag.getInt("progress");
         running = tag.getBoolean("running");
