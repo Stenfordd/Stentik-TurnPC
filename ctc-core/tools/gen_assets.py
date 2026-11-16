@@ -41,7 +41,8 @@ lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Rese
         "ctccore.station.build.2": " Floor: 3x3 Research Casing",
         "ctccore.station.build.3": " Middle: this block, casing pillars at the 4 corners",
         "ctccore.station.build.4": " Roof: 3x3 Research Casing, glass in the centre",
-        "ctccore.station.build.5": " Power it with FE through one of its open sides"}
+        "ctccore.station.build.5": " Cables, hoppers and pipes connect to any frame block",
+        "ctccore.station.build.6": " Redstone signal on the core = automatic"}
 for k, (n, c) in CH.items():
     lang[f"item.ctccore.{k}_chip"] = f"{n} Chip"
     for g, t in zip(('weapon', 'armor', 'tool'), FX[k]): lang[f"ctccore.chip.{k}.{g}"] = t
@@ -82,6 +83,25 @@ for i in range(4, 12):
 for i in range(6, 10): p[i, 7] = (150, 96, 250, 255); p[i, 8] = (96, 56, 180, 255)
 for (x, y) in ((2, 2), (13, 2), (2, 13), (13, 13)): p[x, y] = (214, 180, 92, 255)
 save(im, A + 'textures/block/research_casing.png')
+# formed frame: seamless plating (no border, so the blocks read as one machine) and a glowing band that runs around it
+im = Image.new('RGBA', (16, 16)); p = im.load(); r = random.Random(12)
+for y in range(16):
+    for x in range(16):
+        f = r.choice([.96, 1, 1, 1.04]) * (1.06 - 0.008 * y)
+        if y in (3, 12): f *= .8                       # horizontal panel seams, they line up across blocks
+        if y in (4, 13): f *= 1.12
+        p[x, y] = shade((46, 50, 74), f)
+for (x, y) in ((1, 1), (9, 1), (5, 14), (13, 14)): p[x, y] = (214, 180, 92, 255)
+save(im, A + 'textures/block/research_casing_on.png')
+FR = 8; band = Image.new('RGBA', (16, 16 * FR), (0, 0, 0, 0)); bp = band.load()
+for f in range(FR):
+    for x in range(16):
+        v = 0.75 + 0.45 * math.sin((x / 16 - f / FR) * 2 * math.pi)
+        bp[x, f * 16 + 7] = shade((150, 96, 250), v + .25); bp[x, f * 16 + 8] = shade((150, 96, 250), v)
+        bp[x, f * 16 + 6] = shade((60, 34, 120), 1); bp[x, f * 16 + 9] = shade((60, 34, 120), 1)
+        if (x + f * 2) % 16 == 0: bp[x, f * 16 + 7] = (84, 236, 214, 255); bp[x, f * 16 + 8] = (84, 236, 214, 255)
+save(band, A + 'textures/block/research_casing_band.png')
+json.dump({"animation": {"frametime": 2, "interpolate": True}}, open(A + 'textures/block/research_casing_band.png.mcmeta', 'w'))
 
 # ---------------- station: a real 3D model ----------------
 F = 8; TILE = 16; TEX = 64
@@ -148,7 +168,18 @@ w(A + 'models/block/research_station_on.json', station_model(tile, True))
 w(A + 'blockstates/research_station.json', {"variants": {"formed=false": {"model": "ctccore:block/research_station"},
                                                           "formed=true": {"model": "ctccore:block/research_station_on"}}})
 w(A + 'models/item/research_station.json', {"parent": "ctccore:block/research_station_on"})
-w(A + 'blockstates/research_casing.json', {"variants": {"": {"model": "ctccore:block/research_casing"}}})
+w(A + 'blockstates/research_casing.json', {"variants": {"formed=false": {"model": "ctccore:block/research_casing"},
+                                                         "formed=true": {"model": "ctccore:block/research_casing_on"}}})
+def cube_faces(tex, sides_only=False):
+    fs = {d: {"texture": tex, "cullface": d} for d in ("north", "south", "west", "east")}
+    if not sides_only:
+        fs.update({d: {"texture": tex, "cullface": d} for d in ("up", "down")})
+    return fs
+w(A + 'models/block/research_casing_on.json', {"parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+    "textures": {"particle": "ctccore:block/research_casing_on", "base": "ctccore:block/research_casing_on", "band": "ctccore:block/research_casing_band"},
+    "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": cube_faces("#base")},
+                 {"from": [0, 0, 0], "to": [16, 16, 16], "shade": False, "neoforge_data": {"block_light": 15, "sky_light": 15},
+                  "faces": cube_faces("#band", True)}]})
 w(A + 'models/block/research_casing.json', {"parent": "minecraft:block/cube_all", "textures": {"all": "ctccore:block/research_casing"}})
 w(A + 'models/item/research_casing.json', {"parent": "ctccore:block/research_casing"})
 for n in ['blank_chip', 'chip_scrap'] + [k + '_chip' for k in CH]:

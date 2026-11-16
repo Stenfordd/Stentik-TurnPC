@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -47,8 +46,10 @@ public class CtcCore {
                     .lightLevel(state -> state.getValue(ResearchStationBlock.FORMED) ? 10 : 0)));
     public static final DeferredItem<?> STATION_ITEM = ITEMS.registerSimpleBlockItem(STATION);
     /** The frame of the Research Station multiblock. */
-    public static final DeferredBlock<Block> CASING = BLOCKS.registerSimpleBlock("research_casing",
-            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f, 9.0f).requiresCorrectToolForDrops().sound(SoundType.METAL));
+    public static final DeferredBlock<ResearchCasingBlock> CASING = BLOCKS.register("research_casing",
+            () -> new ResearchCasingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f, 9.0f)
+                    .requiresCorrectToolForDrops().sound(SoundType.METAL)
+                    .lightLevel(state -> state.getValue(ResearchCasingBlock.FORMED) ? 7 : 0)));
     public static final DeferredItem<?> CASING_ITEM = ITEMS.registerSimpleBlockItem(CASING);
 
     public static final Supplier<BlockEntityType<ResearchStationBlockEntity>> STATION_BE = BLOCK_ENTITIES.register("research_station",
@@ -95,7 +96,16 @@ public class CtcCore {
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STATION_BE.get(), (be, side) -> be.energy);
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STATION_BE.get(), (be, side) -> be.items);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STATION_BE.get(), (be, side) -> be.automation);
+        // every block of a complete frame is a port: cables and hoppers on the frame reach the core
+        event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, pos, state, be, side) -> {
+            ResearchStationBlockEntity core = ResearchStationBlockEntity.findCore(level, pos, state);
+            return core == null ? null : core.energy;
+        }, CASING.get());
+        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, be, side) -> {
+            ResearchStationBlockEntity core = ResearchStationBlockEntity.findCore(level, pos, state);
+            return core == null ? null : core.automation;
+        }, CASING.get());
     }
 
     public static ResourceLocation id(String path) {

@@ -57,6 +57,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         }
     };
 
+    public final AutomationItems automation = new AutomationItems(items);
     public final Battery energy = new Battery();
     private int progress;
     private boolean running;
@@ -118,6 +119,38 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
             level.setBlock(worldPosition, state.setValue(ResearchStationBlock.FORMED, formed), Block.UPDATE_ALL);
             if (formed) level.playSound(null, worldPosition, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.4f);
         }
+        setFrame(formed);
+    }
+
+    /** Lights the frame up (or switches it off) and tells cables and pipes on it to look again. */
+    public void setFrame(boolean formed) {
+        if (level == null) return;
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    BlockState s = level.getBlockState(p.setWithOffset(worldPosition, dx, dy, dz));
+                    if (s.is(CtcCore.CASING.get()) && s.getValue(ResearchCasingBlock.FORMED) != formed) {
+                        level.setBlock(p, s.setValue(ResearchCasingBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+                        level.invalidateCapabilities(p.immutable());
+                    }
+                }
+            }
+        }
+    }
+
+    /** The core a frame block belongs to, when its multiblock is complete. */
+    public static ResearchStationBlockEntity findCore(Level level, BlockPos casing, BlockState state) {
+        if (!state.hasProperty(ResearchCasingBlock.FORMED) || !state.getValue(ResearchCasingBlock.FORMED)) return null;
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (level.getBlockEntity(p.setWithOffset(casing, dx, dy, dz)) instanceof ResearchStationBlockEntity core && core.missing == 0) return core;
+                }
+            }
+        }
+        return null;
     }
 
     public int status() {
@@ -148,7 +181,11 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ResearchStationBlockEntity be) {
-        if (level.getGameTime() % 20 == 0) be.checkStructure();
+        if (level.getGameTime() % 20 == 0) {
+            be.checkStructure();
+            // a redstone signal on the core means automatic: it starts as soon as everything is in place
+            if (!be.running && level.hasNeighborSignal(pos)) be.start();
+        }
         if (!be.running) {
             if (be.progress != 0) be.progress = 0;
             return;

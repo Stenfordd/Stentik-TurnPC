@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
       "model": "ctccore:block/research_casing"
+    },
+    "formed=true": {
+      "model": "ctccore:block/research_casing_on"
     }
   }
 }

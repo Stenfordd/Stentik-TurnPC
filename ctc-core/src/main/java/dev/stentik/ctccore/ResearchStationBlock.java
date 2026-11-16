@@ -72,6 +72,7 @@ public class ResearchStationBlock extends BaseEntityBlock {
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof ResearchStationBlockEntity station) {
+            station.setFrame(false);
             for (int i = 0; i < station.items.getSlots(); i++) {
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), station.items.getStackInSlot(i));
             }
@@ -81,7 +82,7 @@ public class ResearchStationBlock extends BaseEntityBlock {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> lines, TooltipFlag flag) {
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 6; i++) {
             lines.add(Component.translatable("ctccore.station.build." + i).withStyle(i == 1 ? ChatFormatting.GRAY : ChatFormatting.DARK_GRAY));
         }
     }
