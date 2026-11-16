@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "MCM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "ctc:voidsteel_ingot"
+    },
+    "C": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:void_chip",
+    "count": 1
+  }
+}

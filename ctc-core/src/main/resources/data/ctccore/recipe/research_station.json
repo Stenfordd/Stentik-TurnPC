@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TCT",
+    "PSP",
+    "RRR"
+  ],
+  "key": {
+    "T": {
+      "item": "northstar:titanium_sheet"
+    },
+    "C": {
+      "item": "northstar:advanced_circuit"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "S": {
+      "item": "minecraft:smithing_table"
+    },
+    "R": {
+      "item": "createnuclear:reactor_casing"
+    }
+  },
+  "result": {
+    "id": "ctccore:research_station",
+    "count": 1
+  }
+}

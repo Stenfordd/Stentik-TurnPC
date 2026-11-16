@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "MCM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "northstar:polished_lunar_sapphire"
+    },
+    "C": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:lunar_chip",
+    "count": 1
+  }
+}

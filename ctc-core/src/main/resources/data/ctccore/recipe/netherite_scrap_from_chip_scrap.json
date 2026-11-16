@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ctccore:chip_scrap"
+    },
+    {
+      "item": "ctccore:chip_scrap"
+    },
+    {
+      "item": "ctccore:chip_scrap"
+    },
+    {
+      "item": "ctccore:chip_scrap"
+    }
+  ],
+  "result": {
+    "id": "minecraft:netherite_scrap",
+    "count": 1
+  }
+}

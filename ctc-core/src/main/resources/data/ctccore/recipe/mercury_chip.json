@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "MCM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "northstar:tungsten_ingot"
+    },
+    "C": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:mercury_chip",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "MCM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "northstar:martian_steel_ingot"
+    },
+    "C": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:martian_chip",
+    "count": 1
+  }
+}

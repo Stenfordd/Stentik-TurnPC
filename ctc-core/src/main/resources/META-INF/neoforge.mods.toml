@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "ctccore"
+version = "${file.jarVersion}"
+displayName = "CtC Core"
+authors = "Stentik"
+description = "CREATE: Cogs to Cosmos - Research Station and chips."
+
+[[dependencies.ctccore]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ctccore]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1]"
+ordering = "NONE"
+side = "BOTH"
