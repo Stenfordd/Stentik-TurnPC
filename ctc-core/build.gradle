@@ -3,7 +3,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.78'
 }
 
-version = '0.6.1'
+version = '0.6.2'
 group = 'dev.stentik.ctccore'
 base { archivesName = 'ctccore' }
 

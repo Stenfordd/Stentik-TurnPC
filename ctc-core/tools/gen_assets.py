@@ -30,7 +30,7 @@ FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less
       'terra': ('+1.5 damage', '8% less damage taken', 'Luck I'),
       'copper': ('+1 damage', 'Speed I', 'Speed I while held'),
       'iron': ('+10% damage', '20% less damage from arrows', 'Haste I'),
-      'kinetic': ('Knocks the target back', 'Jump again in mid-air to dash forward (4 s)', 'Haste I')}
+      'kinetic': ('Knocks the target back', 'Jump again in mid-air to dash forward (4 s), soft landing', 'Haste I')}
 
 # ---------------- lang ----------------
 lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Research Station", "block.ctccore.research_casing": "Research Casing",

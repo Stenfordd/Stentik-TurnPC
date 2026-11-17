@@ -86,6 +86,13 @@ public class ChipEvents {
             }
         }
 
+        // a Kinetic dash cushions the landing: up to 3 hearts of fall damage are absorbed for 3 s after a dash
+        if (event.getSource().is(DamageTypeTags.IS_FALL) && target instanceof Player p
+                && target.level().getGameTime() - p.getPersistentData().getLong("ctcDash") < 60) {
+            amount = Math.max(0, amount - 6.0f);
+            if (amount <= 0) { event.setCanceled(true); return; }
+        }
+
         // armor chips of the one being hit
         Set<ChipType> armor = armorChips(target);
         if (!armor.isEmpty()) {

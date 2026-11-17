@@ -57,38 +57,54 @@ for t in ('enchantable/armor', 'enchantable/equippable', 'enchantable/durability
     w(D + f'minecraft/tags/item/{t}.json', {"values": [f'ctccore:{n}_{p}' for n in SETS for p in PIECES]})
 w(D + 'minecraft/tags/item/trimmable_armor.json', {"values": [f'ctccore:{n}_{p}' for n in SETS for p in PIECES]})
 
-# ---------- textures ----------
-def plate(p, x0, y0, x1, y1, col, acc, seed, trim=True):
-    r = random.Random(seed)
+# ---------- textures: plates over the skin, not a full suit ----------
+def paint(p, rect, rows, col, acc, seed, accent_rows=(), seam_rows=(), mask=None):
+    """Fill the given rows of a face rect with metal plating. mask(x_in_face, y_in_face) -> False leaves a hole."""
+    x0, y0, x1, y1 = rect; r = random.Random(seed)
     for y in range(y0, y1):
+        fy = y - y0
+        if fy not in rows: continue
         for x in range(x0, x1):
-            f = r.choice([.94, 1, 1, 1.06]) * (1.12 - 0.22 * (y - y0) / max(1, y1 - y0))
-            if trim and (x in (x0, x1 - 1) or y in (y0, y1 - 1)): f *= .62
-            p[x, y] = shade(col, f)
-    if trim and x1 - x0 >= 4 and y1 - y0 >= 4:
-        for x in range(x0 + 1, x1 - 1): p[x, y0 + 1] = shade(acc, 1.0)
-# faces of a box at (u, v) with size (w, h, d): top/bottom row of height d, sides row of height h
-def box_faces(u, v, wd, h, d):
-    return [(u + d, v, u + d + wd, v + d), (u + d + wd, v, u + d + 2 * wd, v + d),                         # top, bottom
-            (u, v + d, u + d, v + d + h), (u + d, v + d, u + d + wd, v + d + h),                        # right, front
-            (u + d + wd, v + d, u + 2 * d + wd, v + d + h), (u + 2 * d + wd, v + d, u + 2 * d + 2 * wd, v + d + h)]  # left, back
+            fx = x - x0
+            if mask and not mask(fx, fy, x1 - x0): continue
+            f = r.choice([.92, 1, 1, 1.05]) * (1.15 - 0.3 * fy / max(1, y1 - y0))
+            if fx == 0 or fx == x1 - x0 - 1: f *= .7
+            if fy in seam_rows: f *= .6
+            p[x, y] = shade(acc, 1.05) if fy in accent_rows else shade(col, f)
+def faces(u, v, wd, h, d):   # right, front, left, back side faces + top + bottom of a box
+    return {'top': (u + d, v, u + d + wd, v + d), 'bottom': (u + d + wd, v, u + d + 2 * wd, v + d),
+            'right': (u, v + d, u + d, v + d + h), 'front': (u + d, v + d, u + d + wd, v + d + h),
+            'left': (u + d + wd, v + d, u + 2 * d + wd, v + d + h), 'back': (u + 2 * d + wd, v + d, u + 2 * d + 2 * wd, v + d + h)}
+SIDES = ('right', 'front', 'left', 'back')
 for n, (disp, col, acc, ingot) in SETS.items():
-    s = sum(map(ord, n))
+    s0 = sum(map(ord, n))
     l1 = Image.new('RGBA', (64, 32), (0, 0, 0, 0)); p1 = l1.load()
-    for i, f in enumerate(box_faces(0, 0, 8, 8, 8)): plate(p1, *f, col, acc, s + i)             # helmet
-    for x in range(10, 14): p1[x, 12] = shade(acc, 1.3); p1[x, 13] = shade(acc, .9)             # visor slit
-    for x in range(11, 13): p1[x, 12] = (255, 255, 255, 255) if n != 'steel' else shade(acc, 1.4)
-    for i, f in enumerate(box_faces(16, 16, 8, 12, 4)): plate(p1, *f, col, acc, s + 10 + i)     # chest
-    for y in range(22, 26): p1[23, y] = shade(acc, 1.25); p1[24, y] = shade(acc, 1.25)         # chest core
-    for i, f in enumerate(box_faces(40, 16, 4, 12, 4)): plate(p1, *f, col, acc, s + 20 + i)     # arms
-    for (x0, y0, x1, y1) in box_faces(0, 16, 4, 12, 4)[2:]:                                     # boots: lower part of the legs
-        plate(p1, x0, y1 - 5, x1, y1, col, acc, s + 30 + x0)
-    plate(p1, *box_faces(0, 16, 4, 12, 4)[1], col, acc, s + 40)
+    head = faces(0, 0, 8, 8, 8)
+    paint(p1, head['top'], range(8), col, acc, s0)
+    paint(p1, head['back'], range(8), col, acc, s0 + 1, accent_rows=(6,))
+    for side in ('right', 'left'): paint(p1, head[side], range(7), col, acc, s0 + 2, accent_rows=(1,))
+    # open face: brow band, nose guard and cheek plates, the face shows through
+    paint(p1, head['front'], range(8), col, acc, s0 + 3, accent_rows=(1,),
+          mask=lambda fx, fy, w: fy <= 2 or fx in (0, 1, 6, 7) and fy <= 6 or fx in (3, 4) and fy <= 4)
+    body = faces(16, 16, 8, 12, 4)
+    paint(p1, body['front'], range(10), col, acc, s0 + 4, seam_rows=(4, 7),
+          mask=lambda fx, fy, w: not (fy == 0 and 2 <= fx <= 5))      # neck opening
+    for (x, y) in ((19 + 4, 21), (20 + 4, 21), (19 + 4, 22), (20 + 4, 22)): p1[x, y] = shade(acc, 1.35)   # core gem
+    for side in ('right', 'left'): paint(p1, body[side], range(10), col, acc, s0 + 5, seam_rows=(4, 7))
+    paint(p1, body['back'], range(10), col, acc, s0 + 6, seam_rows=(4, 7))
+    arm = faces(40, 16, 4, 12, 4)
+    paint(p1, arm['top'], range(4), col, acc, s0 + 7)
+    for side in SIDES:                                     # pauldron and bracer, the sleeve shows between
+        paint(p1, arm[side], (0, 1, 2, 3, 8, 9, 10, 11), col, acc, s0 + 8, accent_rows=(3, 8))
+    leg = faces(0, 16, 4, 12, 4)
+    for side in SIDES: paint(p1, leg[side], range(8, 12), col, acc, s0 + 9, accent_rows=(8,))
+    paint(p1, leg['bottom'], range(4), col, acc, s0 + 10)
     save(l1, A + f'textures/models/armor/{n}_layer_1.png')
     l2 = Image.new('RGBA', (64, 32), (0, 0, 0, 0)); p2 = l2.load()
-    for (x0, y0, x1, y1) in box_faces(16, 16, 8, 12, 4)[2:]: plate(p2, x0, y1 - 5, x1, y1, col, acc, s + 50 + x0)  # waist
-    for i, (x0, y0, x1, y1) in enumerate(box_faces(0, 16, 4, 12, 4)):
-        plate(p2, x0, y0, x1, y1 if i < 2 else y1 - 2, col, acc, s + 60 + i)
+    for side in SIDES: paint(p2, body[side], range(8, 12), col, acc, s0 + 11, accent_rows=(8,))   # belt
+    for side in SIDES:                                     # thigh plates and a knee guard
+        paint(p2, leg[side], range(0, 8), col, acc, s0 + 12, accent_rows=(5,) if side == 'front' else (),
+              mask=lambda fx, fy, w: fy != 4 or side == 'front')
     save(l2, A + f'textures/models/armor/{n}_layer_2.png')
 
 ICONS = {
