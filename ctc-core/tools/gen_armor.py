@@ -16,7 +16,6 @@ def shaped(name, pattern, key, result, count=1, cat="misc"):
 SETS = {  # name: (display, colour, accent, ingot)
     'steel': ('Steel', (120, 128, 140), (200, 206, 214), 'createnuclear:steel_ingot'),
     'titanium': ('Titanium', (178, 186, 204), (110, 200, 230), '#c:ingots/titanium'),
-    'martian': ('Martian', (176, 74, 48), (255, 160, 80), 'northstar:martian_steel_ingot'),
     'tungsten': ('Tungsten', (78, 84, 98), (240, 190, 90), 'northstar:tungsten_ingot'),
     'voidsteel': ('Voidsteel', (52, 34, 84), (170, 110, 255), 'ctc:voidsteel_ingot'),
 }
@@ -28,6 +27,7 @@ lang["ctccore.armor.set"] = "Full set: %s"
 for n, (disp, *_rest) in SETS.items():
     for p in PIECES: lang[f"item.ctccore.{n}_{p}"] = f"{disp} {p.capitalize()}"
     lang[f"ctccore.armor.{n}.bonus"] = BONUS[n]
+lang["ctccore.armor.martian.bonus"] = BONUS['martian']
 json.dump(lang, open(lp, 'w'), indent=2, ensure_ascii=False)
 
 # ---------- basic chips: no blank chip, early materials ----------

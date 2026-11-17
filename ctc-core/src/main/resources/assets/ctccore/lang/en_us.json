@@ -132,11 +132,6 @@
   "item.ctccore.titanium_leggings": "Titanium Leggings",
   "item.ctccore.titanium_boots": "Titanium Boots",
   "ctccore.armor.titanium.bonus": "Speed I",
-  "item.ctccore.martian_helmet": "Martian Helmet",
-  "item.ctccore.martian_chestplate": "Martian Chestplate",
-  "item.ctccore.martian_leggings": "Martian Leggings",
-  "item.ctccore.martian_boots": "Martian Boots",
-  "ctccore.armor.martian.bonus": "Fire Resistance",
   "item.ctccore.tungsten_helmet": "Tungsten Helmet",
   "item.ctccore.tungsten_chestplate": "Tungsten Chestplate",
   "item.ctccore.tungsten_leggings": "Tungsten Leggings",
@@ -146,5 +141,6 @@
   "item.ctccore.voidsteel_chestplate": "Voidsteel Chestplate",
   "item.ctccore.voidsteel_leggings": "Voidsteel Leggings",
   "item.ctccore.voidsteel_boots": "Voidsteel Boots",
-  "ctccore.armor.voidsteel.bonus": "No fall damage"
+  "ctccore.armor.voidsteel.bonus": "No fall damage",
+  "ctccore.armor.martian.bonus": "Fire Resistance"
 }

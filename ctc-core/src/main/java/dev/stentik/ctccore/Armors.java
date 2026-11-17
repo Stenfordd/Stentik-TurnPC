@@ -59,12 +59,19 @@ public final class Armors {
     static {
         set("steel", 2, 7, 5, 2, 0.5f, 0.0f, 22, "createnuclear:steel_ingot");
         set("titanium", 3, 8, 6, 3, 2.0f, 0.0f, 30, "#c:ingots/titanium");
-        set("martian", 3, 8, 6, 3, 2.5f, 0.05f, 33, "northstar:martian_steel_ingot");
         set("tungsten", 3, 9, 7, 3, 3.0f, 0.15f, 38, "northstar:tungsten_ingot");
         set("voidsteel", 4, 9, 7, 4, 3.5f, 0.1f, 40, "ctc:voidsteel_ingot");
     }
 
     static void init() {}
+
+    /** Armor from other mods that gets a set bonus too (Northstar already has Martian Steel armor, so we do not add our own). */
+    private static final Map<String, String[]> OTHER = Map.of("martian", new String[] { "northstar:martian_steel_helmet",
+            "northstar:martian_steel_chestplate", "northstar:martian_steel_leggings", "northstar:martian_steel_boots" });
+
+    private static boolean isId(ItemStack stack, String id) {
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(id);
+    }
 
     private static String fullSet(Player player) {
         String found = null;
@@ -72,6 +79,11 @@ public final class Armors {
         for (var e : SETS.entrySet()) {
             boolean all = true;
             for (int i = 0; i < 4; i++) if (!player.getItemBySlot(slots[i]).is(e.getValue()[i].get())) { all = false; break; }
+            if (all) found = e.getKey();
+        }
+        for (var e : OTHER.entrySet()) {
+            boolean all = true;
+            for (int i = 0; i < 4; i++) if (!isId(player.getItemBySlot(slots[i]), e.getValue()[i])) { all = false; break; }
             if (all) found = e.getKey();
         }
         return found;
@@ -95,6 +107,9 @@ public final class Armors {
     public static String bonusKey(ItemStack stack) {
         for (var e : SETS.entrySet()) {
             for (var item : e.getValue()) if (stack.is(item.get())) return "ctccore.armor." + e.getKey() + ".bonus";
+        }
+        for (var e : OTHER.entrySet()) {
+            for (String id : e.getValue()) if (isId(stack, id)) return "ctccore.armor." + e.getKey() + ".bonus";
         }
         return null;
     }
