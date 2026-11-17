@@ -1748,16 +1748,29 @@ function sbExtract(input) {
       }
     }
   }
-  const isName = (e) => !wantName || String(e.root && e.root.profile_cute_name || '').toLowerCase() === wantName;
+  const wantUser = ((String(input.url || '').match(/\/stats\/([^/?#]+)/) || [])[1] || '').toLowerCase();
+  const isUser = (e) => !wantUser || !(e.root && e.root.username) || decodeURIComponent(wantUser) === String(e.root.username).toLowerCase();
+  const isName = (e) => isUser(e) && (!wantName || String(e.root && e.root.profile_cute_name || '').toLowerCase() === wantName);
   const selE = entries.find((e) => (e.name === 'getSelectedProfileStats' || e.name === 'getProfileStats') && isName(e))
-    || (!wantName ? entries.find((e) => e.name === 'getSelectedProfileStats') : null);
+    || (!wantName ? entries.find((e) => e.name === 'getSelectedProfileStats' && isUser(e)) : null);
   const embE = entries.find((e) => e.name === 'embed' && isName(e));
   const pid = (selE && selE.root.profile_id) || (embE && embE.root.profile_id) || null;
-  const pick = (name) => { const list = entries.filter((e) => e.name === name); return (pid && list.find((e) => e.payload.indexOf(pid) >= 0)) || (list.length === 1 ? list[0] : null); };
+  const s = selE ? selE.root : (embE ? embE.root : null);
+  // V coopu mají všichni členové stejné profile ID. Data záložek proto párujeme i podle UUID hráče,
+  // jinak by se při exportu se stránkami víc hráčů vzala data toho, kdo byl otevřený dřív.
+  const uid = String((s && s.uuid) || '').replace(/-/g, '').toLowerCase();
+  const pick = (name) => {
+    const list = entries.filter((e) => e.name === name);
+    if (uid) {
+      const mine = list.filter((e) => e.payload.toLowerCase().indexOf(uid) >= 0 && (!pid || e.payload.indexOf(pid) >= 0));
+      if (mine.length) return mine[mine.length - 1];
+      if (list.some((e) => /[0-9a-f]{32}/i.test(e.payload))) return null; // jsou tam jen data jiného hráče
+    }
+    return (pid && list.find((e) => e.payload.indexOf(pid) >= 0)) || (list.length === 1 ? list[0] : null);
+  };
   const cE = pick('getCombinedProfileStats'), nE = pick('getProfileNetworth');
   const c = cE && cE.root;
-  const s = selE ? selE.root : (embE ? embE.root : null);
-  if (!c || !s) throw new Error('V exportu chybí hlavní data profilu (getCombinedProfileStats). Obnov stránku SkyCryptu, proklikej záložky a spusť skript znovu.');
+  if (!c || !s) throw new Error('V exportu chybí hlavní data profilu tohohle hráče (getCombinedProfileStats). Obnov stránku SkyCryptu (F5) jen s tímhle hráčem, proklikej záložky a spusť skript znovu.');
   const nwRoot = (nE && nE.root) || {};
   const nw = (nwRoot.normal && nwRoot.normal.networth) || (nwRoot.nonCosmetic && nwRoot.nonCosmetic.networth) || (s.networth && typeof s.networth === 'object' ? s.networth.normal : null) || null;
   const lv = (o) => o ? { lvl: o.level || 0, cur: Math.round(o.xpCurrent || 0), next: Math.round(o.xpForNext || 0), maxed: !!o.maxed } : null;
@@ -3155,7 +3168,7 @@ window.sbExtract=sbExtract;</script>
     });
     // Armor
     var set = mnSet(g), lvl = mn.lvl || 0, A = {
-      heat: lvl >= 20 ? 'Máš Heat armor. Od Mining 20 je lepší <b>Glacite armor</b>, ty jsi na ' + lvl + '. Glacite Walkers u Great Ice Wall.' : 'Heat armor je dobrý start. Od Mining 20 ho předběhne Glacite armor.',
+      heat: 'Máš Heat armor. Dvě cesty: <b>Glacite armor</b> je přímý upgrade Heatu na Dwarven Mines (od Mining 20, ty máš ' + lvl + ', Glacite Walkers u Great Ice Wall). Když míříš brzo do Crystal Hollows, jdi rovnou <b>Flamebreaker → Yog</b>. Yog je minimum na gemstony a Flamebreaker je jeho předstupeň.',
       glacite: 'Glacite armor máš. Před těžbou gemstonů ve velkém: Flamebreaker → <b>Yog</b>.',
       flame: 'Flamebreaker máš. Další je <b>Yog</b>, má Pristine a je minimum na gemstony ve velkém.',
       yog: 'Yog máš. Dál <b>Divan</b> (vyplatí se s Topaz slotem) a Mineral armor při Fiesta na rudy a bloky.',
