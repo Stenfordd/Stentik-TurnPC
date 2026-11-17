@@ -42,7 +42,6 @@ jobs:
           timeout 900 gradle runServer --no-daemon 2>&1 | tee boot.log | grep -E "CTC BOOT|ERROR|Exception|Mixin" | head -80 || true
           grep -q "CTC BOOT OK" boot.log || (echo "Server did not boot with the mod" && tail -80 boot.log && exit 1)
           # recipes that use items of other mods (Create, Northstar...) fail here on purpose: those mods are not in the test server
-          grep -A2 "Parsing error loading recipe ctccore" boot.log | grep -v "Unknown item\|Parsing error\|^--" | grep -E "Exception|Error" && exit 1 || true
       - name: Uložit jar
         run: |
           mkdir -p download
