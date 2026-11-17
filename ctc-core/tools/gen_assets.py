@@ -13,7 +13,8 @@ def shade(c, f): return tuple(max(0, min(255, int(v * f))) for v in c) + (255,)
 CH = {'lunar': ('Lunar', (159, 196, 255)), 'martian': ('Martian', (232, 104, 60)), 'mercury': ('Mercury', (143, 163, 192)),
       'void': ('Void', (154, 92, 255)), 'harbinger': ('Harbinger', (192, 48, 58)), 'ignis': ('Ignis', (255, 154, 46)),
       'leviathan': ('Leviathan', (60, 200, 216)), 'remnant': ('Remnant', (216, 194, 122)), 'maledictus': ('Maledictus', (158, 230, 255)),
-      'guardian': ('Guardian', (199, 125, 255)), 'ember': ('Ember', (255, 106, 43)), 'terra': ('Terra', (127, 211, 107))}
+      'guardian': ('Guardian', (199, 125, 255)), 'ember': ('Ember', (255, 106, 43)), 'terra': ('Terra', (127, 211, 107)),
+      'copper': ('Copper', (224, 123, 74)), 'iron': ('Iron', (216, 220, 228)), 'kinetic': ('Kinetic', (111, 227, 201))}
 BOSS = ('harbinger', 'ignis', 'leviathan', 'remnant', 'maledictus', 'guardian')
 FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less fall damage', 'Night Vision while held'),
       'martian': ('Sets the target on fire, +10% damage', 'Attackers catch fire', 'Haste II (a red-hot tool)'),
@@ -26,7 +27,10 @@ FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less
       'maledictus': ('Freezes the target', 'Attackers freeze', 'Haste I'),
       'guardian': ('+35% damage', '25% less damage taken', 'Haste III'),
       'ember': ('Sets the target on fire for 3 s', 'Attackers catch fire', 'Haste I'),
-      'terra': ('+1.5 damage', '8% less damage taken', 'Luck I')}
+      'terra': ('+1.5 damage', '8% less damage taken', 'Luck I'),
+      'copper': ('+1 damage', 'Speed I', 'Speed I while held'),
+      'iron': ('+10% damage', '20% less damage from arrows', 'Haste I'),
+      'kinetic': ('Knocks the target back', 'Jump again in mid-air to dash forward (4 s)', 'Haste I')}
 
 # ---------------- lang ----------------
 lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Research Station", "block.ctccore.research_casing": "Research Casing",
@@ -56,7 +60,7 @@ PONDER = {"research_station": ("Building the Research Station", [
     "research_station_use": ("Implanting chips", [
     "Open the station and put in a weapon, armor or a tool, a chip and a Uranium Rod",
     "Every implant also needs 60,000 FE. The panel in the middle shows what the chip will do",
-    "Each piece of gear holds 2 chips (3 with a Chip Socket). One more replaces the oldest and gives part of its material back",
+    "Iron and weaker gear holds 1 chip, diamond and better 2, a Chip Socket adds one more. A new chip replaces the oldest and gives part of its material back",
     "A redstone signal next to the core makes it automatic: it starts as soon as everything is inside"])}
 for scene, (header, texts) in PONDER.items():
     lang[f"ctccore.ponder.{scene}.header"] = header
@@ -281,3 +285,4 @@ with gzip.open(A + 'ponder/research_station.nbt', 'wb') as f: f.write(bytes([10]
 print('ponder schematic', len(blocks), 'blocks')
 
 exec(open('tools/gen_materials.py').read())
+exec(open('tools/gen_armor.py').read())

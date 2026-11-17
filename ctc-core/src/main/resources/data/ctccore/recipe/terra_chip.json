@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " M ",
-    "ECE",
-    " M "
+    " A ",
+    "ERE",
+    " A "
   ],
   "key": {
-    "M": {
+    "A": {
       "item": "minecraft:amethyst_shard"
     },
     "E": {
       "item": "minecraft:emerald"
     },
-    "C": {
-      "item": "ctccore:blank_chip"
+    "R": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {

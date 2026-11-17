@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "X X",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "createnuclear:steel_ingot"
+    }
+  },
+  "result": {
+    "id": "ctccore:steel_chestplate",
+    "count": 1
+  }
+}

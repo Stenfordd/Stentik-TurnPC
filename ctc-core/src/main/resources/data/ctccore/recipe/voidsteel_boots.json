@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "ctc:voidsteel_ingot"
+    }
+  },
+  "result": {
+    "id": "ctccore:voidsteel_boots",
+    "count": 1
+  }
+}

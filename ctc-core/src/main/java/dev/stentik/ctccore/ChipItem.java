@@ -18,7 +18,7 @@ public class ChipItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
-        lines.add(Component.translatable("ctccore.chip.hint").withStyle(ChatFormatting.DARK_GRAY));
+        lines.add(Component.translatable(type.basic() ? "ctccore.chip.hint_basic" : "ctccore.chip.hint").withStyle(ChatFormatting.DARK_GRAY));
         for (Gear gear : new Gear[] { Gear.WEAPON, Gear.ARMOR, Gear.TOOL }) {
             lines.add(Component.translatable("ctccore.gear." + gear.name().toLowerCase()).withStyle(ChatFormatting.GRAY)
                     .append(Component.literal(": "))

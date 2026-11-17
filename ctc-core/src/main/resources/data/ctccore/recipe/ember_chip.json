@@ -2,16 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " M ",
-    "MCM",
-    " M "
+    " B ",
+    "GRG",
+    " B "
   ],
   "key": {
-    "M": {
+    "B": {
       "item": "minecraft:blaze_rod"
     },
-    "C": {
-      "item": "ctccore:blank_chip"
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {

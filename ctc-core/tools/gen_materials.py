@@ -175,8 +175,6 @@ for kind, t in (('smelting', 200), ('blasting', 100)):
     rec(f'rubrium_ingot_from_{kind}', {"type": f"minecraft:{kind}", "category": "misc", "ingredient": {"item": "ctccore:raw_rubrium"},
                                        "result": {"id": "ctccore:rubrium_ingot"}, "experience": 1.0, "cookingtime": t})
 shaped('chip_socket', ["SGS", "GBG", "SGS"], {"S": "ctccore:selenite", "G": "ctccore:solarite", "B": "ctccore:blank_chip"}, 'ctccore:chip_socket')
-shaped('ember_chip', [" M ", "MCM", " M "], {"M": "minecraft:blaze_rod", "C": "ctccore:blank_chip"}, 'ctccore:ember_chip')
-shaped('terra_chip', [" M ", "ECE", " M "], {"M": "minecraft:amethyst_shard", "E": "minecraft:emerald", "C": "ctccore:blank_chip"}, 'ctccore:terra_chip')
 # cheaper station: reachable before space
 shaped('blank_chip', [" G ", "RTR", " G "], {"G": "minecraft:gold_ingot", "R": "minecraft:redstone", "T": "create:electron_tube"}, 'ctccore:blank_chip', 2)
 shaped('research_casing', [" I ", "IBI", " I "], {"I": "#c:plates/iron", "B": "create:brass_casing"}, 'ctccore:research_casing', 4)

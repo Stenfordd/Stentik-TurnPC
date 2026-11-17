@@ -33,10 +33,11 @@ public class ClientSetup {
         @SubscribeEvent
         public static void tooltip(ItemTooltipEvent event) {
             List<ChipType> chips = ChipType.of(event.getItemStack());
-            if (chips.isEmpty()) return;
             Gear gear = Gear.of(event.getItemStack());
             if (gear == Gear.NONE) return;
             List<Component> lines = event.getToolTip();
+            String bonus = Armors.bonusKey(event.getItemStack());
+            if (bonus != null) lines.add(Component.translatable("ctccore.armor.set", Component.translatable(bonus)).withStyle(ChatFormatting.GOLD));
             lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(event.getItemStack())).withStyle(ChatFormatting.GRAY));
             for (ChipType chip : chips) {
                 lines.add(Component.literal(" ◆ ").withStyle(s -> s.withColor(chip.color))

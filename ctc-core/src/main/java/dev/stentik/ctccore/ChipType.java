@@ -21,7 +21,15 @@ public enum ChipType {
     MALEDICTUS("maledictus", 0x9EE6FF, "minecraft:blue_ice", true),
     GUARDIAN("guardian", 0xC77DFF, "cataclysm:void_core", true),
     EMBER("ember", 0xFF6A2B, "minecraft:blaze_rod", false),
-    TERRA("terra", 0x7FD36B, "minecraft:amethyst_shard", false);
+    TERRA("terra", 0x7FD36B, "minecraft:amethyst_shard", false),
+    COPPER("copper", 0xE07B4A, "minecraft:copper_ingot", false),
+    IRON("iron", 0xD8DCE4, "minecraft:iron_ingot", false),
+    KINETIC("kinetic", 0x6FE3C9, "create:andesite_alloy", false);
+
+    /** Basic chips need no Research Station: a Smithing Table with redstone implants them. */
+    public boolean basic() {
+        return this == COPPER || this == IRON || this == EMBER || this == TERRA || this == KINETIC;
+    }
 
     public final String id;
     public final int color;

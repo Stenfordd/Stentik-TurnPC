@@ -1,0 +1,24 @@
+{
+  "values": [
+    "ctccore:steel_helmet",
+    "ctccore:steel_chestplate",
+    "ctccore:steel_leggings",
+    "ctccore:steel_boots",
+    "ctccore:titanium_helmet",
+    "ctccore:titanium_chestplate",
+    "ctccore:titanium_leggings",
+    "ctccore:titanium_boots",
+    "ctccore:martian_helmet",
+    "ctccore:martian_chestplate",
+    "ctccore:martian_leggings",
+    "ctccore:martian_boots",
+    "ctccore:tungsten_helmet",
+    "ctccore:tungsten_chestplate",
+    "ctccore:tungsten_leggings",
+    "ctccore:tungsten_boots",
+    "ctccore:voidsteel_helmet",
+    "ctccore:voidsteel_chestplate",
+    "ctccore:voidsteel_leggings",
+    "ctccore:voidsteel_boots"
+  ]
+}

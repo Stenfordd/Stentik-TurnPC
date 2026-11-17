@@ -35,7 +35,7 @@ public class ChipEvents {
             "cataclysm:maledictus", ChipType.MALEDICTUS,
             "cataclysm:ender_guardian", ChipType.GUARDIAN);
 
-    private static Set<ChipType> armorChips(LivingEntity entity) {
+    static Set<ChipType> armorChips(LivingEntity entity) {
         Set<ChipType> out = EnumSet.noneOf(ChipType.class);
         for (EquipmentSlot slot : ARMOR) {
             ItemStack stack = entity.getItemBySlot(slot);
@@ -78,6 +78,9 @@ public class ChipEvents {
                         case GUARDIAN -> amount *= 1.35f;
                         case EMBER -> target.igniteForSeconds(3);
                         case TERRA -> amount += 1.5f;
+                        case COPPER -> amount += 1.0f;
+                        case IRON -> amount *= 1.10f;
+                        case KINETIC -> target.knockback(1.2, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
                     }
                 }
             }
@@ -93,6 +96,7 @@ public class ChipEvents {
             if (armor.contains(ChipType.LUNAR) && event.getSource().is(DamageTypeTags.IS_FALL)) amount *= 0.4f;
             if (armor.contains(ChipType.MERCURY)) amount *= 0.85f;
             if (armor.contains(ChipType.TERRA)) amount *= 0.92f;
+            if (armor.contains(ChipType.IRON) && event.getSource().is(DamageTypeTags.IS_PROJECTILE)) amount *= 0.8f;
             if (armor.contains(ChipType.GUARDIAN)) amount *= 0.75f;
             if (attacker != null && attacker != target) {
                 if (armor.contains(ChipType.MARTIAN) || armor.contains(ChipType.IGNIS) || armor.contains(ChipType.EMBER)) attacker.igniteForSeconds(4);
@@ -113,6 +117,8 @@ public class ChipEvents {
         if (armor.contains(ChipType.IGNIS)) effect(player, MobEffects.FIRE_RESISTANCE, 100, 0);
         if (armor.contains(ChipType.LEVIATHAN)) { effect(player, MobEffects.WATER_BREATHING, 100, 0); effect(player, MobEffects.DOLPHINS_GRACE, 100, 0); }
         if (armor.contains(ChipType.REMNANT)) effect(player, MobEffects.REGENERATION, 100, 0);
+        if (armor.contains(ChipType.COPPER)) effect(player, MobEffects.MOVEMENT_SPEED, 100, 0);
+        Armors.setBonus(player);
 
         ItemStack held = player.getMainHandItem();
         if (Gear.of(held) != Gear.TOOL) return;
@@ -126,6 +132,8 @@ public class ChipEvents {
                 case VOID -> effect(player, MobEffects.LUCK, 100, 1);
                 case EMBER -> haste = Math.max(haste, 0);
                 case TERRA -> effect(player, MobEffects.LUCK, 100, 0);
+                case COPPER -> effect(player, MobEffects.MOVEMENT_SPEED, 100, 0);
+                case IRON, KINETIC -> haste = Math.max(haste, 0);
                 case LEVIATHAN -> effect(player, MobEffects.CONDUIT_POWER, 100, 0);
                 case REMNANT -> { if (held.isDamaged()) held.setDamageValue(held.getDamageValue() - 1); }
             }

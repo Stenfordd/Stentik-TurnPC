@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "XXX",
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "northstar:martian_steel_ingot"
+    }
+  },
+  "result": {
+    "id": "ctccore:martian_leggings",
+    "count": 1
+  }
+}

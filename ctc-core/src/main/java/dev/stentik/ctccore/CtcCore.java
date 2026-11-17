@@ -39,6 +39,9 @@ public class CtcCore {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MODID);
     public static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> SERIALIZERS =
+            DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
+    public static final Supplier<ChipSmithingRecipe.Serializer> CHIP_SMITHING = SERIALIZERS.register("chip_smithing", ChipSmithingRecipe.Serializer::new);
 
     public static final DeferredBlock<ResearchStationBlock> STATION = BLOCKS.register("research_station",
             () -> new ResearchStationBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 9.0f)
@@ -79,6 +82,7 @@ public class CtcCore {
 
     static {
         Materials.init();
+        Armors.init();
     }
 
     public static final Supplier<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()
@@ -91,6 +95,7 @@ public class CtcCore {
                 out.accept(CHIP_SCRAP.get());
                 for (ChipType type : ChipType.values()) out.accept(CHIP_ITEMS.get(type).get());
                 for (var item : Materials.ALL) out.accept(item.get());
+                for (var item : Armors.ALL) out.accept(item.get());
             }).build());
 
     public CtcCore(IEventBus modBus) {
@@ -100,7 +105,14 @@ public class CtcCore {
         MENUS.register(modBus);
         COMPONENTS.register(modBus);
         TABS.register(modBus);
+        SERIALIZERS.register(modBus);
+        Armors.MATERIALS.register(modBus);
+        modBus.addListener(CtcCore::registerPayloads);
         modBus.addListener(CtcCore::registerCapabilities);
+    }
+
+    private static void registerPayloads(net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(DashPayload.TYPE, DashPayload.CODEC, DashPayload::handle);
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {

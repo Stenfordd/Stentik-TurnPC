@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "ctc:steel_saber",
+      "required": false
+    },
+    {
+      "id": "ctc:titanium_blade",
+      "required": false
+    },
+    {
+      "id": "ctc:voidsteel_rapier",
+      "required": false
+    },
+    {
+      "id": "ctc:witherite_cleaver",
+      "required": false
+    },
+    {
+      "id": "ctc:martian_glaive",
+      "required": false
+    },
+    {
+      "id": "ctc:tungsten_hammer",
+      "required": false
+    }
+  ]
+}

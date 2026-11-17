@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "XXX",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/titanium"
+    }
+  },
+  "result": {
+    "id": "ctccore:titanium_helmet",
+    "count": 1
+  }
+}
