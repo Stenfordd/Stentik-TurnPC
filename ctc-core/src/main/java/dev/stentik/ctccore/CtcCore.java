@@ -109,6 +109,20 @@ public class CtcCore {
         Armors.MATERIALS.register(modBus);
         modBus.addListener(CtcCore::registerPayloads);
         modBus.addListener(CtcCore::registerCapabilities);
+        if (System.getenv("CTC_CI_BOOT") != null) {
+            // CI only: the server came up with the mod, recipes and mixins loaded -> say so and shut down
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> {
+                try {
+                    Class.forName("net.minecraft.world.inventory.AnvilMenu");
+                    var recipes = e.getServer().getRecipeManager();
+                    long ours = recipes.getRecipes().stream().filter(r -> r.id().getNamespace().equals(MODID)).count();
+                    org.slf4j.LoggerFactory.getLogger(MODID).info("CTC BOOT OK: {} ctccore recipes", ours);
+                } catch (Throwable t) {
+                    org.slf4j.LoggerFactory.getLogger(MODID).error("CTC BOOT FAILED", t);
+                }
+                e.getServer().halt(false);
+            });
+        }
     }
 
     private static void registerPayloads(net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent event) {

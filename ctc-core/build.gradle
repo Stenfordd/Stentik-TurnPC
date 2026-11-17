@@ -18,8 +18,10 @@ neoForge {
     }
     runs {
         // CI boots a headless game-test server once: catches registry, mixin and event crashes before players do
-        gameTestServer {
-            type = "gameTestServer"
+        server {
+            server()
+            programArgument '--nogui'
+            environment 'CTC_CI_BOOT', '1'
         }
     }
 }
