@@ -415,6 +415,10 @@ footer ul{margin:0;padding-left:18px}
 @media(max-width:700px){.strips{grid-template-columns:1fr}.mayors{grid-template-columns:1fr}.cand{grid-template-columns:100px 1fr 64px}}
 @media(max-width:600px){.path,.tree,.two{grid-template-columns:1fr}.bar{grid-template-columns:96px 1fr 62px}section{padding:16px}.island{display:none}.mstrip{grid-template-columns:auto 1fr}.mstrip .go{display:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+.phases tr.on td{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.phases tr.on td:first-child{box-shadow:inset 3px 0 var(--accent)}
+.phases tr.on td:first-child b::after{content:" · jsi tady";font-weight:600;color:var(--accent);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -891,6 +895,26 @@ footer ul{margin:0;padding-left:18px}
 </div>
 
 <section class="legendary">
+<div class="head"><h2>Tvoje situace a co dál</h2></div>
+<p class="note" id="mnWho"></p>
+<div class="adv" id="mnNow"></div>
+<small>Počítá se z exportu hráče, který máš vybraný nahoře. Krumpáč ani drill v exportu nejsou, ty si odškrtni v žebříčku níž. Zůstatek powderu je podle SkyCryptu, skutečný ověř v <span class="mono">/hotm</span>.</small>
+</section>
+
+<section class="epic">
+<div class="head"><h2>Fáze: kudy mining vede</h2></div>
+<div class="scroll"><table class="phases" id="mnPhases">
+<tr><th>Fáze</th><th>HOTM</th><th>Hlavní cíle</th><th>Odemyká</th></tr>
+<tr data-ph="1"><td><b>1. Dwarven Mines</b></td><td class="mono">1 až 4</td><td>Commissions každý den (400 HOTM XP od HOTM 3), Mithril a Titanium, Mithril powder do Mining Speed a Fortune. Krumpáč → Mithril Drill SX-R226 a R326. Heat armor, Mithril equipment, Bee pet na commissions.</td><td>HOTM 5: Core of the Mountain a Crystal Hollows</td></tr>
+<tr data-ph="2"><td><b>2. Crystal Hollows</b></td><td class="mono">kolem 5</td><td>Pass u Gwendolyn, treasure chesty a Gemstone powder, Nucleus runy. Ruby → Gemstone → Topaz Drill. Armadillo a Mole. Goblin Egg → Blue Cheese Omelette do drillu. Yog armor.</td><td>HOTM 6</td></tr>
+<tr data-ph="3"><td><b>3. Gemstony a powder</b></td><td class="mono">6</td><td>Magma Fields s Heated reforgem a Balem, Jasper Drill bokem, Mithril powder grind se Spicy Omelette. Mineral armor a Titanium equipment při Mining Fiesta.</td><td>HOTM 7</td></tr>
+<tr data-ph="4"><td><b>4. Glacite Tunnels</b></td><td class="mono">7+</td><td>Secret Railroad Pass (Dulin Sprite, Forge), Titanium Drill 355 → 655, Glacite powder, mineshafty a corpses, Glacite Golem, fossily.</td><td>Divan</td></tr>
+<tr data-ph="5"><td><b>5. End game</b></td><td class="mono">po Glacite</td><td>Divan's Drill a armor, Pendant of Divan, Dwarven Handwarmers, Scatha, Quick Claw, Divan's Powder Coating. Setupy na každou činnost jsou níž.</td><td>Hotovo</td></tr>
+</table></div>
+<small>Řádek označený „jsi tady“ se vybírá podle tvého HOTM tieru (a Divan armoru). Je to orientace, nic se tu neodškrtává.</small>
+</section>
+
+<section class="legendary">
 <div class="head"><h2 data-b="hotmPathTitle">Cesta k HOTM 5</h2><span class="counter" data-count="hotm"></span></div>
 <ul class="check" data-group="hotm">
 <li><label><input type="checkbox" data-id="h1"><span><span class="t">Vybraná ability v /hotm</span><small>Teď: <span data-b="ability">…</span>. Mining guide doporučuje jako hlavní <b>Pickobulus</b>. Spouští se pravým tlačítkem s krumpáčem, jen na mining ostrovech.</small></span></label></li>
@@ -1006,18 +1030,20 @@ footer ul{margin:0;padding-left:18px}
 <h3 class="divider">Návody</h3>
 
 <section class="uncommon">
-<div class="head"><h2>Pro Adama: kde teď je</h2></div>
-<p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
+<div class="head"><h2>Co se změnilo v updatu 0.27.3</h2></div>
+<p class="note">Z patch notes posledního velkého updatu, který jsem našel (Magic Find rework a Accessory Bag revamp). HOTM, Forge a commissions jsem v nich nenašel, takže tam se zjevně nic nezměnilo, nebo to v poznámkách chybí.</p>
 <ul class="dots">
-<li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
-<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
-<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
-<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
-<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Mole. Armadillo se líhne z Prehistoric Egg.</li>
-<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
-<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
-<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
+<li><b>Miner's Blessing</b> (HOTM perk) už nedává +30 Mining Fortune na mining ostrovech. Teď dává +1 drop z Crystal Nucleus.</li>
+<li><b>Mithril Golem:</b> perk Refined Senses se jmenuje Ghost Buster a místo +10 % Mining Fortune dává 0,05 až 5 % šanci na 50 až 5 000 Mithril powderu za zabitého ghosta.</li>
+<li><b>Mammoth:</b> Tusk Luck teď dává +0,1 až 10 % Combat Stats v Glacite Mineshaftech. Corpse Crusher: +0,3 Mining Fortune za každou vyloupenou Frozen Corpse v mineshaftu a k tomu 10 až 1 000 Glacite powderu za corpse.</li>
+<li><b>Síla gemstone bloků:</b> Ruby 2 300 → 2 500, Topaz 3 800 → 3 500, Jasper 4 800 → 4 000, Onyx, Aquamarine, Citrine a Peridot 5 200 → 4 000.</li>
+<li><b>NPC ceny Rough gemstonů:</b> Amber, Amethyst, Jade, Opal a Sapphire 3 → 4 coiny, Topaz 3 → 5, Jasper, Aquamarine, Onyx, Citrine a Peridot 4 → 6. Flawless gemstony se zase dají prodat NPC.</li>
+<li><b>Magic Find</b> teď platí na všechny dropy (dřív jen na ty pod 5 %). Strop klesl z 900 na 500 a nad 100 MF máš šanci na dvojitý drop. Hodí se na Scathu a díly z Automatonů.</li>
+<li><b>Crystal Nucleus:</b> Jade Dye 1/500 000 → 1/100 000, RNG meter 5 000 000 → 2 500 000 XP. <b>Star Sentry</b> v Dwarven Mines dává Starfall místo 20 % na 100 %.</li>
+<li><b>Accessory Bag:</b> enrichmenty dávají +1 Tuning Point místo konkrétního statu, bag má 9 slotů zdarma a Jacobus sloty stojí nejvýš 10 milionů.</li>
+<li><b>Plánované:</b> Mining Remastered (předělávka Gold Mine a Deep Caverns, bez čísel), Great Glacite Lake až 2027. Každý skill včetně Miningu dostane vlastní Personal Compactor.</li>
 </ul>
+<small>Zdroj: <a href="https://hypixel.net/threads/hypixel-skyblock-0-27-3-magic-find-rework-accessory-bag-revamp-and-more.6169127/" target="_blank" rel="noopener">Hypixel SkyBlock 0.27.3 patch notes</a>. Přečetl jsem většinu textu, ne celý. Co v něm chybí, tu není.</small>
 </section>
 
 <section class="epic">
@@ -1063,13 +1089,45 @@ footer ul{margin:0;padding-left:18px}
 <tr><td>Glacite</td><td>od Mining 20</td><td>Je lepší než Heat. Glacite Walkers u Great Ice Wall.</td></tr>
 <tr><td>Flamebreaker → <b>Yog</b></td><td>před gemstony</td><td>Odolnost proti horku. Yog má Pristine a je minimum na těžbu gemstonů ve velkém.</td></tr>
 <tr><td><b>Divan</b></td><td>end game</td><td>Vyplatí se nad Yog až s Topaz slotem. Fragmenty z Mines of Divan.</td></tr>
-<tr><td>Mineral / Glossy Mineral</td><td>jen při Cole Mining Fiesta</td><td>Na rudy a bloky. Adam má celý Mineral set.</td></tr>
+<tr><td>Mineral / Glossy Mineral</td><td>jen při Cole Mining Fiesta</td><td>Na rudy a bloky.</td></tr>
 </table></div>
 <p class="track-label">Equipment</p>
 <p><b>Mithril</b> (hned) → <b>Titanium</b> (suroviny jen při Cole Mining Fiesta) → Gemstone equipment (taky Fiesta, malý rozdíl). Konec: <b>Dwarven Handwarmers</b> (Glacite Tunnels) a <b>Pendant of Divan</b>. Plášť: Ancient Cloak, v Endu Dragonfade Cloak.</p>
 <p class="track-label">Do drillu</p>
 <p><b>Blue Cheese Goblin Omelette</b> je nejlepší upgrade skoro na všechno. Na grind powderu Spicy Goblin Omelette. Enchanty: Ultimate Wise (poloviční mana na ability), Flowstate (gemstony a zlato).</p>
 <small>Hlavní zdroj: Mining Guide 2026 z Discordu Ironman Sweats. Doplněno o Mining Guides a fandom wiki.</small>
+</section>
+
+<section class="legendary">
+<div class="head"><h2>Setupy podle činnosti</h2></div>
+<p class="note">Cílové setupy z Mining Guidu 2026 (Ironman Sweats). Je to end game, nic z toho nemusíš mít hned. Dillo je Armadillo, Fleet a Heated jsou reforge, 655 je Titanium Drill DR-X655. U vícekusových setů se kusy prohazují podle toho, co zrovna těžíš.</p>
+<div class="scroll"><table>
+<tr><th>Činnost</th><th>Armor</th><th>Pet</th><th>Nástroj</th><th>Equipment</th></tr>
+<tr><th colspan="5">Rudy</th></tr>
+<tr><td>Čisté rudy (vše kromě zlata, i Quartz)</td><td>3/4 Glossy Mineral + 1/4 Divan (možná 2 + 2)</td><td>Scatha a Bal</td><td>Drill 655 nebo Divan</td><td>Celý Titanium, nebo nejlepší kus na každý slot (jen s Pendantem)</td></tr>
+<tr><td>Zlato (insta-mine)</td><td>4/4 Glossy Mineral, s Divan swapem</td><td>Goblin a Bal (možná Mole)</td><td>655 nebo Divan, Heated reforge (Ambered když se ti nechce, obecný reforge když to zvládneš)</td><td>Nejlepší na slot</td></tr>
+<tr><td>Zlato (Maniac Miner)</td><td>4/4 Glossy Mineral</td><td>Goblin a Bal</td><td>655 nebo Divan, Heated (jinak Stellar nebo Lustrous)</td><td>Nejlepší na slot</td></tr>
+<tr><td>Mithril a Titanium v Dwarven Mines</td><td>4/4 Divan</td><td>Scatha a Bal</td><td>655 nebo Divan, univerzální reforge</td><td>Titanium equipment, nebo Pendant, Handwarmers a 2/4 Titanium</td></tr>
+<tr><td>Glacite Tunnels a Mithril v Hollows (Titanium tam není)</td><td>4/4 Divan</td><td>Scatha a Bal</td><td>655 nebo Divan, univerzální reforge</td><td>Nejlepší na slot (Titanium Cloak a Belt jsou BiS)</td></tr>
+<tr><td>Glacite, Tungsten, Umber</td><td>4/4 Divan</td><td>Scatha a Bal</td><td>655 nebo Divan, univerzální reforge</td><td>Nejlepší na slot</td></tr>
+<tr><th colspan="5">Gemstony</th></tr>
+<tr><td>Magma Fields (Ruby, Jasper, Topaz)</td><td>4/4 Divan</td><td>Bal</td><td>Heated 655 nebo Divan</td><td>Nejlepší na slot (Amethyst Gauntlet jen na amethyst)</td></tr>
+<tr><td>Mineshafty</td><td>4/4 Divan</td><td>Glacite Golem</td><td>655 nebo Divan, univerzální reforge</td><td>Nejlepší na slot</td></tr>
+<tr><td>Jinde mimo Magma Fields</td><td>4/4 Divan</td><td>Scatha</td><td>655 nebo Divan, univerzální reforge</td><td>Nejlepší na slot</td></tr>
+<tr><th colspan="5">Bloky (kde používáš Stonk nebo lopatu, dej do drillu Blegg nebo Perfect Fuel Tank)</th></tr>
+<tr><td>Ice</td><td>3/4 Divan + 1/4 Glossy</td><td>Bal a Scatha</td><td>Fleet Stonk</td><td>Nejlepší na slot</td></tr>
+<tr><td>Gravel</td><td>3/4 Glossy + 1/4 Divan</td><td>Bal a Scatha</td><td>Flint Shovel</td><td>Nejlepší na slot</td></tr>
+<tr><td>Red Sand, Mycelium, Sand</td><td>4/4 Glossy</td><td>Bal a Black Cat nebo Snail (oba naráz)</td><td>Promising Shovel, nebo zlatá lopata s Efficiency 5</td><td>Nejlepší na slot</td></tr>
+<tr><td>Obsidian</td><td>3/4 Glossy + 1/4 Divan, nebo 4/4 Glossy</td><td>Bal a Scatha</td><td>Fleet 655 nebo Divan</td><td>Nejlepší na slot</td></tr>
+<tr><td>Glowstone</td><td>4/4 Divan, nebo 3/4 Divan + 1/4 Glossy</td><td>Bal a Scatha</td><td>Fleet 655 nebo Divan</td><td>Nejlepší na slot</td></tr>
+<tr><td>Cobble, Stone, Hard Stone, Netherrack</td><td>4/4 Glossy</td><td>Bal a Scatha (na Hard Stone Legendary Dillo nebo Snail místo Scathy)</td><td>Fleet 655 nebo Divan</td><td>Nejlepší na slot</td></tr>
+<tr><td>Endstone</td><td>4/4 Glossy</td><td>Bal a Black Cat nebo Endermite (oba naráz)</td><td>Fleet 655 nebo Divan</td><td>Nejlepší na slot, Dragonfade Cloak</td></tr>
+<tr><th colspan="5">Powder</th></tr>
+<tr><td>Gemstone powder</td><td>4/4 Mineral nebo Glossy Mineral</td><td>Legendary Dillo, nebo Legendary či Epic Scatha (Goblin v Goblin Holdout)</td><td>Fleet Jungle Pickaxe, nebo Fleet nástroj s Breaking Power 4+</td><td>Nejlepší dostupné</td></tr>
+<tr><td>Mithril powder</td><td>4/4 Dimensional Yog nebo Divan</td><td>Mithril Golem</td><td>Stellar Mithril Drill SX-R326 se Spicy Goblin Omelette</td><td>Royal Titanium (nebo jakýkoli Royal, když nechceš čekat na Fiesta)</td></tr>
+<tr><td>Glacite powder</td><td colspan="4">Video: <a href="https://www.youtube.com/watch?v=t6eo3w-Mflw" target="_blank" rel="noopener">The Ultimate Glacite Powder + Mineshaft Guide (d3rp13)</a></td></tr>
+</table></div>
+<small>Mithril powder se dá získat i rybařením Mithril Grubberů. Rychlosti jsou o něco horší, ale pokud máš dobrý fishing setup, nic neztratíš. Zdroj: Mining Guide 2026, Ironman Sweats.</small>
 </section>
 
 <section class="epic">
@@ -1101,7 +1159,7 @@ footer ul{margin:0;padding-left:18px}
 </section>
 
 <section class="epic">
-<div class="head"><h2>Crystal Hollows (od HOTM 5)</h2></div>
+<div class="head"><h2>Crystal Hollows</h2></div>
 <ul class="dots">
 <li><b>Vstup:</b> pass u Gwendolyn v Dwarven Mines, 10 000 coinů na 5 hodin (běží i mimo Hollows). Lobby se každých 5 hodin resetuje.</li>
 <li><b>Treasure chesty</b> při těžbě a loot chesty ve stavbách dávají powder a gemstony.</li>
@@ -1115,7 +1173,7 @@ footer ul{margin:0;padding-left:18px}
 <tr><td>Precursor Remnants</td><td>Lost Precursor City</td><td>Sapphire</td><td>Robotron díly pro Professor Robota, Automatoni</td></tr>
 <tr><td>Magma Fields</td><td>Khazad-dûm</td><td>Topaz</td><td>Boss Bal (Bal pet). Nejlepší místo na gemstony, chce Heated reforge.</td></tr>
 </table></div>
-<small>Rozdělení oblastí je ze staršího stavu hry, ověř si ho na místě.</small>
+<small>Rozdělení oblastí je ze staršího stavu hry, ověř si ho na místě. Od kterého HOTM tieru se do Hollows dá vstoupit, jsem neověřil (stránka dřív psala 5). Pass: 10 000 coinů na 5 hodin u Gwendolyn.</small>
 </section>
 
 <section class="rare">
@@ -1123,7 +1181,7 @@ footer ul{margin:0;padding-left:18px}
 <div class="scroll"><table>
 <tr><th>Pet</th><th>Na co</th><th>Kde</th></tr>
 <tr><td>Silverfish</td><td>Mining Wisdom a Speed, začátek</td><td>Craft</td></tr>
-<tr><td>Mithril Golem</td><td>Mithril powder a ghosti</td><td>Craft. Adam ho má jako Legendary, ale na levelu 1.</td></tr>
+<tr><td>Mithril Golem</td><td>Mithril powder a ghosti</td><td>Craft. Na levelu 1 skoro nic nedává, vytáhni ho na 100. Po updatu 0.27.3 má perk Ghost Buster: šanci na Mithril powder za zabitého ghosta.</td></tr>
 <tr><td>Armadillo</td><td>Commissions v Hollows. Legendary je top na Gemstone powder.</td><td>Prehistoric Egg z Crystal Hollows. Rarita podle kroků: 4 000 Common, 10 000 Uncommon, 20 000 Rare, 40 000 Epic, 100 000 Legendary.</td></tr>
 <tr><td>Mole</td><td>Nucleus runy a Automaton díly</td><td>1/37 z Nucleu</td></tr>
 <tr><td>Bal</td><td>Gemstony v Hollows, kratší cooldown ability</td><td>Drop z Bala</td></tr>
@@ -1139,7 +1197,7 @@ footer ul{margin:0;padding-left:18px}
 <ul class="dots">
 <li><b>Drill:</b> Stellar (levný, na Mithril powder), Lustrous (nejlepší univerzální, drahý), Heated (vše v Magma Fields), Fleet (bloky). Scraped dá +1 Breaking Power, ale guide ho nedoporučuje.</li>
 <li><b>Armor:</b> Dimensional (Mithril powder + Mining Wisdom), Jaded (nejlepší speed a fortune, jen na Mineral a Divan).</li>
-<li><b>Equipment:</b> <b>Royal</b> (Mithril powder a speed, to má Adam), Blazing (fortune, grind Scathy).</li>
+<li><b>Equipment:</b> <b>Royal</b> (Mithril powder a speed), Blazing (fortune, grind Scathy).</li>
 <li><b>Hunting atributy pro mining:</b> Troglobyte (+HOTM XP), Miner Zombie (+Mining Speed), Hideonleaf (+Block Fortune), Silentdepth (šance na dvojitou odměnu z chestů), Quartzfang (+speed z eventů), Cavernshade (+Mining Wisdom).</li>
 </ul>
 </section>
@@ -1150,6 +1208,71 @@ footer ul{margin:0;padding-left:18px}
 <li>Vstup: <b>HOTM 7</b> a Secret Railroad Pass (Dulin Sprite, Forge).</li>
 <li>Commissions po 750 HOTM XP, mineshafty, corpses (Lapis, Umber, Tungsten, Vanguard) a fossily.</li>
 <li>Gemstony Peridot, Onyx, Aquamarine a Citrine, a Glacite powder na horní HOTM tiery.</li>
+</ul>
+</section>
+<section class="rare">
+<div class="head"><h2>Suroviny, RNG a pořadí nákupů</h2></div>
+<div class="scroll"><table>
+<tr><th>Věc</th><th>K čemu a za kolik</th></tr>
+<tr><td><b>Blue Cheese Goblin Omelette</b></td><td>Nejlepší upgrade do drillu v asi 90 % případů. Pingy na Blegg jsou v Discordu Ironman Sweats (role Blegg 100 %).</td></tr>
+<tr><td><b>Spicy Goblin Omelette</b></td><td>Do Jasper Drillu na gemstone powder, do Mithril Drillu na Mithril powder, do Titanium Drillu na Glacite (nebo jakýkoli) powder.</td></tr>
+<tr><td>Divan's Powder Coating</td><td>Na Titanium nebo Divan drill, Divan armor a Pendant. Za kus 32 Mineral a 32 Glossy.</td></tr>
+<tr><td>Mineral armor</td><td>24 Refined Mineral. Glossy Mineral armor: 16 Glossy Gemstone za kus (64 na celý set).</td></tr>
+<tr><td>Mineral Talisman, Glossy Mineral Talisman</td><td>9 Refined Mineral, respektive 16 Glossy Mineral.</td></tr>
+<tr><td>Titanium equipment</td><td>16 Refined Mineral za kus.</td></tr>
+<tr><td>Gemstone equipment (Amber, Jade, Sapphire, Amethyst)</td><td>32 Glossy za kus. Oproti Titaniu malý rozdíl.</td></tr>
+<tr><td>Gleaming Crystal (Lustrous reforge)</td><td>32 Glossy Gemstones za kus. Nejlepší univerzální reforge na drill.</td></tr>
+<tr><td><b>Shattered Locket, Divan's Alloy</b></td><td>Hlavní RNG v miningu. Výrazně zvyšují rychlost skoro každé metody.</td></tr>
+<tr><td><b>Quick Claw</b></td><td>Nejlepší pet item na mining: 50 Fortune a 50 Mining Speed na levelu 100.</td></tr>
+</table></div>
+<p class="track-label">Na co spotřebovat Glossy Gemstones (pořadí)</p>
+<ol class="steps">
+<li>Powder Coating na drill (Titanium větev)</li>
+<li>Glossy Mineral armor z 3/4 na 4/4</li>
+<li>Talisman</li>
+<li>Lustrous reforge</li>
+<li>Jade Belt, nebo jeden Powder Coating na kus Divanu</li>
+<li>Sapphire Cloak, nebo další 4+ Powder Coatingy</li>
+<li>Poslední 2 kusy Gemstone equipmentu</li>
+</ol>
+<small>Refined Minerals a Glossy Gemstones padají jen při Mining Fiesta (Cole jako mayor nebo minister). Zdroj: Mining Guide 2026, Ironman Sweats.</small>
+</section>
+
+<section class="uncommon">
+<div class="head"><h2>Ostatní skilly a Hunting</h2></div>
+<ul class="dots">
+<li><b>Combat:</b> zabíjení Automatonů a ghostů a Magic Find na grind Scathy a dílů z Automatonů.</li>
+<li><b>Dungeony:</b> recomby na Divan armor, Mineral a Glossy Mineral armor, Titanium nebo Divan drill, equipment a Artifact nebo Relic of Power.</li>
+<li><b>Fishing:</b> guide doporučuje dobrý progres (kvůli „chambers“, víc o tom neříká) a hodí se i na Mithril Grubber fishing, volitelnou metodu na Mithril powder.</li>
+</ul>
+<div class="scroll"><table>
+<tr><th>Hunting atribut</th><th>Efekt (level 1 až 10)</th></tr>
+<tr><td>Hideonleaf</td><td>5 až 50 Block Fortune</td></tr>
+<tr><td>Miner Zombie</td><td>3 až 30 Mining Speed</td></tr>
+<tr><td>Troglobyte</td><td>1 až 10 % víc HOTM XP</td></tr>
+<tr><td>Silentdepth</td><td>2 až 20 % šance na dvojitou odměnu z chestů (powder a stavby)</td></tr>
+<tr><td>Quartzfang</td><td>10 až 100 % víc Mining Speedu z eventů</td></tr>
+<tr><td>Bal</td><td>1 až 10 % šance na jeden Pristine navíc za blok</td></tr>
+<tr><td>Cavernshade</td><td>0,5 až 5 Mining Wisdom</td></tr>
+<tr><td>Galaxy Fish</td><td>+1 až 10 Mining Fortune (a Foraging a Farming)</td></tr>
+</table></div>
+<small>Zdroj: Mining Guide 2026, Ironman Sweats. Atributy na manu a Boost Box jsem vynechal, pro mining nejsou důležité.</small>
+</section>
+
+<h3 class="divider">Adam</h3>
+
+<section class="uncommon" data-closed="1">
+<div class="head"><h2>Pro Adama: kde teď je</h2></div>
+<p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
+<ul class="dots">
+<li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
+<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
+<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
+<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
+<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Mole. Armadillo se líhne z Prehistoric Egg.</li>
+<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
+<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
+<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
 </ul>
 </section>
 </div>
@@ -1562,6 +1685,7 @@ footer ul{margin:0;padding-left:18px}
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/Glacite_Tunnels" target="_blank" rel="noopener">Glacite Tunnels (fandom wiki)</a></li>
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/Travel_Scrolls" target="_blank" rel="noopener">Travel Scrolls (fandom wiki)</a></li>
 <li>Garden Guide 2026 a Mining Guide 2026 z Discordu Ironman Sweats (shrnuto vlastními slovy)</li>
+<li><a href="https://hypixel.net/threads/hypixel-skyblock-0-27-3-magic-find-rework-accessory-bag-revamp-and-more.6169127/" target="_blank" rel="noopener">Hypixel SkyBlock 0.27.3 patch notes</a> (změny v miningu)</li>
 <li><a href="https://greenhouse.skyshards.com/" target="_blank" rel="noopener">SkyShards Greenhouse kalkulačka</a></li>
 <li><a href="https://api.hypixel.net/v2/resources/skyblock/election" target="_blank" rel="noopener">Hypixel API: SkyBlock election</a> (mayor, minister a volby, živě)</li>
 <li><a href="https://hypixel-skyblock.fandom.com/wiki/Mayors" target="_blank" rel="noopener">Mayors (fandom wiki)</a></li>
@@ -1773,7 +1897,7 @@ window.sbExtract=sbExtract;</script>
     var head = sec.querySelector(':scope > .head') || sec.querySelector(':scope > h2'); if (!head) return;
     if (!sec.id) sec.id = 's-' + (++n);
     head.classList.add('fold'); head.setAttribute('role', 'button'); head.setAttribute('tabindex', '0');
-    if (st[key(sec)] === true) sec.classList.add('closed');
+    if (st[key(sec)] === true || (st[key(sec)] === undefined && sec.hasAttribute('data-closed'))) sec.classList.add('closed');
     function toggle(ev) {
       if (ev.target.closest && ev.target.closest('a,button,input,select,textarea,label')) return;
       var c = sec.classList.toggle('closed'); st[key(sec)] = c; save(); head.setAttribute('aria-expanded', String(!c));
@@ -2841,7 +2965,7 @@ window.sbExtract=sbExtract;</script>
       + (d7 && d7 !== n ? '<div class="stat"><b>' + dd(d7.days) + '</b><span>do HOTM 7 a Glacite Tunnels</span></div>' : '')
       + '<div class="stat"><b>' + (isFinite(n.days) && c > 0 ? nf(Math.ceil(n.days * c)) : '—') + '</b><span>commissions do HOTM ' + n.L + '</span></div>';
     $('hpTable').innerHTML = '<table><tr><th>Tier</th><th>Zbývá XP</th><th>Dní tímhle tempem</th><th>Kdy</th><th>Co odemkne</th></tr>' + rows.map(function (r) {
-      var un = { 5: 'Crystal Hollows', 6: 'Další perky a Core of the Mountain', 7: 'Glacite Tunnels (Secret Railroad Pass)', 8: 'Horní část stromu', 9: 'Horní část stromu', 10: 'Maximum' }[r.L] || '';
+      var un = { 5: 'Core of the Mountain a Crystal Hollows', 6: 'Další perky', 7: 'Glacite Tunnels (Secret Railroad Pass)', 8: 'Horní část stromu', 9: 'Horní část stromu', 10: 'Maximum' }[r.L] || '';
       return '<tr><td><b>HOTM ' + r.L + '</b></td><td class="num">' + nf(r.xp) + '</td><td class="num">' + (isFinite(r.days) ? Math.ceil(r.days) : '—') + '</td><td class="num">' + when(r.days) + '</td><td class="note">' + un + '</td></tr>';
     }).join('') + '</table>';
   }
@@ -2993,10 +3117,81 @@ window.sbExtract=sbExtract;</script>
   }
   function bindHotf() { if ($('hfDay')) $('hfDay').addEventListener('input', function () { S().hotfDay = $('hfDay').value; App().touch(); renderHotf(); }); }
 
-  function renderAll() { if (!App()) return; autoGear(); refreshCrops(); renderCfg(); renderFarm(); renderHotm(); renderPowder(); renderForge(); renderPets(); renderSlayer(); renderSkillPlans(true); renderHotf(); renderAdvisor(); }
+
+  // ================= Mining: tvoje situace =================
+  var MN_SETS = [[/divan/i, 'divan'], [/yog/i, 'yog'], [/flamebreaker/i, 'flame'], [/glacite/i, 'glacite'], [/mineral/i, 'mineral'], [/heat/i, 'heat']];
+  function mnSet(g) { var str = (g.set || '') + ' ' + (g.armor || []).join(' '); for (var i = 0; i < MN_SETS.length; i++) if (MN_SETS[i][0].test(str)) return MN_SETS[i][1]; return ''; }
+  function hotmPerDay() {
+    var pl = S().hotmPlan || {}, c = num(pl.c != null ? pl.c : 4), a = num(pl.a != null ? pl.a : 400), x = num(pl.x != null ? pl.x : 0), b = num(pl.b != null ? pl.b : 900);
+    if (isNaN(c)) c = 0; if (isNaN(a)) a = 0; if (isNaN(x)) x = 0; if (isNaN(b)) b = 900;
+    return c * a + Math.min(c, 4) * b / 4 + x;
+  }
+  function firstBuy(kind) {
+    var hot = P().hotm || {}, pw = hot.powder || {}, bal = pw[kind.toLowerCase()] ? pw[kind.toLowerCase()].total || 0 : 0;
+    var list = (hot.perks || []).filter(function (x) { return x.powder === kind && x.cost && x.lvl < x.max; }).sort(function (a, b) { return rank(PP_ORDER[kind], a.n) - rank(PP_ORDER[kind], b.n); });
+    return { bal: bal, buy: list.filter(function (x) { return x.cost <= bal; })[0], next: list[0] };
+  }
+  function renderMiningNow() {
+    var box = $('mnNow'); if (!box || !App()) return;
+    var p = P(), hot = p.hotm || {}, tier = hot.tier || {}, mn = (p.skills || {}).mining || {}, g = p.gear || {}, pets = p.pets || [], eq = g.equip || [], out = [];
+    function add(t, d, col) { out.push('<div class="advc" style="--ac:' + (col || 'var(--accent)') + '"><b>' + esc(t) + '</b><span>' + d + '</span></div>'); }
+    if (!p.user) { $('mnWho').textContent = ''; box.innerHTML = '<p class="note">Nahraj export, ať stránka ví, kde jsi.</p>'; return; }
+    var when = ''; try { when = ', export z ' + new Date(p.exported).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }); } catch (e) { }
+    $('mnWho').textContent = p.user + (p.profile ? ' (' + p.profile + ')' : '') + when;
+    // HOTM
+    if (tier.lvl != null) {
+      if (tier.maxed || tier.lvl >= 10) add('HOTM max', 'Heart of the Mountain je na maximu.', 'var(--legendary)');
+      else {
+        var need = (tier.next || HOTM_NEED[tier.lvl + 1]) - (tier.cur || 0), pd = hotmPerDay(), days = pd > 0 ? Math.ceil(need / pd) : 0;
+        add('HOTM ' + tier.lvl + ' → ' + (tier.lvl + 1), 'Chybí ' + nf(need) + ' HOTM XP' + (days ? '. Při tempu z plánovače (' + nf(pd) + ' XP za den) asi ' + days + ' dní.' : '.') + (tier.lvl + 1 === 5 ? ' HOTM 5 odemyká Core of the Mountain.' : tier.lvl + 1 === 7 ? ' HOTM 7 odemyká Glacite Tunnels.' : ''), 'var(--legendary)');
+      }
+    }
+    // Mining level
+    if (mn.lvl != null) add('Mining ' + mn.lvl, (mn.maxed ? 'Skill je na maximu.' : 'Do levelu ' + (mn.lvl + 1) + ' chybí ' + nf((mn.next || 0) - (mn.cur || 0)) + ' XP.') + (perkOn(/mining xp buff/i) ? ' Mayor má Mining XP Buff, teď se těžba vyplatí víc.' : ''), 'var(--rare)');
+    // Powder
+    ['Mithril', 'Gemstone'].forEach(function (k) {
+      var r = firstBuy(k); if (!r.next) return;
+      add(k + ' powder', r.buy ? 'Máš ' + nf(r.bal) + '. Kup <b>' + esc(r.buy.n) + '</b> (' + nf(r.buy.cost) + ' za level ' + (r.buy.lvl + 1) + ').' : 'Máš ' + nf(r.bal) + '. Nejbližší nákup: ' + esc(r.next.n) + ' za ' + nf(r.next.cost) + ', chybí ' + nf(r.next.cost - r.bal) + '.', 'var(--epic)');
+    });
+    // Armor
+    var set = mnSet(g), lvl = mn.lvl || 0, A = {
+      heat: lvl >= 20 ? 'Máš Heat armor. Od Mining 20 je lepší <b>Glacite armor</b>, ty jsi na ' + lvl + '. Glacite Walkers u Great Ice Wall.' : 'Heat armor je dobrý start. Od Mining 20 ho předběhne Glacite armor.',
+      glacite: 'Glacite armor máš. Před těžbou gemstonů ve velkém: Flamebreaker → <b>Yog</b>.',
+      flame: 'Flamebreaker máš. Další je <b>Yog</b>, má Pristine a je minimum na gemstony ve velkém.',
+      yog: 'Yog máš. Dál <b>Divan</b> (vyplatí se s Topaz slotem) a Mineral armor při Fiesta na rudy a bloky.',
+      divan: 'Divan máš, to je end game. Mineral a Glossy Mineral se hodí na rudy a bloky.',
+      mineral: 'Mineral armor je jen na rudy a bloky. Na gemstony a Dwarven Mines vezmi Yog nebo Divan.'
+    };
+    add(set ? 'Armor' : 'Armor: nic', set ? A[set] : 'V savu nevidím žádný mining armor. Začni Heat armorem, je to vzácný drop z Deep Caverns.', 'var(--uncommon)');
+    // Equipment
+    var allMith = eq.length >= 4 && eq.every(function (x) { return /mithril|titanium/i.test(x); }), royal = eq.some(function (x) { return /^royal/i.test(x); }), tita = eq.some(function (x) { return /titanium/i.test(x); });
+    add(eq.length ? 'Equipment' : 'Equipment: nic',
+      !eq.length ? 'Mithril equipment (Belt, Cloak, Gauntlet, Necklace) je levný start a má se udělat hned.'
+        : tita ? 'Titanium máš. Dál Dwarven Handwarmers (Glacite Tunnels) a Pendant of Divan.'
+          : royal ? 'Royal Mithril equipment máš, to je nejlepší Speed na Mithril powder. Titanium equipment: suroviny padají jen při Mining Fiesta.'
+            : allMith ? 'Mithril equipment máš. Dej na všechny kusy reforge <b>Royal</b> (Mithril powder a Mining Speed), pak Titanium při Fiesta.'
+              : 'Máš: ' + esc(eq.join(', ')) + '.', 'var(--rare)');
+    if (perkOn(/mining fiesta/i)) add('Mining Fiesta běží', 'Teď padají Refined Minerals a Glossy Gemstones: jediná doba na Titanium equipment a Mineral armor.', 'var(--rare)');
+    // Pety
+    var MP = ['Silverfish', 'Mithril Golem', 'Armadillo', 'Bal', 'Mole', 'Glacite Golem', 'Scatha'], own = [];
+    MP.forEach(function (n) { var b = pets.filter(function (x) { return x.n === n; }).sort(function (a, c) { return RAR.indexOf(c.r) - RAR.indexOf(a.r) || c.lvl - a.lvl; })[0]; if (b) own.push(b.n + ' (' + (RCZ[b.r] || b.r) + ', level ' + b.lvl + ')'); });
+    var act = pets.filter(function (x) { return x.on; })[0];
+    add('Pety' + (act ? ': ' + act.n : ''), own.length ? 'Z mining petů máš: ' + esc(own.join(', ')) + '. ' + (own.some(function (x) { return /^Armadillo/.test(x); }) ? 'Armadillo na commissions v Hollows stačí i Common, Legendary je top na Gemstone powder (100 000 kroků).' : 'Další: Armadillo z Prehistoric Egg v Crystal Hollows.') : 'Žádný mining pet. Začni <b>Silverfish</b> (craft, Mining Wisdom a Speed) a <b>Mithril Golem</b> (craft, Mithril powder). Na commissions drž Bee.', 'var(--uncommon)');
+    // Krystaly
+    var cr = hot.crystals || [];
+    if (cr.length) add('Krystaly', cr.map(function (c) { var q = String(c).split(':'); return esc(q[0]) + ' (' + (q[1] === 'PLACED' ? 'položen' : q[1] === 'FOUND' ? 'nalezen' : esc(q[1] || '?')) + ')'; }).join(', ') + '. Nucleus run potřebuje Amber, Amethyst, Jade, Sapphire a Topaz. Runy: ' + (hot.nucleus || 0) + '.', 'var(--mythic)');
+    // Forge
+    if (tier.lvl >= 2 && !(hot.forge || []).length && !(S().forge || []).length) add('Forge je prázdný', 'Nalož něco i na noc, třeba Refined Titanium (12 h) nebo Fuel Canister (10 h). Zapiš to do Forge fronty níž a stránka ti řekne, až bude hotovo.', 'var(--accent)');
+    box.innerHTML = out.join('') || '<p class="note">V savu zatím nic o miningu není.</p>';
+    // fáze
+    var L = tier.lvl || 0, cur = set === 'divan' ? 5 : L <= 4 ? 1 : L === 5 ? 2 : L === 6 ? 3 : 4;
+    document.querySelectorAll('#mnPhases tr[data-ph]').forEach(function (tr) { tr.classList.toggle('on', +tr.getAttribute('data-ph') === cur && tier.lvl != null); });
+  }
+
+  function renderAll() { if (!App()) return; autoGear(); refreshCrops(); renderCfg(); renderFarm(); renderHotm(); renderPowder(); renderMiningNow(); renderForge(); renderPets(); renderSlayer(); renderSkillPlans(true); renderHotf(); renderAdvisor(); }
   bindFarm(); bindSlayer(); bindHotf(); bindHotm(); bindForge(); bindCfg(); renderAll();
   document.addEventListener('sb-render', renderAll);
-  document.addEventListener('sb-perks', function () { renderAdvisor(); renderSlayer(); });
+  document.addEventListener('sb-perks', function () { renderAdvisor(); renderSlayer(); renderMiningNow(); });
   document.addEventListener('sb-events', renderAdvisor);
   document.addEventListener('change', function (ev) { if (ev.target && ev.target.matches && ev.target.matches('input[type=checkbox]')) renderAdvisor(); });
   setInterval(function () { renderForge(); renderAdvisor(); }, 30000);
