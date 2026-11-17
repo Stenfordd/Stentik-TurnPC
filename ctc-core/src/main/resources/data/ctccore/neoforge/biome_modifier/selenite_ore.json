@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "northstar"
+    }
+  ],
   "type": "neoforge:add_features",
   "biomes": "#ctccore:on_moon",
   "features": "ctccore:selenite_ore",

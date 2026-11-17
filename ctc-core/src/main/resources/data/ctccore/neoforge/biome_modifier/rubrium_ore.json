@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "northstar"
+    }
+  ],
   "type": "neoforge:add_features",
   "biomes": "#ctccore:on_mars",
   "features": "ctccore:rubrium_ore",

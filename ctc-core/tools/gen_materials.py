@@ -74,14 +74,15 @@ for name, (planet, col, drop, style) in ORES.items():
         {"type": "minecraft:item", "name": drop, "functions": [{"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune", "formula": "minecraft:ore_drops"},
                                                               {"function": "minecraft:explosion_decay"}]}]}]}]})
     # worldgen: only on its planet
-    w(D + f'ctccore/worldgen/configured_feature/{name}_ore.json', {"type": "minecraft:ore", "config": {"size": 7, "discard_chance_on_air_exposure": 0.0, "targets": [
+    NS = [{"type": "neoforge:mod_loaded", "modid": "northstar"}]   # planet ores only exist with Northstar
+    w(D + f'ctccore/worldgen/configured_feature/{name}_ore.json', {"neoforge:conditions": NS, "type": "minecraft:ore", "config": {"size": 7, "discard_chance_on_air_exposure": 0.0, "targets": [
         {"target": {"predicate_type": "minecraft:block_match", "block": f"northstar:{planet}_stone"}, "state": {"Name": f"ctccore:{name}_ore"}},
         {"target": {"predicate_type": "minecraft:block_match", "block": f"northstar:{planet}_deep_stone"}, "state": {"Name": f"ctccore:{name}_ore"}}]}})
-    w(D + f'ctccore/worldgen/placed_feature/{name}_ore.json', {"feature": f"ctccore:{name}_ore", "placement": [
+    w(D + f'ctccore/worldgen/placed_feature/{name}_ore.json', {"neoforge:conditions": NS, "feature": f"ctccore:{name}_ore", "placement": [
         {"type": "minecraft:count", "count": 9}, {"type": "minecraft:in_square"},
         {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": -64}, "max_inclusive": {"absolute": 160}}},
         {"type": "minecraft:biome"}]})
-    w(D + f'ctccore/neoforge/biome_modifier/{name}_ore.json', {"type": "neoforge:add_features", "biomes": f"#ctccore:on_{planet}",
+    w(D + f'ctccore/neoforge/biome_modifier/{name}_ore.json', {"neoforge:conditions": NS, "type": "neoforge:add_features", "biomes": f"#ctccore:on_{planet}",
                                                               "features": f"ctccore:{name}_ore", "step": "underground_ores"})
 BIOMES = {
     'moon': ['lunar_asurine_caves', 'lunar_cooled_lava_cave', 'lunar_crater_fields', 'lunar_glowstone_cavern', 'lunar_hills', 'lunar_ice_caves', 'lunar_plains'],
