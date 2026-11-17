@@ -16,6 +16,12 @@ neoForge {
             sourceSet sourceSets.main
         }
     }
+    runs {
+        // CI boots a headless game-test server once: catches registry, mixin and event crashes before players do
+        gameTestServer {
+            type = "gameTestServer"
+        }
+    }
 }
 
 dependencies {

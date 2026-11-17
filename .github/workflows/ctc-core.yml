@@ -35,6 +35,9 @@ jobs:
       - name: Build
         working-directory: ctc-core
         run: gradle build --no-daemon --stacktrace
+      - name: Boot test (headless server with the mod)
+        working-directory: ctc-core
+        run: timeout 600 gradle runGameTestServer --no-daemon
       - name: Uložit jar
         run: |
           mkdir -p download
