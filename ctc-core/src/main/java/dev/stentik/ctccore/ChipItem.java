@@ -19,6 +19,11 @@ public class ChipItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
         lines.add(Component.translatable(type.basic() ? "ctccore.chip.hint_basic" : "ctccore.chip.hint").withStyle(ChatFormatting.DARK_GRAY));
+        if (type == ChipType.LUMBER || type == ChipType.VEIN || type == ChipType.HARVEST) {
+            String g = type == ChipType.LUMBER ? "weapon" : "tool";
+            lines.add(Component.translatable("ctccore.chip." + type.id + "." + g).withStyle(s -> s.withColor(type.color)));
+            return;
+        }
         for (Gear gear : new Gear[] { Gear.WEAPON, Gear.ARMOR, Gear.TOOL }) {
             lines.add(Component.translatable("ctccore.gear." + gear.name().toLowerCase()).withStyle(ChatFormatting.GRAY)
                     .append(Component.literal(": "))

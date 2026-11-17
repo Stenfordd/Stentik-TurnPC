@@ -1,0 +1,524 @@
+[
+ {
+  "items": [
+   "minecraft:coal_ore",
+   "minecraft:deepslate_coal_ore",
+   "minecraft:coal"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": 0,
+  "ymax": 320,
+  "best": 96,
+  "how": "Any pickaxe",
+  "note": "Also high up in mountains",
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:iron_ore",
+   "minecraft:deepslate_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -64,
+  "ymax": 320,
+  "best": 16,
+  "how": "Stone pickaxe",
+  "note": "Huge amounts on mountain tops (Y 230+)",
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:copper_ore",
+   "minecraft:deepslate_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48,
+  "how": "Stone pickaxe",
+  "note": "Big veins in Dripstone Caves",
+  "deposit": false
+ },
+ {
+  "items": [
+   "create:zinc_ore",
+   "create:deepslate_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -63,
+  "ymax": 70,
+  "best": null,
+  "how": "Stone pickaxe",
+  "note": "Big deposits in mountains: see Zinc Deposit",
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:andesite"
+  ],
+  "place": "overworld",
+  "where": "Everywhere, in blobs",
+  "ymin": 0,
+  "ymax": 128,
+  "best": null,
+  "how": "Any pickaxe",
+  "note": "Also grey stripes in mountain cliffs",
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:gold_ore",
+   "minecraft:deepslate_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -64,
+  "ymax": 32,
+  "best": -16,
+  "how": "Iron pickaxe",
+  "note": "Badlands: lots of gold from Y 32 to 256",
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:redstone_ore",
+   "minecraft:deepslate_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -64,
+  "ymax": 15,
+  "best": -59,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:lapis_ore",
+   "minecraft:deepslate_lapis_ore",
+   "minecraft:lapis_lazuli"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -64,
+  "ymax": 64,
+  "best": 0,
+  "how": "Stone pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:diamond_ore",
+   "minecraft:deepslate_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "place": "overworld",
+  "where": "Everywhere",
+  "ymin": -64,
+  "ymax": 16,
+  "best": -59,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:emerald_ore",
+   "minecraft:deepslate_emerald_ore",
+   "minecraft:emerald"
+  ],
+  "place": "overworld",
+  "where": "Mountains only",
+  "ymin": -16,
+  "ymax": 320,
+  "best": 236,
+  "how": "Iron pickaxe",
+  "note": "The higher, the more",
+  "deposit": false
+ },
+ {
+  "items": [
+   "createnuclear:uranium_ore",
+   "createnuclear:deepslate_uranium_ore",
+   "createnuclear:raw_uranium"
+  ],
+  "place": "overworld",
+  "where": "Hot lands: badlands, desert",
+  "ymin": -63,
+  "ymax": 16,
+  "best": -24,
+  "how": "Iron pickaxe",
+  "note": "Radioactive! Big amounts: Uranium Deposit",
+  "deposit": false
+ },
+ {
+  "items": [
+   "createnuclear:thorium_ore",
+   "createnuclear:deepslate_thorium_ore",
+   "createnuclear:raw_thorium"
+  ],
+  "place": "overworld",
+  "where": "Tropical: jungle, savanna",
+  "ymin": -16,
+  "ymax": 55,
+  "best": 20,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "createnuclear:lead_ore",
+   "createnuclear:deepslate_lead_ore",
+   "createnuclear:raw_lead"
+  ],
+  "place": "overworld",
+  "where": "Cold lands: taiga, snowy biomes",
+  "ymin": -16,
+  "ymax": 60,
+  "best": 22,
+  "how": "Stone pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "createnuclear:nitrate_ore",
+   "createnuclear:deepslate_nitrate_ore",
+   "createnuclear:nitrate"
+  ],
+  "place": "overworld",
+  "where": "Hot lands: badlands, desert",
+  "ymin": -63,
+  "ymax": 64,
+  "best": 0,
+  "how": "Stone pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:nether_quartz_ore",
+   "minecraft:quartz"
+  ],
+  "place": "nether",
+  "where": "Everywhere in the Nether",
+  "ymin": 10,
+  "ymax": 117,
+  "best": null,
+  "how": "Any pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "minecraft:ancient_debris",
+   "minecraft:netherite_scrap"
+  ],
+  "place": "nether",
+  "where": "Everywhere in the Nether",
+  "ymin": 8,
+  "ymax": 119,
+  "best": 15,
+  "how": "Diamond pickaxe",
+  "note": "Explode it out with TNT or beds",
+  "deposit": false
+ },
+ {
+  "items": [
+   "ctc:voidsteel_ore",
+   "ctc:raw_voidsteel"
+  ],
+  "place": "end",
+  "where": "Outer End islands only (not the dragon island)",
+  "ymin": 0,
+  "ymax": 320,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Does not smelt: melt it in a superheated mixer (Ponder)",
+  "deposit": false
+ },
+ {
+  "items": [
+   "ctccore:selenite_ore",
+   "ctccore:selenite"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 160,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "For the Chip Socket",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_titanium_ore",
+   "northstar:moon_deep_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:lunar_sapphire_shard"
+  ],
+  "place": "moon",
+  "where": "Geodes deep under the Moon",
+  "ymin": -58,
+  "ymax": 5,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "ctccore:rubrium_ore",
+   "ctccore:raw_rubrium"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 160,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Smelt into Rubrium Ingots, for AE2",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_titanium_ore",
+   "northstar:mars_deep_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 36,
+  "best": -64,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "ctccore:sulfurite_ore",
+   "ctccore:sulfurite"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 160,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "For the AE2 Inscriber",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_titanium_ore",
+   "northstar:venus_deep_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -63,
+  "ymax": 60,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Lots of titanium",
+  "deposit": false
+ },
+ {
+  "items": [
+   "ctccore:solarite_ore",
+   "ctccore:solarite"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -64,
+  "ymax": 160,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "For the Chip Socket",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_tungsten_ore",
+   "northstar:mercury_deep_tungsten_ore",
+   "northstar:raw_tungsten_ore"
+  ],
+  "place": "mercury",
+  "where": "Only on Mercury, deep down",
+  "ymin": -64,
+  "ymax": 46,
+  "best": -40,
+  "how": "Diamond pickaxe",
+  "note": "The only tungsten in the game",
+  "deposit": false
+ },
+ {
+  "items": [
+   "createnuclear:raw_uranium"
+  ],
+  "place": "overworld",
+  "where": "Hot lands: badlands, desert",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with a diamond or netherite drill",
+  "note": "Uranium Deposit, needs water",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createnuclear:raw_thorium"
+  ],
+  "place": "overworld",
+  "where": "Tropical: jungle, savanna",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with a diamond or netherite drill",
+  "note": "Thorium Deposit, needs water",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createnuclear:raw_lead"
+  ],
+  "place": "overworld",
+  "where": "Cold lands: taiga, snowy biomes",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with a diamond or netherite drill",
+  "note": "Lead Deposit, needs water",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createnuclear:nitrate"
+  ],
+  "place": "overworld",
+  "where": "Hot lands: badlands, desert",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with a diamond or netherite drill",
+  "note": "Nitrate Deposit, needs water",
+  "deposit": true
+ },
+ {
+  "items": [
+   "minecraft:clay_ball"
+  ],
+  "place": "overworld",
+  "where": "Wetlands: swamp, river, beach",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Clay Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "minecraft:raw_gold"
+  ],
+  "place": "overworld",
+  "where": "Hot lands: badlands, desert",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Gold Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "create:raw_zinc"
+  ],
+  "place": "overworld",
+  "where": "Highlands: mountains, hills",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Zinc Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createoreexcavation:raw_diamond"
+  ],
+  "place": "overworld",
+  "where": "Highlands: mountains, hills",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Diamond Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createoreexcavation:raw_emerald"
+  ],
+  "place": "overworld",
+  "where": "Highlands: mountains, hills",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Emerald Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "minecraft:lapis_lazuli"
+  ],
+  "place": "overworld",
+  "where": "Tropical: jungle, savanna",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Lapis Deposit",
+  "deposit": true
+ },
+ {
+  "items": [
+   "createoreexcavation:raw_redstone"
+  ],
+  "place": "overworld",
+  "where": "Tropical: jungle, savanna",
+  "ymin": null,
+  "ymax": null,
+  "best": null,
+  "how": "Drilling Machine with any drill",
+  "note": "Redstone Deposit",
+  "deposit": true
+ }
+]

@@ -44,7 +44,7 @@ public class ChipSmithingRecipe implements SmithingRecipe {
         ItemStack gear = input.base();
         if (Gear.of(gear) == Gear.NONE) return false;
         ChipType type = ((ChipItem) input.template().getItem()).type;
-        return !ChipType.has(gear, type) && ChipType.of(gear).size() < Gear.slots(gear);
+        return type.fits(gear) && !ChipType.has(gear, type) && ChipType.of(gear).size() < Gear.slots(gear);
     }
 
     @Override

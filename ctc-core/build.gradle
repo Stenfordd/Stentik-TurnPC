@@ -3,7 +3,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.78'
 }
 
-version = '0.6.2'
+version = '0.7.0'
 group = 'dev.stentik.ctccore'
 base { archivesName = 'ctccore' }
 
@@ -21,6 +21,8 @@ neoForge {
 dependencies {
     // Ponder API for the scenes; the jar is taken out of Create by the workflow (it is part of Create at runtime)
     compileOnly files('libs/ponder.jar')
+    // JEI for the Where to find tab, downloaded by the workflow
+    compileOnly files('libs/jei.jar')
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -24,11 +24,25 @@ public enum ChipType {
     TERRA("terra", 0x7FD36B, "minecraft:amethyst_shard", false),
     COPPER("copper", 0xE07B4A, "minecraft:copper_ingot", false),
     IRON("iron", 0xD8DCE4, "minecraft:iron_ingot", false),
-    KINETIC("kinetic", 0x6FE3C9, "create:andesite_alloy", false);
+    KINETIC("kinetic", 0x6FE3C9, "create:andesite_alloy", false),
+    LUMBER("lumber", 0xB88A4E, "minecraft:oak_log", false),
+    VEIN("vein", 0x9AA7B8, "create:zinc_ingot", false),
+    HARVEST("harvest", 0xE8C84A, "minecraft:wheat", false);
 
     /** Basic chips need no Research Station: a Smithing Table with redstone implants them. */
     public boolean basic() {
-        return this == COPPER || this == IRON || this == EMBER || this == TERRA || this == KINETIC;
+        return this == COPPER || this == IRON || this == EMBER || this == TERRA || this == KINETIC
+                || this == LUMBER || this == VEIN || this == HARVEST;
+    }
+
+    /** Gathering chips only go into their own tool: Lumber into an axe, Vein into a pickaxe, Harvest into a hoe. */
+    public boolean fits(ItemStack gear) {
+        return switch (this) {
+            case LUMBER -> gear.is(net.minecraft.tags.ItemTags.AXES);
+            case VEIN -> gear.is(net.minecraft.tags.ItemTags.PICKAXES);
+            case HARVEST -> gear.is(net.minecraft.tags.ItemTags.HOES);
+            default -> true;
+        };
     }
 
     public final String id;

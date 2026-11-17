@@ -36,6 +36,9 @@ shaped('iron_chip', [" I ", "IRI", " I "], {"I": "minecraft:iron_ingot", "R": "m
 shaped('ember_chip', [" B ", "GRG", " B "], {"B": "minecraft:blaze_rod", "G": "minecraft:gold_ingot", "R": "minecraft:redstone"}, 'ctccore:ember_chip')
 shaped('terra_chip', [" A ", "ERE", " A "], {"A": "minecraft:amethyst_shard", "E": "minecraft:emerald", "R": "minecraft:redstone"}, 'ctccore:terra_chip')
 shaped('kinetic_chip', [" A ", "FRF", " A "], {"A": "create:andesite_alloy", "F": "minecraft:feather", "R": "minecraft:redstone"}, 'ctccore:kinetic_chip')
+shaped('lumber_chip', [" L ", "IRI", " L "], {"L": "#minecraft:logs", "I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, 'ctccore:lumber_chip')
+shaped('vein_chip', [" Z ", "IRI", " Z "], {"Z": "create:zinc_ingot", "I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, 'ctccore:vein_chip')
+shaped('harvest_chip', [" W ", "BRB", " W "], {"W": "minecraft:wheat", "B": "minecraft:bone_meal", "R": "minecraft:redstone"}, 'ctccore:harvest_chip')
 rec('chip_smithing', {"type": "ctccore:chip_smithing"})
 
 # ---------- chip slot tags ----------
