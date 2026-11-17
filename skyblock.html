@@ -501,10 +501,10 @@ footer ul{margin:0;padding-left:18px}
 <div class="head"><h2>Čtyři hlavní cíle</h2></div>
 <p>Všechno ostatní je vedlejší. Každý cíl má vlastní záložku s návodem krok za krokem.</p>
 <div class="goals">
-<div class="goal" style="--gc:var(--uncommon)"><span class="k">Garden</span><b>Greenhouse → Sundial → Fermento</b><p>Greenhouse roste i offline. Chloronite z mutací je klíč k Sundialu, a Sundial k farmám bez Rancher's Boots.</p><a href="#garden">Návod →</a></div>
 <div class="goal" style="--gc:var(--rare)"><span class="k">Mining</span><b data-b="hotmGoalTitle">…</b><p data-b="hotmGoalText">…</p><a href="#mining">Návod →</a></div>
+<div class="goal" style="--gc:var(--uncommon)"><span class="k">Garden</span><b>Greenhouse → Sundial → Fermento</b><p>Po updatu 0.27.3 spadly NPC ceny plodin o 50 až 75 %, Garden už není hlavní zdroj coinů. Greenhouse roste i offline.</p><a href="#garden">Návod →</a></div>
 <div class="goal" style="--gc:var(--epic)"><span class="k">Combat</span><b>Combat 24 → Crimson Isle</b><p data-b="combatGoalText">…</p><a href="#combat">Návod →</a></div>
-<div class="goal" style="--gc:var(--legendary)"><span class="k">Coiny</span><b>Meloun ~6,3M / hod</b><p>Tvůj motor na všechno. Farmi, když chceš chill nebo film. Prodávej přes cookie menu.</p><a href="#garden">Garden →</a></div>
+<div class="goal" style="--gc:var(--legendary)"><span class="k">Coiny</span><b>Změř si, co se vyplatí</b><p>Melon spadl ze 2 na 0,5 coinu za kus, takže starých ~6,3M za hodinu už neplatí. Gemstony naopak NPC cenu zvedly. Nový výdělek si změř v kalkulačce na Gardenu.</p><a href="#garden">Kalkulačka →</a></div>
 </div>
 </section>
 
@@ -683,7 +683,7 @@ footer ul{margin:0;padding-left:18px}
 <ul class="check"><li><label><input type="checkbox" id="fmSeedOn"><span><span class="t">Počítat i seeds</span><small>Z wheatu padají i seeds. Zaškrtni a zadej, kolik jsi jich udělal za stejnou dobu. Sečte se to s wheatem.</small></span></label></li></ul>
 <div class="formgrid" id="seedRow" hidden>
 <label>Kolik seeds jsem udělal<input type="text" class="inp" id="fmSeedAmt" inputmode="text" placeholder="stejná jednotka jako u wheatu"></label>
-<label>NPC cena za seed<input type="text" class="inp" id="fmSeedPrice" inputmode="decimal" placeholder="3"></label>
+<label>NPC cena za seed<input type="text" class="inp" id="fmSeedPrice" inputmode="decimal" placeholder="1"></label>
 </div>
 </div>
 <small>Do „Kolik“ jde napsat i výpočet se závorkami, třeba <span class="mono">(76136+791680+1228800)-(76092+74880+1228800)</span> (stav po mínus stav před). U lajny zadej výdělek z jedné lajny a čas, za který ji projedeš.</small>
@@ -1609,7 +1609,7 @@ footer ul{margin:0;padding-left:18px}
 <button class="btn ghost" type="button" id="cfgReset">Obnovit výchozí hodnoty</button>
 </div>
 <p class="msg" id="cfgMsg" role="status"></p>
-<small><b>Vedlejší drop</b> je to, co padá k plodině navíc. U wheatu jsou to seeds: zhruba 1,5 kusu po 3 coinech, tedy 4,5 coinu za blok. Používá ho jen odhad ze vzorce. V kalkulačce si u wheatu zaškrtni „Počítat i seeds“ a zadej skutečný počet. Výchozí NPC ceny a základní dropy jsou z <a href="https://hypixel.net/threads/balancing-crop-npc-sell-prices.6036271/" target="_blank" rel="noopener">přehledu na Hypixel fóru (prosinec 2025)</a>. Vlastní item (třeba Enchanted Melon) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
+<small><b>Vedlejší drop</b> je to, co padá k plodině navíc. U wheatu jsou to seeds: zhruba 1,5 kusu po 1 coinu, tedy 1,5 coinu za blok. Používá ho jen odhad ze vzorce. V kalkulačce si u wheatu zaškrtni „Počítat i seeds“ a zadej skutečný počet. Výchozí NPC ceny jsou z <a href="https://hypixel.net/threads/hypixel-skyblock-0-27-3-magic-find-rework-accessory-bag-revamp-and-more.6169127/" target="_blank" rel="noopener">patch notes 0.27.3</a>, základní dropy z <a href="https://hypixel.net/threads/balancing-crop-npc-sell-prices.6036271/" target="_blank" rel="noopener">přehledu na Hypixel fóru (prosinec 2025)</a>. Vlastní item (třeba Enchanted Melon) se objeví ve výběru plodin v kalkulačce. Když mu vyplníš i základní drop, započítá se do odhadu ze vzorce.</small>
 </section>
 
 <section class="mythic" id="syncBox">
@@ -1993,7 +1993,7 @@ window.sbExtract=sbExtract;</script>
       hotmGoalTitle: 'HOTM ' + hotmNext + (T.lvl < 5 && hotmNext === 5 ? ' → Core of the Mountain' : ''),
       hotmGoalText: 'Chybí ' + n0(hotmNeed) + ' HOTM XP.' + (hotmNext === 5 ? ' Core dá 5 tokenů, víc powderu a slot na commission navíc.' : ''),
       hotmPathTitle: 'Cesta k HOTM ' + hotmNext,
-      hotmEta: hotmNeed == null ? '—' : 'Odhad: při 4 commissions denně (bonus + ~250 XP za kus) ~1 900 XP denně, tedy zhruba ' + Math.ceil(hotmNeed / 1900) + ' dní. Při ~10 commissions denně (~3 400 XP) asi ' + Math.ceil(hotmNeed / 3400) + ' dní. Eventy to zrychlí.',
+      hotmEta: hotmNeed == null ? '—' : 'Odhad: při 4 commissions denně (400 XP za kus a bonus 900) ~2 500 XP denně, tedy zhruba ' + Math.ceil(hotmNeed / 2500) + ' dní. Při 10 commissions denně (~4 900 XP) asi ' + Math.ceil(hotmNeed / 4900) + ' dní. Eventy to zrychlí.',
       combatNeed: combatNeed === 0 ? 'hotovo' : (P.skillsApprox ? '≤' : '') + short(combatNeed),
       combatGoalText: combatNeed === 0 ? 'Combat 24 máš, Crimson Isle je otevřený (warp přes Travel Scroll, Glowstone IV).' : 'Máš Combat ' + (S.combat ? S.combat.lvl : '—') + (P.skillsApprox ? '' : ' (' + n0(S.combat && S.combat.cur) + ' / ' + n0(S.combat && S.combat.next) + ')') + '. Do 24 chybí ' + (P.skillsApprox ? 'nejvýš ' : '~') + short(combatNeed) + ' XP.',
       cataLvl: D.cata ? D.cata.lvl : '—', cataNeed: D.cata ? n0(D.cata.next - D.cata.cur) : '—', selClass: D.sel || '—',
@@ -2472,10 +2472,10 @@ window.sbExtract=sbExtract;</script>
   // Naše tipy pro ironman coop (perky jsou krátce popsané vlastními slovy)
   var M = {
     aatrox: { n: 'Aatrox', a: 'Slayer', c: 'var(--warn)', s: 'Slayer týden: bossové levněji a víc Slayer XP.', t: 'Odjeď Revenanty a Tarantuly na další level (viz záložka Combat). S Pathfinderem padají vzácné dropy častěji.', p: [['Slashed Pricing', 'Slayer questy za poloviční cenu.'], ['Slayer XP Buff', 'Víc Slayer XP z bossů.'], ['Pathfinder', 'Vzácné dropy ze slayerů častěji.']] },
-    cole: { n: 'Cole', a: 'Mining', c: 'var(--rare)', s: 'Mining týden. Při Mining Fiesta: Refined Minerals a Glossy Gemstones.', t: 'Mining Fiesta je jediná doba, kdy padají suroviny na Titanium equipment a Mineral/Glossy armor (Adam!). Molten Forge zrychluje Forge: naložit dlouhé recepty. Mining XP Buff: grind HOTM a Mining skill.', p: [['Mining Fiesta', 'Mining Wisdom, Mining Fortune, Refined Minerals a Glossy Gemstones.'], ['Mining XP Buff', 'Víc Mining Wisdom na veřejných ostrovech.'], ['Molten Forge', 'Forge recepty dobíhají rychleji.'], ['Prospection', 'Mining minioni pracují rychleji.']] },
-    diana: { n: 'Diana', a: 'Mythological', c: 'var(--legendary)', s: 'Griffin burrows a víc Pet XP.', t: 'Pet XP Buff: teď levelovat pety (Mithril Golem u Adama, Bee/Rabbit u Stentika). Mythological Ritual: kopat Griffin burrows s Ancestral Spade, pokud ho máte.', p: [['Mythological Ritual', 'Griffin burrows a Mythological mobové v Hubu.'], ['Pet XP Buff', 'Víc Pet XP.'], ['Lucky!', 'Pet Luck navíc.'], ['Sharing is Caring', 'Víc EXP Share slotů.']] },
+    cole: { n: 'Cole', a: 'Mining', c: 'var(--rare)', s: 'Mining týden. Při Mining Fiesta: Refined Minerals a Glossy Gemstones.', t: 'Mining Fiesta je jediná doba, kdy padají suroviny na Titanium equipment a Mineral/Glossy armor. Molten Forge zrychluje Forge: naložit dlouhé recepty. Mining XP Buff: grind HOTM a Mining skill.', p: [['Mining Fiesta', 'Mining Wisdom, Mining Fortune, Refined Minerals a Glossy Gemstones.'], ['Mining XP Buff', 'Víc Mining Wisdom na veřejných ostrovech.'], ['Molten Forge', 'Forge recepty dobíhají rychleji.'], ['Prospection', 'Mining minioni pracují rychleji.']] },
+    diana: { n: 'Diana', a: 'Mythological', c: 'var(--legendary)', s: 'Griffin burrows a víc Pet XP.', t: 'Pet XP Buff: teď levelovat pety (Mithril Golem na mining, Rabbit na farming). Mythological Ritual: kopat Griffin burrows s Ancestral Spade, pokud ho máte.', p: [['Mythological Ritual', 'Griffin burrows a Mythological mobové v Hubu.'], ['Pet XP Buff', 'Víc Pet XP.'], ['Lucky!', 'Pet Luck navíc.'], ['Sharing is Caring', 'Víc EXP Share slotů.']] },
     diaz: { n: 'Diaz', a: 'Economist', c: 'var(--legendary)', s: 'Ekonomický mayor, pro ironmana hlavně vyšší NPC limity.', t: 'Shopping Spree zvedá denní limity nákupu u NPC: nakoupit, co od NPC potřebujete ve velkém (Builder, Farm Merchant a další).', p: [['Shopping Spree', 'Vyšší denní limity nákupu u NPC.'], ['Stock Exchange', 'Stonks aukce.']] },
-    finnegan: { n: 'Finnegan', a: 'Farming', c: 'var(--uncommon)', s: 'Garden týden: víc visitorů, Copper a pestů.', t: 'Stentik: farmit, contesty, obsluhovat visitory (Blooming Business = Copper navíc). Pest Eradicator: Phillipův bonus vydrží 60 minut.', p: [['Farming Simulator', 'Šance, že Mathematical Hoe a Cactus Knife započítají plodinu dvakrát.'], ['Pelt-pocalypse', 'Trevor dává víc Peltů.'], ['GOATed', 'Větší brackety v Jacob contestech.'], ['Pest Eradicator', 'Phillipův Farming Fortune bonus 60 minut, pesti častěji.'], ['Blooming Business', 'Visitoři dávají víc Copperu a chodí častěji.']] },
+    finnegan: { n: 'Finnegan', a: 'Farming', c: 'var(--uncommon)', s: 'Garden týden: víc visitorů, Copper a pestů.', t: 'Farmit, contesty, obsluhovat visitory (Blooming Business = Copper navíc). Pest Eradicator: Phillipův bonus vydrží 60 minut.', p: [['Farming Simulator', 'Šance, že Mathematical Hoe a Cactus Knife započítají plodinu dvakrát.'], ['Pelt-pocalypse', 'Trevor dává víc Peltů.'], ['GOATed', 'Větší brackety v Jacob contestech.'], ['Pest Eradicator', 'Phillipův Farming Fortune bonus 60 minut, pesti častěji.'], ['Blooming Business', 'Visitoři dávají víc Copperu a chodí častěji.']] },
     foxy: { n: 'Foxy', a: 'Events', c: 'var(--mythic)', s: 'Eventy navíc (festivaly, carnival, víc candy a gifts).', t: 'Hlídat Calendar: extra Fishing Festival, Carnival v Hubu, víc Candy na Spooky Festivalu.', p: [['Sweet Benevolence', 'Víc Candy, Gifts a Chocolate během eventů.'], ['A Time for Giving', 'Party Chests a Party Gifts během eventů.'], ['Chivalrous Carnival', 'Carnival v Hubu celý rok.'], ['Extra Event', 'Event navíc během roku.']] },
     marina: { n: 'Marina', a: 'Fishing', c: 'var(--rare)', s: 'Fishing týden: Fishing Festival a víc Sea Creatures.', t: 'Fishing Festival = žraloci (Shark Fin, Shark equipment). Fishing XP Buff: dorovnat Fishing skill.', p: [['Fishing XP Buff', 'Víc Fishing Wisdom na veřejných ostrovech.'], ['Luck of the Sea 2.0', 'Vyšší Sea Creature Chance.'], ['Fishing Festival', 'Na začátku měsíce Fishing Festival se žraloky.'], ['Double Trouble', 'Double Hook Chance podle Sea Creature Chance.']] },
     paul: { n: 'Paul', a: 'Dungeons', c: 'var(--epic)', s: 'Dungeon týden: levnější chesty a snazší S rank.', t: 'Jestli hrajete dungeony, teď: Marauder zlevňuje reward chesty, EZPZ přidává score.', p: [['Marauder', 'Dungeon reward chesty jsou levnější.'], ['EZPZ', 'Bonusové score v dungeonech.'], ['Benediction', 'Silnější Blessings v dungeonech.']] },
@@ -2643,7 +2643,7 @@ window.sbExtract=sbExtract;</script>
       tip: 'Hledání vajec po ostrovech. Noví králíci zvyšují výrobu v Chocolate Factory.',
       g: ['Chocolate Factory (<span class="mono">/cf</span>) běží celý rok, Hoppity\'s Hunt jen na jaře.', 'Během huntu se na ostrovech objevují vajíčka. Každé dá králíka (nový = vyšší produkce čokolády, duplikát = čokoláda).', 'S Egglocatorem vajíčka najdeš rychle. Mody jako SkyHanni nebo Skyblocker je umí ukázat.', 'Čokoláda se hodí na upgrady továrny a v Hoppity shopu. Zorro\'s Cape (farming) je z Chocolate Factory.'] },
     { id: 'zoo', n: 'Traveling Zoo', c: 'var(--legendary)', when: 'Early Summer 1–3 a Early Winter 1–3 (~1 hod)', sb: yearly([[3, 1, 3], [9, 1, 3]]),
-      tip: 'Oringo v Hubu prodává exotické pety. Pro Stentika: Elephant (farming).',
+      tip: 'Oringo v Hubu prodává exotické pety. Elephant je farming pet.',
       g: ['Oringo přijde do Hubu dvakrát za SkyBlock rok, zhruba každých 62 hodin, a zůstane asi hodinu.', 'Každý zoo má jiného peta (Elephant, Lion, Tiger, Giraffe, Monkey, Blue Whale) v několika raritách za coiny a materiály.', 'Elephant = farming pet (Farming Fortune). Monkey = foraging. Blue Whale = HP/obrana. Lion a Tiger = combat.'] },
     { id: 'election', n: 'Volby mayora', c: 'var(--legendary)', when: 'Late Summer 27 → Late Spring 27', sb: election,
       tip: 'Hlasuj v Hubu. Vítěz je mayor, druhý minister.',
@@ -2664,7 +2664,7 @@ window.sbExtract=sbExtract;</script>
       tip: 'Žraloci: Shark Fins a zuby na Shark equipment a armor.',
       g: ['Jen když mayor nebo minister má perk Fishing Festival (Marina), nebo Foxy přidá Extra Event (pak jen jeden festival za rok).', 'Během festivalu chytáš žraloky (Nurse, Blue, Tiger, Great White). Z nich padají Shark Fins a zuby na Shark armor a Shark Tooth Necklace.'] },
     { id: 'fiesta', n: 'Mining Fiesta', c: 'var(--rare)', when: 'Celé období, jen s Colem', perk: /mining fiesta/i, sb: term,
-      tip: 'Refined Minerals a Glossy Gemstones: Titanium equipment a Mineral armor pro Adama.',
+      tip: 'Refined Minerals a Glossy Gemstones: Titanium equipment a Mineral armor.',
       g: ['Jen s perkem Mining Fiesta (Cole jako mayor nebo minister).', 'Jediná doba, kdy padají <b>Refined Minerals a Glossy Gemstones</b>: suroviny na Titanium equipment a Mineral/Glossy armor.', 'Bonus Mining Wisdom a Fortune. Ideál na HOTM a Mining skill.'] },
     { id: 'myth', n: 'Mythological Ritual', c: 'var(--legendary)', when: 'Celé období, jen s Dianou', perk: /mythological ritual/i, sb: term,
       tip: 'Griffin burrows v Hubu s Ancestral Spade a Griffin petem.',
@@ -2828,7 +2828,7 @@ window.sbExtract=sbExtract;</script>
   // ================= Měřič farmení =================
   var ENCH = { wheat: [160, 25600, 'Enchanted Wheat', 'Enchanted Hay Bale'], carrot: [160, 0, 'Enchanted Carrot', ''], potato: [160, 25600, 'Enchanted Potato', 'Enchanted Baked Potato'], wart: [160, 25600, 'Enchanted Nether Wart', 'Mutant Nether Wart'], cane: [160, 25600, 'Enchanted Sugar', 'Enchanted Sugar Cane'], cactus: [160, 25600, 'Enchanted Cactus Green', 'Enchanted Cactus'], cocoa: [160, 0, 'Enchanted Cocoa Bean', ''], melon: [160, 25600, 'Enchanted Melon', 'Enchanted Melon Block'], pumpkin: [160, 25600, 'Enchanted Pumpkin', 'Polished Pumpkin'], mushroom: [32, 0, 'Enchanted Mushroom', ''] };
   function ench(k) { var d = ENCH[k] || [160, 25600, 'Enchanted', '2. stupeň'], o, c = App() ? cfg() : null; o = c ? (c.crops[k] || (c.custom.filter(function (q) { return q.k === k; })[0]) || {}) : {}; var a = num(o.e1), b = num(o.e2); return [isNaN(a) ? d[0] : a, isNaN(b) ? d[1] : b, d[2], d[3]]; }
-  var CROPS = [['wheat', 'Wheat', 6, 1, 4.5], ['carrot', 'Carrot', 3, 3], ['potato', 'Potato', 3, 3], ['wart', 'Nether Wart', 4, 2.5], ['cane', 'Sugar Cane', 4, 2], ['cactus', 'Cactus', 4, 2], ['cocoa', 'Cocoa Beans', 3, 3], ['melon', 'Melon', 2, 5], ['pumpkin', 'Pumpkin', 10, 1], ['mushroom', 'Mushroom', 10, 1], ['sunflower', 'Sunflower', 4, 2], ['moonflower', 'Moonflower', 4, 2], ['rose', 'Wild Rose', 4, 2]];
+  var CROPS = [['wheat', 'Wheat', 2.5, 1, 1.5], ['carrot', 'Carrot', 1.5, 3], ['potato', 'Potato', 1.5, 3], ['wart', 'Nether Wart', 1.5, 2.5], ['cane', 'Sugar Cane', 1.5, 2], ['cactus', 'Cactus', 1.5, 2], ['cocoa', 'Cocoa Beans', 1, 3], ['melon', 'Melon', 0.5, 5], ['pumpkin', 'Pumpkin', 3, 1], ['mushroom', 'Mushroom', 3.5, 1], ['sunflower', 'Sunflower', 2, 2], ['moonflower', 'Moonflower', 2, 2], ['rose', 'Wild Rose', 2, 2]]; // NPC ceny po updatu 0.27.3
   var CROPS_DEF = CROPS.map(function (c) { return c.slice(); }), CB = {};
   function cfg() { var c = App().state('_config'); if (!c.crops) c.crops = {}; if (!c.custom) c.custom = []; return c; }
   // výchozí hodnoty + přepsání ze společného nastavení + vlastní itemy
@@ -2926,7 +2926,7 @@ window.sbExtract=sbExtract;</script>
       var amt = num($('fmAmt').value), tv = num($('fmTime').value), tu = +$('fmTU').value, pr = num($('fmPrice').value), unit = $('fmUnit').value, k = $('fmCrop').value, msg = $('fmMsg');
       if (isNaN(amt) || amt <= 0 || isNaN(tv) || tv <= 0) { msg.textContent = 'Zadej, kolik jsi udělal (kladné číslo) a za jak dlouho.'; msg.className = 'msg err'; return; }
       if (isNaN(pr) || pr < 0) pr = 0;
-      var seedOn = hasSeeds(k) && $('fmSeedOn').checked, sAmt = seedOn ? num($('fmSeedAmt').value) : 0, sPr = num($('fmSeedPrice').value); if (isNaN(sPr) || sPr < 0) sPr = 3;
+      var seedOn = hasSeeds(k) && $('fmSeedOn').checked, sAmt = seedOn ? num($('fmSeedAmt').value) : 0, sPr = num($('fmSeedPrice').value); if (isNaN(sPr) || sPr < 0) sPr = 1;
       if (seedOn && (isNaN(sAmt) || sAmt < 0)) { msg.textContent = 'Zadej, kolik seeds jsi udělal, nebo odškrtni „Počítat i seeds“.'; msg.className = 'msg err'; return; }
       var seedCoinsH = seedOn ? (unit === 'coins' ? sAmt : sAmt * sPr) / (tv * tu) * 3600 : 0, perH = amt / (tv * tu) * 3600, coins = (unit === 'coins' ? perH : perH * pr) + seedCoinsH, items = unit === 'items' ? perH : (pr ? perH / pr : 0), s = S(); if (!s.meas) s.meas = {};
       var tun = { 60: 'min', 1: 's', 3600: 'h' }[tu];
