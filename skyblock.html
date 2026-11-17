@@ -335,7 +335,8 @@ h3.divider::after{content:"";flex:1;height:1px;background:var(--line)}
 .toc-b{display:inline-flex;gap:6px;margin-left:auto}
 @media(min-width:1500px){
 .toc{position:fixed;top:132px;left:calc(50% - 490px - 244px);width:220px;max-height:calc(100vh - 160px);overflow:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:3px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--glass);backdrop-filter:blur(10px)}
-.toc a{border:0;background:transparent;border-radius:8px;padding:5px 9px;white-space:normal;border-left:2px solid transparent}
+.toc>*{flex-shrink:0}
+.toc a{border:0;background:transparent;border-radius:8px;padding:5px 9px;white-space:normal;overflow:visible;line-height:1.3;border-left:2px solid transparent}
 .toc a.on{background:var(--field);border-left-color:var(--accent)}
 .toc-d{margin:8px 0 2px 9px}
 .toc-t{margin:0 0 4px 9px}
@@ -1259,22 +1260,6 @@ footer ul{margin:0;padding-left:18px}
 <small>Zdroj: Mining Guide 2026, Ironman Sweats. Atributy na manu a Boost Box jsem vynechal, pro mining nejsou důležité.</small>
 </section>
 
-<h3 class="divider">Adam</h3>
-
-<section class="uncommon" data-closed="1">
-<div class="head"><h2>Pro Adama: kde teď je</h2></div>
-<p class="note">Podle jeho exportu z 10. 11. 2026. V přepínači nahoře vyber KingAdamoss a čísla na stránce budou jeho.</p>
-<ul class="dots">
-<li><b>HOTM 5</b> (32 570 / 100 000 XP do HOTM 6), Core of the Mountain 1/10, Mining 34, commission milestone III na Coconutu (606 commissions je za všechny jeho profily), Nucleus 1×.</li>
-<li><b>Gear:</b> celý Wise Mineral armor (Fiesta set na rudy a bloky), Royal Mithril equipment (dobré na Mithril powder), aktivní pet Mithril Golem (Legendary, level 1). Ze 7. 11. má i Titanium Drill DR-X355, Ruby Drill TX-15 a Polished Titanium Pickaxe.</li>
-<li><b>Forge:</b> 5× Fuel Canister. Volný powder skoro žádný, perky má utracené.</li>
-<li><b>Hned:</b> levelovat Mithril Golema, na levelu 1 skoro nic nedává. Do drillu Blue Cheese Goblin Omelette (Goblin Egg → King Yolkar).</li>
-<li><b>HOTM 6:</b> commissions a Nucleus runy v Crystal Hollows (topaz už má položený). Z Nucleu může padnout Mole. Armadillo se líhne z Prehistoric Egg.</li>
-<li><b>Na gemstony:</b> Flamebreaker → Yog armor. Pak Armor of Divan.</li>
-<li><b>Titanium equipment</b> jen při Cole Mining Fiesta (suroviny jsou jen tehdy). Hlídejte mayora.</li>
-<li><b>HOTM 7 → Glacite Tunnels:</b> Secret Railroad Pass (Dulin Sprite, Forge). Tam je <b>Peridot pro Stentikovy farming nástroje</b>, Glacite Golem a Goblin pet z fossilů.</li>
-</ul>
-</section>
 </div>
 
 <!-- ======================= FORAGING ======================= -->
