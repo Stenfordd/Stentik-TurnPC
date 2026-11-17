@@ -43,6 +43,22 @@ lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Rese
         "ctccore.station.build.4": " Roof: 3x3 Research Casing, glass in the centre",
         "ctccore.station.build.5": " Cables, hoppers and pipes connect to any frame block",
         "ctccore.station.build.6": " Redstone signal on the core = automatic"}
+PONDER = {"research_station": ("Building the Research Station", [
+    "Start with a 3x3 floor of Research Casing",
+    "The Research Station goes in the middle, on top of the floor",
+    "Put a casing pillar on each of the four corners. The middle of each side stays open",
+    "Finish with a 3x3 casing roof. The block in the middle must be glass",
+    "When the frame is complete, it lights up and the station is ready",
+    "Every block of the frame is a port: cables, hoppers and pipes can connect anywhere on it",
+    "Take one block away and the whole station switches off"]),
+    "research_station_use": ("Implanting chips", [
+    "Open the station and put in a weapon, armor or a tool, a chip and a Uranium Rod",
+    "Every implant also needs 60,000 FE. The panel in the middle shows what the chip will do",
+    "Each piece of gear holds 2 chips. A third one replaces the oldest and gives part of its material back",
+    "A redstone signal next to the core makes it automatic: it starts as soon as everything is inside"])}
+for scene, (header, texts) in PONDER.items():
+    lang[f"ctccore.ponder.{scene}.header"] = header
+    for i, t in enumerate(texts, 1): lang[f"ctccore.ponder.{scene}.text_{i}"] = t
 for k, (n, c) in CH.items():
     lang[f"item.ctccore.{k}_chip"] = f"{n} Chip"
     for g, t in zip(('weapon', 'armor', 'tool'), FX[k]): lang[f"ctccore.chip.{k}.{g}"] = t
@@ -224,3 +240,40 @@ shaped('research_casing', [" T ", "TAT", " T "], {"T": {"item": "northstar:titan
 w(D + 'ctccore/recipe/netherite_scrap_from_chip_scrap.json', {"type": "minecraft:crafting_shapeless", "category": "misc", "ingredients": [{"item": "ctccore:chip_scrap"}] * 4,
                                                              "result": {"id": "minecraft:netherite_scrap", "count": 1}})
 print('assets ok')
+
+
+# ---------------- Ponder schematic (vanilla structure NBT, gzipped) ----------------
+import gzip, struct
+def nbt_str(v): b = v.encode(); return struct.pack('>H', len(b)) + b
+def tag(t, name, payload): return bytes([t]) + nbt_str(name) + payload
+def compound(items): return b''.join(items) + b'\x00'
+def int_list(vals): return bytes([3]) + struct.pack('>i', len(vals)) + b''.join(struct.pack('>i', v) for v in vals)
+def comp_list(comps): return bytes([10]) + struct.pack('>i', len(comps)) + b''.join(compound(c) for c in comps)
+palette, blocks = [], []
+def state(name, props=None):
+    key = (name, tuple(sorted((props or {}).items())))
+    for i, k in enumerate(palette):
+        if k == key: return i
+    palette.append(key); return len(palette) - 1
+def put(x, y, z, name, props=None): blocks.append((x, y, z, state(name, props)))
+for x in range(5):
+    for z in range(5): put(x, 0, z, 'minecraft:snow_block' if (x + z) % 2 else 'minecraft:smooth_stone')
+for x in range(1, 4):
+    for z in range(1, 4):
+        put(x, 1, z, 'ctccore:research_casing', {'formed': 'false'})
+        put(x, 3, z, 'minecraft:glass' if (x, z) == (2, 2) else 'ctccore:research_casing', None if (x, z) == (2, 2) else {'formed': 'false'})
+for (x, z) in ((1, 1), (3, 1), (1, 3), (3, 3)): put(x, 2, z, 'ctccore:research_casing', {'formed': 'false'})
+put(2, 2, 2, 'ctccore:research_station', {'formed': 'false'})
+pal = []
+for name, props in palette:
+    items = [tag(8, 'Name', nbt_str(name))]
+    if props: items.append(tag(10, 'Properties', compound([tag(8, k, nbt_str(v)) for k, v in props])))
+    pal.append(items)
+root = compound([tag(3, 'DataVersion', struct.pack('>i', 3955)),
+                 tag(9, 'size', int_list([5, 4, 5])),
+                 tag(9, 'palette', comp_list(pal)),
+                 tag(9, 'blocks', comp_list([[tag(9, 'pos', int_list([x, y, z])), tag(3, 'state', struct.pack('>i', st))] for x, y, z, st in blocks])),
+                 tag(9, 'entities', bytes([0]) + struct.pack('>i', 0))])
+os.makedirs(A + 'ponder', exist_ok=True)
+with gzip.open(A + 'ponder/research_station.nbt', 'wb') as f: f.write(bytes([10]) + nbt_str('') + root)
+print('ponder schematic', len(blocks), 'blocks')

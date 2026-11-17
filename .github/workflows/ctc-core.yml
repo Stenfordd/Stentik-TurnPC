@@ -20,6 +20,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
+      - name: Ponder library (taken out of Create, only for compiling)
+        run: |
+          mkdir -p ctc-core/libs tmp-ponder
+          url=$(curl -fsSL 'https://api.modrinth.com/v2/project/create/version?loaders=%5B%22neoforge%22%5D&game_versions=%5B%221.21.1%22%5D' | jq -r '[.[0].files[] | select(.primary)][0].url')
+          curl -fsSL "$url" -o tmp-ponder/create.jar
+          unzip -j -o tmp-ponder/create.jar 'META-INF/jarjar/ponder-neoforge-*.jar' -d tmp-ponder
+          mv tmp-ponder/ponder-neoforge-*.jar ctc-core/libs/ponder.jar
+          rm -rf tmp-ponder
       - name: Build
         working-directory: ctc-core
         run: gradle build --no-daemon --stacktrace

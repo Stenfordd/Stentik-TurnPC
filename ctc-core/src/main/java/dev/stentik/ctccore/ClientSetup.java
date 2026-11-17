@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -16,6 +18,12 @@ public class ClientSetup {
         @SubscribeEvent
         public static void screens(RegisterMenuScreensEvent event) {
             event.register(CtcCore.STATION_MENU.get(), StationScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void setup(FMLClientSetupEvent event) {
+            // Ponder comes with Create; without it the pack still works, just without the scenes
+            if (ModList.get().isLoaded("ponder")) event.enqueueWork(dev.stentik.ctccore.ponder.CtcPonderPlugin::register);
         }
     }
 
