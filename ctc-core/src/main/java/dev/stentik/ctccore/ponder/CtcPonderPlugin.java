@@ -22,5 +22,9 @@ public class CtcPonderPlugin implements PonderPlugin {
         helper.forComponents(CtcCore.STATION.getId(), CtcCore.CASING.getId())
                 .addStoryBoard("research_station", ResearchStationScenes::building)
                 .addStoryBoard("research_station", ResearchStationScenes::using);
+        // Voidsteel itself comes from the KubeJS scripts of the pack (namespace ctc)
+        helper.forComponents(ResourceLocation.fromNamespaceAndPath("ctc", "voidsteel_ore"), ResourceLocation.fromNamespaceAndPath("ctc", "raw_voidsteel"),
+                        ResourceLocation.fromNamespaceAndPath("ctc", "voidsteel_ingot"))
+                .addStoryBoard("voidsteel_melting", VoidsteelScenes::melting);
     }
 }

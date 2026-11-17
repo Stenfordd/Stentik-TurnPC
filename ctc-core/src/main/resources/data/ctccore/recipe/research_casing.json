@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " T ",
-    "TAT",
-    " T "
+    " I ",
+    "IBI",
+    " I "
   ],
   "key": {
-    "T": {
-      "item": "northstar:titanium_sheet"
+    "I": {
+      "tag": "c:plates/iron"
     },
-    "A": {
-      "item": "create:andesite_casing"
+    "B": {
+      "item": "create:brass_casing"
     }
   },
   "result": {

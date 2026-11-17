@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#ctccore:on_mars",
+  "features": "ctccore:rubrium_ore",
+  "step": "underground_ores"
+}

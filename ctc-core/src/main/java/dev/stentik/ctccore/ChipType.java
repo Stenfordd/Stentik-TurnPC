@@ -19,7 +19,9 @@ public enum ChipType {
     LEVIATHAN("leviathan", 0x3CC8D8, "minecraft:prismarine_crystals", true),
     REMNANT("remnant", 0xD8C27A, "minecraft:bone_block", true),
     MALEDICTUS("maledictus", 0x9EE6FF, "minecraft:blue_ice", true),
-    GUARDIAN("guardian", 0xC77DFF, "cataclysm:void_core", true);
+    GUARDIAN("guardian", 0xC77DFF, "cataclysm:void_core", true),
+    EMBER("ember", 0xFF6A2B, "minecraft:blaze_rod", false),
+    TERRA("terra", 0x7FD36B, "minecraft:amethyst_shard", false);
 
     public final String id;
     public final int color;

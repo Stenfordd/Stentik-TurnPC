@@ -76,6 +76,8 @@ public class ChipEvents {
                         case REMNANT -> attacker.heal(amount * 0.15f);
                         case MALEDICTUS -> freeze(target);
                         case GUARDIAN -> amount *= 1.35f;
+                        case EMBER -> target.igniteForSeconds(3);
+                        case TERRA -> amount += 1.5f;
                     }
                 }
             }
@@ -90,9 +92,10 @@ public class ChipEvents {
             }
             if (armor.contains(ChipType.LUNAR) && event.getSource().is(DamageTypeTags.IS_FALL)) amount *= 0.4f;
             if (armor.contains(ChipType.MERCURY)) amount *= 0.85f;
+            if (armor.contains(ChipType.TERRA)) amount *= 0.92f;
             if (armor.contains(ChipType.GUARDIAN)) amount *= 0.75f;
             if (attacker != null && attacker != target) {
-                if (armor.contains(ChipType.MARTIAN) || armor.contains(ChipType.IGNIS)) attacker.igniteForSeconds(4);
+                if (armor.contains(ChipType.MARTIAN) || armor.contains(ChipType.IGNIS) || armor.contains(ChipType.EMBER)) attacker.igniteForSeconds(4);
                 if (armor.contains(ChipType.HARBINGER)) effect(attacker, MobEffects.WITHER, 60, 0);
                 if (armor.contains(ChipType.MALEDICTUS)) freeze(attacker);
             }
@@ -121,6 +124,8 @@ public class ChipEvents {
                 case MERCURY, HARBINGER, MALEDICTUS -> haste = Math.max(haste, 0);
                 case GUARDIAN -> haste = Math.max(haste, 2);
                 case VOID -> effect(player, MobEffects.LUCK, 100, 1);
+                case EMBER -> haste = Math.max(haste, 0);
+                case TERRA -> effect(player, MobEffects.LUCK, 100, 0);
                 case LEVIATHAN -> effect(player, MobEffects.CONDUIT_POWER, 100, 0);
                 case REMNANT -> { if (held.isDamaged()) held.setDamageValue(held.getDamageValue() - 1); }
             }
@@ -135,5 +140,13 @@ public class ChipEvents {
         if (chip == null) return;
         event.getDrops().add(new ItemEntity(entity.level(), entity.getX(), entity.getY() + 0.5, entity.getZ(),
                 new ItemStack(CtcCore.CHIP_ITEMS.get(chip).get())));
+        // the free bosses also guard a material the main line needs
+        ItemStack trophy = switch (chip) {
+            case LEVIATHAN -> new ItemStack(Materials.ABYSSAL_GILL.get(), 2);
+            case REMNANT -> new ItemStack(Materials.DESERT_RELIC.get(), 2);
+            case MALEDICTUS -> new ItemStack(Materials.CRYO_CORE.get(), 2);
+            default -> ItemStack.EMPTY;
+        };
+        if (!trophy.isEmpty()) event.getDrops().add(new ItemEntity(entity.level(), entity.getX(), entity.getY() + 0.5, entity.getZ(), trophy));
     }
 }

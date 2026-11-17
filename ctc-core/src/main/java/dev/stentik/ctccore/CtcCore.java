@@ -73,6 +73,14 @@ public class CtcCore {
         }
     }
 
+    /** Extra chip slots a piece of gear got from a Chip Socket (0 or 1). */
+    public static final Supplier<DataComponentType<Integer>> SOCKETS = COMPONENTS.register("sockets",
+            () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
+    static {
+        Materials.init();
+    }
+
     public static final Supplier<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.ctccore"))
             .icon(() -> new ItemStack(STATION_ITEM.get()))
@@ -82,6 +90,7 @@ public class CtcCore {
                 out.accept(BLANK_CHIP.get());
                 out.accept(CHIP_SCRAP.get());
                 for (ChipType type : ChipType.values()) out.accept(CHIP_ITEMS.get(type).get());
+                for (var item : Materials.ALL) out.accept(item.get());
             }).build());
 
     public CtcCore(IEventBus modBus) {

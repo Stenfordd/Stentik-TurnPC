@@ -61,14 +61,17 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
         } else {
             if (gear != Gear.NONE) {
                 List<ChipType> chips = ChipType.of(gearStack);
-                lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.SLOTS)); colors.add(TEXT);
+                lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(gearStack))); colors.add(TEXT);
                 for (ChipType c : chips) {
                     lines.add(Component.literal("◆ ").append(Component.translatable("item.ctccore." + c.id + "_chip"))); colors.add(c.color);
+                }
+                if (menu.chip().is(Materials.CHIP_SOCKET.get())) {
+                    lines.add(Component.translatable("ctccore.station.socket")); colors.add(GOOD);
                 }
                 if (menu.chip().getItem() instanceof ChipItem chipItem && !chips.contains(chipItem.type)) {
                     ChipType t = chipItem.type;
                     lines.add(Component.literal("+ ").append(Component.translatable("ctccore.chip." + t.id + "." + gear.name().toLowerCase()))); colors.add(GOOD);
-                    if (chips.size() >= Gear.SLOTS) {
+                    if (chips.size() >= Gear.slots(gearStack)) {
                         lines.add(Component.translatable("ctccore.station.replaces", Component.translatable("item.ctccore." + chips.get(0).id + "_chip"),
                                 chips.get(0).refund().getHoverName())); colors.add(GOLD);
                     }

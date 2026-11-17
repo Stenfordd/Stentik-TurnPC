@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "size": 7,
+    "discard_chance_on_air_exposure": 0.0,
+    "targets": [
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "northstar:venus_stone"
+        },
+        "state": {
+          "Name": "ctccore:sulfurite_ore"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "northstar:venus_deep_stone"
+        },
+        "state": {
+          "Name": "ctccore:sulfurite_ore"
+        }
+      }
+    ]
+  }
+}

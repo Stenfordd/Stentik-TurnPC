@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "ECE",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "C": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:terra_chip",
+    "count": 1
+  }
+}

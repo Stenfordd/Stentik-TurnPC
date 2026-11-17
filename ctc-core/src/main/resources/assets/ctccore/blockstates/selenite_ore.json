@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ctccore:block/selenite_ore"
+    }
+  }
+}

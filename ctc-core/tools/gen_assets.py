@@ -13,7 +13,7 @@ def shade(c, f): return tuple(max(0, min(255, int(v * f))) for v in c) + (255,)
 CH = {'lunar': ('Lunar', (159, 196, 255)), 'martian': ('Martian', (232, 104, 60)), 'mercury': ('Mercury', (143, 163, 192)),
       'void': ('Void', (154, 92, 255)), 'harbinger': ('Harbinger', (192, 48, 58)), 'ignis': ('Ignis', (255, 154, 46)),
       'leviathan': ('Leviathan', (60, 200, 216)), 'remnant': ('Remnant', (216, 194, 122)), 'maledictus': ('Maledictus', (158, 230, 255)),
-      'guardian': ('Guardian', (199, 125, 255))}
+      'guardian': ('Guardian', (199, 125, 255)), 'ember': ('Ember', (255, 106, 43)), 'terra': ('Terra', (127, 211, 107))}
 BOSS = ('harbinger', 'ignis', 'leviathan', 'remnant', 'maledictus', 'guardian')
 FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less fall damage', 'Night Vision while held'),
       'martian': ('Sets the target on fire, +10% damage', 'Attackers catch fire', 'Haste II (a red-hot tool)'),
@@ -24,7 +24,9 @@ FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less
       'leviathan': ('Slows and weakens the target', "Water Breathing and Dolphin's Grace", 'Conduit Power (mine fast under water)'),
       'remnant': ('Heals you for 15% of the damage', 'Regeneration', 'Slowly repairs itself'),
       'maledictus': ('Freezes the target', 'Attackers freeze', 'Haste I'),
-      'guardian': ('+35% damage', '25% less damage taken', 'Haste III')}
+      'guardian': ('+35% damage', '25% less damage taken', 'Haste III'),
+      'ember': ('Sets the target on fire for 3 s', 'Attackers catch fire', 'Haste I'),
+      'terra': ('+1.5 damage', '8% less damage taken', 'Luck I')}
 
 # ---------------- lang ----------------
 lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Research Station", "block.ctccore.research_casing": "Research Casing",
@@ -54,7 +56,7 @@ PONDER = {"research_station": ("Building the Research Station", [
     "research_station_use": ("Implanting chips", [
     "Open the station and put in a weapon, armor or a tool, a chip and a Uranium Rod",
     "Every implant also needs 60,000 FE. The panel in the middle shows what the chip will do",
-    "Each piece of gear holds 2 chips. A third one replaces the oldest and gives part of its material back",
+    "Each piece of gear holds 2 chips (3 with a Chip Socket). One more replaces the oldest and gives part of its material back",
     "A redstone signal next to the core makes it automatic: it starts as soon as everything is inside"])}
 for scene, (header, texts) in PONDER.items():
     lang[f"ctccore.ponder.{scene}.header"] = header
@@ -277,3 +279,5 @@ root = compound([tag(3, 'DataVersion', struct.pack('>i', 3955)),
 os.makedirs(A + 'ponder', exist_ok=True)
 with gzip.open(A + 'ponder/research_station.nbt', 'wb') as f: f.write(bytes([10]) + nbt_str('') + root)
 print('ponder schematic', len(blocks), 'blocks')
+
+exec(open('tools/gen_materials.py').read())

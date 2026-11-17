@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "northstar:martian_crimsite_caverns",
+      "required": false
+    },
+    {
+      "id": "northstar:martian_dunes",
+      "required": false
+    },
+    {
+      "id": "northstar:martian_highlands",
+      "required": false
+    },
+    {
+      "id": "northstar:martian_magmatic_caves",
+      "required": false
+    },
+    {
+      "id": "northstar:martian_overgrown_caverns",
+      "required": false
+    },
+    {
+      "id": "northstar:martian_peaks",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#ctccore:on_venus",
+  "features": "ctccore:sulfurite_ore",
+  "step": "underground_ores"
+}

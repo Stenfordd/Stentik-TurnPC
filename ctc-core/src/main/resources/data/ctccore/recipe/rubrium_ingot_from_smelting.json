@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "ctccore:raw_rubrium"
+  },
+  "result": {
+    "id": "ctccore:rubrium_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

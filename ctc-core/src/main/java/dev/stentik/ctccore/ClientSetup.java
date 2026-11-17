@@ -37,7 +37,7 @@ public class ClientSetup {
             Gear gear = Gear.of(event.getItemStack());
             if (gear == Gear.NONE) return;
             List<Component> lines = event.getToolTip();
-            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.SLOTS).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(event.getItemStack())).withStyle(ChatFormatting.GRAY));
             for (ChipType chip : chips) {
                 lines.add(Component.literal(" ◆ ").withStyle(s -> s.withColor(chip.color))
                         .append(Component.translatable("item.ctccore." + chip.id + "_chip").withStyle(s -> s.withColor(chip.color)))

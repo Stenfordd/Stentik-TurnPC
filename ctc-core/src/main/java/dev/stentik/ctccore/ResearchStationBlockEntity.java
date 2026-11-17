@@ -5,8 +5,10 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -50,7 +52,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         public boolean isItemValid(int slot, ItemStack stack) {
             return switch (slot) {
                 case SLOT_GEAR -> Gear.of(stack) != Gear.NONE;
-                case SLOT_CHIP -> stack.getItem() instanceof ChipItem;
+                case SLOT_CHIP -> stack.getItem() instanceof ChipItem || stack.is(Materials.CHIP_SOCKET.get());
                 case SLOT_FUEL -> isFuel(stack);
                 default -> false;
             };
@@ -157,13 +159,14 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         if (missing > 0) return NOT_FORMED;
         ItemStack gear = items.getStackInSlot(SLOT_GEAR), chip = items.getStackInSlot(SLOT_CHIP);
         if (Gear.of(gear) == Gear.NONE) return NO_GEAR;
-        if (!(chip.getItem() instanceof ChipItem chipItem)) return NO_CHIP;
-        if (ChipType.has(gear, chipItem.type)) return HAS_CHIP;
+        boolean socket = chip.is(Materials.CHIP_SOCKET.get());
+        if (!socket && !(chip.getItem() instanceof ChipItem)) return NO_CHIP;
+        if (socket ? Gear.slots(gear) > Gear.SLOTS : ChipType.has(gear, ((ChipItem) chip.getItem()).type)) return HAS_CHIP;
         if (fuelRequired() && items.getStackInSlot(SLOT_FUEL).isEmpty()) return NO_FUEL;
         if (energy.getEnergyStored() < ENERGY_PER_IMPLANT && !running) return NO_ENERGY;
         if (!items.getStackInSlot(SLOT_OUT).isEmpty()) return OUT_FULL;
         List<ChipType> current = ChipType.of(gear);
-        if (current.size() >= Gear.SLOTS) {
+        if (!socket && current.size() >= Gear.slots(gear)) {
             ItemStack out = items.getStackInSlot(SLOT_REFUND), refund = current.get(0).refund();
             if (!out.isEmpty() && (!ItemStack.isSameItemSameComponents(out, refund) || out.getCount() >= out.getMaxStackSize())) return OUT_FULL;
         }
@@ -198,19 +201,31 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         }
         if (++be.progress >= DURATION) {
             be.finish(level, pos);
-        } else if (be.progress % 20 == 0) {
-            level.playSound(null, pos, SoundEvents.BEACON_AMBIENT, SoundSource.BLOCKS, 0.6f, 1.6f);
+        } else {
+            if (be.progress % 20 == 0) level.playSound(null, pos, SoundEvents.BEACON_AMBIENT, SoundSource.BLOCKS, 0.6f, 1.6f);
+            if (level instanceof ServerLevel server && be.progress % 4 == 0) {
+                // a beam of sparks into the floating chip, spinning faster as it gets closer to done
+                double a = be.progress * 0.35, r = 0.45 - 0.3 * be.progress / DURATION;
+                server.sendParticles(ParticleTypes.ELECTRIC_SPARK, pos.getX() + 0.5 + Math.cos(a) * r, pos.getY() + 0.85,
+                        pos.getZ() + 0.5 + Math.sin(a) * r, 2, 0.02, 0.05, 0.02, 0.01);
+                server.sendParticles(ParticleTypes.END_ROD, pos.getX() + 0.5, pos.getY() + 0.75, pos.getZ() + 0.5, 1, 0.05, 0.12, 0.05, 0.005);
+            }
         }
         be.setChanged();
     }
 
     private void finish(Level level, BlockPos pos) {
         ItemStack gear = items.getStackInSlot(SLOT_GEAR).copy();
+        if (items.getStackInSlot(SLOT_CHIP).is(Materials.CHIP_SOCKET.get())) {
+            gear.set(CtcCore.SOCKETS.get(), 1);
+            done(level, pos, gear);
+            return;
+        }
         ChipItem chip = (ChipItem) items.getStackInSlot(SLOT_CHIP).getItem();
         List<String> ids = new ArrayList<>();
         List<String> old = gear.get(CtcCore.CHIPS.get());
         if (old != null) ids.addAll(old);
-        if (ids.size() >= Gear.SLOTS) {          // full: the oldest chip is replaced and part of its material comes back
+        if (ids.size() >= Gear.slots(gear)) {          // full: the oldest chip is replaced and part of its material comes back
             ChipType removed = ChipType.byId(ids.remove(0));
             if (removed != null) {
                 ItemStack out = items.getStackInSlot(SLOT_REFUND), refund = removed.refund();
@@ -220,6 +235,10 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         }
         ids.add(chip.type.id);
         gear.set(CtcCore.CHIPS.get(), List.copyOf(ids));
+        done(level, pos, gear);
+    }
+
+    private void done(Level level, BlockPos pos, ItemStack gear) {
         running = false;
         progress = 0;
         items.getStackInSlot(SLOT_CHIP).shrink(1);
@@ -229,6 +248,10 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         running = false;
         level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0f, 1.2f);
         level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.8f, 1.8f);
+        if (level instanceof ServerLevel server) {
+            server.sendParticles(ParticleTypes.FLASH, pos.getX() + 0.5, pos.getY() + 0.85, pos.getZ() + 0.5, 1, 0, 0, 0, 0);
+            server.sendParticles(ParticleTypes.REVERSE_PORTAL, pos.getX() + 0.5, pos.getY() + 0.85, pos.getZ() + 0.5, 30, 0.3, 0.3, 0.3, 0.05);
+        }
     }
 
     @Override

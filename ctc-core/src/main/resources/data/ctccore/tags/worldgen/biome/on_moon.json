@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "northstar:lunar_asurine_caves",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_cooled_lava_cave",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_crater_fields",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_glowstone_cavern",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_hills",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_ice_caves",
+      "required": false
+    },
+    {
+      "id": "northstar:lunar_plains",
+      "required": false
+    }
+  ]
+}

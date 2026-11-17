@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ctccore:selenite_ore",
+    "ctccore:rubrium_ore",
+    "ctccore:sulfurite_ore",
+    "ctccore:solarite_ore"
+  ]
+}

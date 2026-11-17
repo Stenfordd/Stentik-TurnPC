@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "TCT",
+    "BEB",
     "PSP",
-    "RRR"
+    "CCC"
   ],
   "key": {
-    "T": {
-      "item": "northstar:titanium_sheet"
+    "B": {
+      "tag": "c:plates/brass"
     },
-    "C": {
-      "item": "northstar:advanced_circuit"
+    "E": {
+      "item": "create:electron_tube"
     },
     "P": {
       "item": "create:precision_mechanism"
@@ -19,8 +19,8 @@
     "S": {
       "item": "minecraft:smithing_table"
     },
-    "R": {
-      "item": "createnuclear:reactor_casing"
+    "C": {
+      "item": "create:brass_casing"
     }
   },
   "result": {

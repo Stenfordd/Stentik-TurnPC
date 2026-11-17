@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "northstar:mercury_basins",
+      "required": false
+    },
+    {
+      "id": "northstar:mercury_hills",
+      "required": false
+    },
+    {
+      "id": "northstar:mercury_icy_caverns",
+      "required": false
+    },
+    {
+      "id": "northstar:mercury_magmatic_caverns",
+      "required": false
+    }
+  ]
+}

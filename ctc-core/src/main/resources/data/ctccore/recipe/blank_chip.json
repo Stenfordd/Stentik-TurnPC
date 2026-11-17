@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     " G ",
-    "RCR",
+    "RTR",
     " G "
   ],
   "key": {
@@ -13,8 +13,8 @@
     "R": {
       "item": "minecraft:redstone"
     },
-    "C": {
-      "item": "northstar:circuit"
+    "T": {
+      "item": "create:electron_tube"
     }
   },
   "result": {

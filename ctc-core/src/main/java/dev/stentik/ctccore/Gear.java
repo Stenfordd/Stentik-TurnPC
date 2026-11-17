@@ -15,6 +15,12 @@ public enum Gear {
 
     public static final int SLOTS = 2;
 
+    /** Chip slots of this piece: 2, or 3 after a Chip Socket. */
+    public static int slots(net.minecraft.world.item.ItemStack stack) {
+        Integer extra = stack.get(CtcCore.SOCKETS.get());
+        return SLOTS + (extra == null ? 0 : extra);
+    }
+
     public static Gear of(ItemStack stack) {
         if (stack.isEmpty() || stack.getMaxStackSize() != 1) return NONE;
         var item = stack.getItem();

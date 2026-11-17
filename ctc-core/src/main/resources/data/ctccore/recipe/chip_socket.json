@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "GBG",
+    "SGS"
+  ],
+  "key": {
+    "S": {
+      "item": "ctccore:selenite"
+    },
+    "G": {
+      "item": "ctccore:solarite"
+    },
+    "B": {
+      "item": "ctccore:blank_chip"
+    }
+  },
+  "result": {
+    "id": "ctccore:chip_socket",
+    "count": 1
+  }
+}
