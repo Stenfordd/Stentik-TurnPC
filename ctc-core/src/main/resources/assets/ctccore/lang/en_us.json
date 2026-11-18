@@ -154,5 +154,6 @@
   "item.ctccore.voidsteel_leggings": "Voidsteel Leggings",
   "item.ctccore.voidsteel_boots": "Voidsteel Boots",
   "ctccore.armor.voidsteel.bonus": "No fall damage",
-  "ctccore.armor.martian.bonus": "Fire Resistance"
+  "ctccore.armor.martian.bonus": "Fire Resistance",
+  "item.ctccore.voidforge_template": "Voidforge Template"
 }

@@ -45,7 +45,7 @@ public enum Gear {
     /** Chip slots of this piece: 1 or 2 by quality, one more after a Chip Socket. */
     public static int slots(ItemStack stack) {
         Integer extra = stack.get(CtcCore.SOCKETS.get());
-        return base(stack) + (extra == null ? 0 : extra);
+        return base(stack) + (extra == null ? 0 : extra) + (Voidforge.is(stack) ? 1 : 0);
     }
 
     public static Gear of(ItemStack stack) {

@@ -53,6 +53,7 @@ public final class Materials {
 
     // the third chip slot
     public static final DeferredItem<Item> CHIP_SOCKET = item("chip_socket");
+    public static final DeferredItem<Item> VOIDFORGE_TEMPLATE = item("voidforge_template");
 
     static void init() {
         // touching the class registers everything above

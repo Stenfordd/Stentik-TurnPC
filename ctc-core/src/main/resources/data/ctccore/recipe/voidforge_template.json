@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " V ",
+    "VCV",
+    " V "
+  ],
+  "key": {
+    "V": {
+      "item": "ctc:voidsteel_ingot"
+    },
+    "C": {
+      "item": "cataclysm:void_core"
+    }
+  },
+  "result": {
+    "id": "ctccore:voidforge_template",
+    "count": 1
+  }
+}

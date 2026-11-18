@@ -135,3 +135,21 @@ for n, (disp, col, acc, ingot) in SETS.items():
         save(im, A + f'textures/item/{n}_{piece}.png')
         w(A + f'models/item/{n}_{piece}.json', {"parent": "minecraft:item/generated", "textures": {"layer0": f"ctccore:item/{n}_{piece}"}})
 print('armor ok')
+
+# ---------- Voidforging ----------
+lang = json.load(open(lp))
+lang["item.ctccore.voidforge_template"] = "Voidforge Template"
+json.dump(lang, open(lp, 'w'), indent=2, ensure_ascii=False)
+shaped('voidforge_template', [" V ", "VCV", " V "], {"V": "ctc:voidsteel_ingot", "C": "cataclysm:void_core"}, 'ctccore:voidforge_template')
+shaped('voidforge_template_copy', ["VTV", "VOV", "VVV"], {"V": "ctc:voidsteel_ingot", "T": "ctccore:voidforge_template", "O": "minecraft:crying_obsidian"},
+       'ctccore:voidforge_template', 2)
+rec('voidforge', {"type": "ctccore:voidforge"})
+im = Image.new('RGBA', (16, 16), (0, 0, 0, 0)); p = im.load()
+for y in range(1, 15):
+    for x in range(3, 13):
+        edge = x in (3, 12) or y in (1, 14)
+        p[x, y] = (40, 22, 70, 255) if edge else shade((92, 50, 150), 1.25 - 0.03 * y)
+for (x, y) in ((7, 4), (8, 4), (6, 5), (9, 5), (6, 6), (9, 6), (7, 7), (8, 7), (7, 9), (8, 10), (7, 11), (8, 12)): p[x, y] = (200, 150, 255, 255)
+save(im, A + 'textures/item/voidforge_template.png')
+w(A + 'models/item/voidforge_template.json', {"parent": "minecraft:item/generated", "textures": {"layer0": "ctccore:item/voidforge_template"}})
+print('voidforge ok')

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "VTV",
+    "VOV",
+    "VVV"
+  ],
+  "key": {
+    "V": {
+      "item": "ctc:voidsteel_ingot"
+    },
+    "T": {
+      "item": "ctccore:voidforge_template"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    }
+  },
+  "result": {
+    "id": "ctccore:voidforge_template",
+    "count": 2
+  }
+}

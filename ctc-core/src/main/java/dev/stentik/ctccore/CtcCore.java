@@ -42,6 +42,7 @@ public class CtcCore {
     public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> SERIALIZERS =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
     public static final Supplier<ChipSmithingRecipe.Serializer> CHIP_SMITHING = SERIALIZERS.register("chip_smithing", ChipSmithingRecipe.Serializer::new);
+    public static final Supplier<Voidforge.Serializer> VOIDFORGE = SERIALIZERS.register("voidforge", Voidforge.Serializer::new);
 
     public static final DeferredBlock<ResearchStationBlock> STATION = BLOCKS.register("research_station",
             () -> new ResearchStationBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 9.0f)
@@ -79,6 +80,10 @@ public class CtcCore {
     /** Extra chip slots a piece of gear got from a Chip Socket (0 or 1). */
     public static final Supplier<DataComponentType<Integer>> SOCKETS = COMPONENTS.register("sockets",
             () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
+    /** Cataclysm armor upgraded with Voidsteel at a Smithing Table. */
+    public static final Supplier<DataComponentType<Boolean>> VOIDFORGED = COMPONENTS.register("voidforged",
+            () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
 
     static {
         Materials.init();
