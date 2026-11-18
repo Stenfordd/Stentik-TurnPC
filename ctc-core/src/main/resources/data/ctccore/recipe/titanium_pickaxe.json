@@ -11,7 +11,7 @@
       "tag": "c:ingots/titanium"
     },
     "S": {
-      "tag": "c:rods/wooden"
+      "item": "createaddition:brass_rod"
     }
   },
   "result": {

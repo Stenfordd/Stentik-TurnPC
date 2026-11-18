@@ -11,7 +11,7 @@
       "item": "northstar:tungsten_ingot"
     },
     "S": {
-      "tag": "c:rods/wooden"
+      "item": "createaddition:electrum_rod"
     }
   },
   "result": {

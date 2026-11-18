@@ -178,39 +178,47 @@ for tag in ('enchantable/mining', 'enchantable/mining_loot', 'enchantable/durabi
     p = D + f'minecraft/tags/item/{tag}.json'
     old = json.load(open(p))['values'] if os.path.exists(p) else []
     w(p, {"values": old + [v for v in vals if v not in old]})
-# icons: diagonal handle + head, drawn pixel by pixel with a dark outline (vanilla style)
-def tool_icon(kind, col, acc):
+# icons: a real head shape (arc / blade / spade) at the end of a diagonal handle, 3-tone shading, highlight edge, rivet, outline
+import math
+HANDLE = {'steel': ("createaddition:iron_rod", (176, 180, 188)), 'titanium': ("createaddition:brass_rod", (222, 170, 72)),
+          'tungsten': ("createaddition:electrum_rod", (236, 214, 120)), 'voidsteel': ("minecraft:end_rod", (236, 228, 250))}
+def tool_icon(kind, col, acc, hcol):
+    cx, cy = 1.5, 14.5                                    # pivot at the bottom-left corner
     px = {}
-    for k in range(9):                                   # handle from bottom-left up to the head
-        px[(2 + k, 13 - k)] = 'h'
-    if kind == 'pickaxe':
-        for (x, y) in [(4, 3), (5, 2), (6, 2), (7, 2), (8, 2), (9, 3), (10, 3), (11, 4), (12, 5), (12, 6), (13, 7), (13, 8), (12, 9),
-                       (5, 3), (6, 3), (7, 3), (8, 3), (10, 4), (11, 5), (11, 6), (12, 7), (12, 8), (9, 4), (10, 5)]:
-            px[(x, y)] = 'X'
-    elif kind == 'axe':
-        for y in range(1, 8):
-            for x in range(8, 14):
-                if (x - 8) + (7 - y) >= 2 and not (x <= 9 and y >= 6): px[(x, y)] = 'X'
-    elif kind == 'shovel':
-        for y in range(1, 6):
-            for x in range(10, 15):
-                if (x - 12) ** 2 + (y - 3) ** 2 <= 5: px[(x, y)] = 'X'
-    elif kind == 'hoe':
-        for (x, y) in [(6, 2), (7, 2), (8, 2), (9, 2), (10, 2), (11, 3), (7, 3), (8, 3), (9, 3), (10, 3), (6, 3), (11, 4)]:
-            px[(x, y)] = 'X'
+    for k in range(10):                                   # handle
+        px[(2 + k, 13 - k)] = 'h' if k % 2 else 'H'
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x + 0.5 - cx, cy - (y + 0.5)
+            r = math.hypot(dx, dy); a = math.degrees(math.atan2(dy, dx))   # 45 deg = along the handle
+            if kind == 'pickaxe' and 11.0 <= r <= 13.2 and abs(a - 45) <= 37 - (r - 11) * 3:
+                px[(x, y)] = '3' if r < 11.7 else ('1' if r > 12.6 else '2')
+            if kind == 'axe' and 8.3 <= r <= 13.4 and 45 <= a <= 78 - (13.4 - r) * 2:
+                px[(x, y)] = '1' if r > 12.6 else ('3' if a < 50 or r < 9.2 else '2')
+            if kind == 'hoe' and 11.0 <= r <= 12.8 and 42 <= a <= 82:
+                px[(x, y)] = '1' if r > 12.2 else '2'
+            if kind == 'shovel':
+                ex, ey = x + 0.5 - 11.8, y + 0.5 - 3.6
+                d = ((ex + ey) / 1.41) ** 2 / 9.0 + ((ex - ey) / 1.41) ** 2 / 4.2
+                if d <= 1.0: px[(x, y)] = '1' if (ex - ey) < -1.2 else ('3' if (ex - ey) > 1.2 else '2')
     im = Image.new('RGBA', (16, 16), (0, 0, 0, 0)); p = im.load()
-    for (x, y), c in px.items():                         # outline
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            q = (x + dx, y + dy)
-            if q not in px and 0 <= q[0] < 16 and 0 <= q[1] < 16: p[q] = (30, 24, 28, 255)
+    for (x, y) in list(px):
+        for ddx, ddy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = (x + ddx, y + ddy)
+            if q not in px and 0 <= q[0] < 16 and 0 <= q[1] < 16: p[q] = (24, 20, 28, 255)
+    tone = {'1': 1.5, '2': 1.1, '3': 0.72}
     for (x, y), c in px.items():
-        if c == 'h': p[x, y] = (122, 84, 50, 255) if (x + y) % 3 else (90, 60, 36, 255)
-        else: p[x, y] = shade(col, 1.45 - 0.06 * (x + y) / 2) if (x + y) < 15 else shade(col, 0.9)
-    for (x, y), c in px.items():                         # accent edge on the head
-        if c == 'X' and (x + 1, y - 1) not in px: p[x, y] = shade(acc, 1.15)
+        if c in 'hH': p[x, y] = shade(hcol, 1.15 if c == 'h' else 0.8)
+        else: p[x, y] = shade(col, tone[c])
+    # accent line on the outer edge + rivet where head meets handle
+    for (x, y), c in px.items():
+        if c == '1' and (x + y) % 2 == 0: p[x, y] = shade(acc, 1.2)
+    rv = {'pickaxe': (10, 5), 'axe': (10, 5), 'hoe': (10, 5), 'shovel': (10, 5)}[kind]
+    p[rv] = shade(acc, 1.35)
     return im
 for n, (disp, col, acc, ingot) in TOOLSETS.items():
     for t in ('pickaxe', 'axe', 'shovel', 'hoe'):
-        save(tool_icon(t, col, acc), A + f'textures/item/{n}_{t}.png')
+        save(tool_icon(t, col, acc, HANDLE[n][1]), A + f'textures/item/{n}_{t}.png')
         w(A + f'models/item/{n}_{t}.json', {"parent": "minecraft:item/handheld", "textures": {"layer0": f"ctccore:item/{n}_{t}"}})
+        shaped(f'{n}_{t}', TOOLSHAPE[t], {"X": ingot, "S": HANDLE[n][0]}, f'ctccore:{n}_{t}', cat="equipment")
 print('tools ok')

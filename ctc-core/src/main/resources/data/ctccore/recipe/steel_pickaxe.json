@@ -11,7 +11,7 @@
       "item": "createnuclear:steel_ingot"
     },
     "S": {
-      "tag": "c:rods/wooden"
+      "item": "createaddition:iron_rod"
     }
   },
   "result": {

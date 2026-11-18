@@ -11,7 +11,7 @@
       "item": "ctc:voidsteel_ingot"
     },
     "S": {
-      "tag": "c:rods/wooden"
+      "item": "minecraft:end_rod"
     }
   },
   "result": {
