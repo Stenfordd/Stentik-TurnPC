@@ -2,14 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "................",
-    ".....AAA........",
-    "....ABBBA.......",
-    "...ABBBCCD.DD...",
-    "...ABBCCCDDD....",
-    "...ABBCCDD......",
-    "....ACCD........",
-    ".....DD........."
+    "XX",
+    "XS",
+    " S"
   ],
   "key": {
     "X": {

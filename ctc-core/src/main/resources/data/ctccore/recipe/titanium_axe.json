@@ -1,19 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
   "category": "equipment",
   "pattern": [
-    "................",
-    ".....AAA........",
-    "....ABBBA.......",
-    "...ABBBCCD.DD...",
-    "...ABBCCCDDD....",
-    "...ABBCCDD......",
-    "....ACCD........",
-    ".....DD........."
+    "XB",
+    "XP",
+    " S",
+    " S"
   ],
   "key": {
     "X": {
       "tag": "c:ingots/titanium"
+    },
+    "B": {
+      "item": "create:brass_block"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
     },
     "S": {
       "item": "createaddition:brass_rod"

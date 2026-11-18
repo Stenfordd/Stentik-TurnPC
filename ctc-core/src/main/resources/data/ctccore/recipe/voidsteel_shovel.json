@@ -1,18 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "pattern": [
-    "X",
-    "S",
-    "S"
-  ],
-  "key": {
-    "X": {
-      "item": "ctc:voidsteel_ingot"
-    },
-    "S": {
-      "item": "minecraft:end_rod"
-    }
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "ctccore:voidforge_template"
+  },
+  "base": {
+    "item": "ctccore:tungsten_shovel"
+  },
+  "addition": {
+    "item": "ctc:voidsteel_ingot"
   },
   "result": {
     "id": "ctccore:voidsteel_shovel",

@@ -1,14 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
   "category": "equipment",
   "pattern": [
-    "XXX",
-    " S ",
-    " S "
+    "XXBXX",
+    "  P  ",
+    "  S  ",
+    "  S  "
   ],
   "key": {
     "X": {
       "item": "northstar:tungsten_ingot"
+    },
+    "B": {
+      "item": "minecraft:gold_block"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
     },
     "S": {
       "item": "createaddition:electrum_rod"

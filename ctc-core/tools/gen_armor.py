@@ -164,12 +164,21 @@ for n, (disp, col, acc, ingot) in TOOLSETS.items():
     for t in ('pickaxe', 'axe', 'shovel', 'hoe'):
         lang[f"item.ctccore.{n}_{t}"] = f"{disp} {t.capitalize()}"
 json.dump(lang, open(lp, 'w'), indent=2, ensure_ascii=False)
-TOOLSHAPE = {'pickaxe': ["XXX", " S ", " S "], 'axe': ["................", ".....AAA........", "....ABBBA.......", "...ABBBCCD.DD...", "...ABBCCCDDD....", "...ABBCCDD......",
-         "....ACCD........", ".....DD........."],
- 'shovel': ["X", "S", "S"], 'hoe': ["XX", " S", " S"]}
+TOOLSHAPE = {'pickaxe': ["XXX", " S ", " S "], 'axe': ["XX", "XS", " S"], 'shovel': ["X", "S", "S"], 'hoe': ["XX", " S", " S"]}
+# late metals go through a Create Mechanical Crafter: block core + precision mechanism + metal rod
+MECH = {'pickaxe': ["XXBXX", "  P  ", "  S  ", "  S  "], 'axe': ["XB", "XP", " S", " S"], 'shovel': ["B", "P", "S", "S"], 'hoe': ["XB", " P", " S", " S"]}
+CORE = {'titanium': ("create:brass_block", "createaddition:brass_rod"), 'tungsten': ("minecraft:gold_block", "createaddition:electrum_rod")}
 for n, (disp, col, acc, ingot) in TOOLSETS.items():
-    for t, pat in TOOLSHAPE.items():
-        shaped(f'{n}_{t}', pat, {"X": ingot, "S": "#c:rods/wooden"}, f'ctccore:{n}_{t}', cat="equipment")
+    for t in TOOLSHAPE:
+        if n == 'steel':
+            shaped(f'{n}_{t}', TOOLSHAPE[t], {"X": ingot, "S": "createaddition:iron_rod"}, f'ctccore:{n}_{t}', cat="equipment")
+        elif n in CORE:
+            pat = MECH[t]; key = {"X": ingot, "B": CORE[n][0], "P": "create:precision_mechanism", "S": CORE[n][1]}
+            rec(f'{n}_{t}', {"type": "create:mechanical_crafting", "accept_mirrored": True, "category": "equipment", "pattern": pat,
+                             "key": {k: ing(v) for k, v in key.items() if any(k in r for r in pat)}, "result": {"id": f'ctccore:{n}_{t}', "count": 1}})
+        else:   # voidsteel: Smithing Table upgrade of the tungsten tool
+            rec(f'{n}_{t}', {"type": "minecraft:smithing_transform", "template": {"item": "ctccore:voidforge_template"},
+                             "base": {"item": f'ctccore:tungsten_{t}'}, "addition": ing(ingot), "result": {"id": f'ctccore:{n}_{t}', "count": 1}})
 shaped('quarry_chip', [" P ", "IRI", " P "], {"P": "create:precision_mechanism", "I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, 'ctccore:quarry_chip')
 TT = {'pickaxe': 'pickaxes', 'axe': 'axes', 'shovel': 'shovels', 'hoe': 'hoes'}
 for t, tag in TT.items():
@@ -180,72 +189,11 @@ for tag in ('enchantable/mining', 'enchantable/mining_loot', 'enchantable/durabi
     p = D + f'minecraft/tags/item/{tag}.json'
     old = json.load(open(p))['values'] if os.path.exists(p) else []
     w(p, {"values": old + [v for v in vals if v not in old]})
-# icons: hand-drawn 16x16 heads (vanilla layout), 5-tone shading, tinted outline, gem, grip wrap, metal motifs
-import math
-HANDLE = {'steel': ("createaddition:iron_rod", (176, 180, 188)), 'titanium': ("createaddition:brass_rod", (222, 170, 72)),
-          'tungsten': ("createaddition:electrum_rod", (236, 214, 120)), 'voidsteel': ("minecraft:end_rod", (236, 228, 250))}
-STYLE = {   # head colour, edge colour, gem, wrap
-    'steel': ((132, 140, 152), (214, 220, 228), (90, 200, 255), (70, 52, 40)),
-    'titanium': ((168, 184, 204), (150, 236, 255), (60, 220, 255), (40, 70, 110)),
-    'tungsten': ((72, 76, 92), (240, 196, 92), (255, 140, 40), (110, 30, 30)),
-    'voidsteel': ((70, 40, 120), (214, 170, 255), (255, 120, 255), (30, 18, 50)),
-}
-PICK_TOP = ["................", ".....AAAAAAA....", "...ABBBBBBBBB...", "..BCCCCCCCCDD...", "...DD..........."]
-HEADS = {
- 'axe': ["................", ".......AAB......", "......ABBBC.....", ".....ABBBCCD....", ".....BBBCCD.....", ".....BBCCD......",
-         "......CDD.......", ".......D........"],
- 'shovel': ["................", "...........BA...", "..........BBBA..", ".........CBBBBA.", ".........CCBBB..", "..........CCB...",
-            "...........C...."],
- 'hoe': ["................", ".....ABBBBBB....", ".....BCCCCCCD...", ".....CD.........", ".....D.........."],
-}
-def head_pixels(kind):
-    px = {}
-    if kind == 'pickaxe':
-        for y, row in enumerate(PICK_TOP):
-            for x, c in enumerate(row):
-                if c != '.':
-                    px[(x, y)] = c
-                    mx, my = 15 - y, 15 - x                # mirror across the anti-diagonal: the right arm
-                    px.setdefault((mx, my), c)
-    else:
-        for y, row in enumerate(HEADS[kind]):
-            for x, c in enumerate(row):
-                if c != '.': px[(x, y)] = c
-    return px
-def tool_icon(kind, metal):
-    col, edge, gem, wrap = STYLE[metal]; hcol = HANDLE[metal][1]
-    head = head_pixels(kind)
-    end = {'pickaxe': 11, 'axe': 10, 'shovel': 9, 'hoe': 11}[kind]
-    handle = [(1 + k, 14 - k) for k in range(end)]          # bottom-left up to the head
-    im = Image.new('RGBA', (16, 16), (0, 0, 0, 0)); p = im.load()
-    filled = set(head) | set(handle)
-    outline_m = shade(col, 0.38); outline_h = shade(hcol, 0.32)
-    for (x, y) in filled:
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            q = (x + dx, y + dy)
-            if q not in filled and 0 <= q[0] < 16 and 0 <= q[1] < 16:
-                p[q] = outline_m if (x, y) in head else outline_h
-    for k, (x, y) in enumerate(handle):
-        if 1 <= k <= 3: p[x, y] = wrap if k % 2 else shade(wrap, 1.5)          # leather/grip wrap at the bottom
-        else: p[x, y] = shade(hcol, 1.15 if k % 2 else 0.85)
-    tone = {'A': 1.0, 'B': 1.3, 'C': 1.0, 'D': 0.68}
-    for (x, y), c in head.items():
-        p[x, y] = edge if c == 'A' else shade(col, tone[c])
-    jx, jy = handle[-1]                                     # gem where head meets handle
-    p[jx, jy] = gem; p[jx - 1, jy + 1] = shade(gem, 0.7)
-    if metal == 'steel':                                    # rivets
-        for (x, y), c in list(head.items())[::7]:
-            if c in 'BC': p[x, y] = (226, 230, 236, 255)
-    if metal == 'voidsteel':                                # glowing cracks
-        for (x, y), c in list(head.items())[3::6]:
-            if c in 'CD': p[x, y] = (230, 120, 255, 255)
-    if metal == 'tungsten':                                 # gold trim also on the dark edge
-        for (x, y), c in head.items():
-            if c == 'D' and (x + y) % 2: p[x, y] = shade(edge, 0.8)
-    return im
-for n, (disp, col, acc, ingot) in TOOLSETS.items():
-    for t in ('pickaxe', 'axe', 'shovel', 'hoe'):
-        save(tool_icon(t, n), A + f'textures/item/{n}_{t}.png')
+# icons: 48x48 art (AI concept by David via Gemini, cleaned up to a pixel grid) in tools/art
+import shutil
+for n in TOOLSETS:
+    for t in TT:
+        os.makedirs(A + 'textures/item', exist_ok=True)
+        shutil.copy(f'tools/art/{n}_{t}.png', A + f'textures/item/{n}_{t}.png')
         w(A + f'models/item/{n}_{t}.json', {"parent": "minecraft:item/handheld", "textures": {"layer0": f"ctccore:item/{n}_{t}"}})
-        shaped(f'{n}_{t}', TOOLSHAPE[t], {"X": ingot, "S": HANDLE[n][0]}, f'ctccore:{n}_{t}', cat="equipment")
 print('tools ok')
