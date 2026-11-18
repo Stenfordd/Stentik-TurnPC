@@ -15,7 +15,8 @@ CH = {'lunar': ('Lunar', (159, 196, 255)), 'martian': ('Martian', (232, 104, 60)
       'leviathan': ('Leviathan', (60, 200, 216)), 'remnant': ('Remnant', (216, 194, 122)), 'maledictus': ('Maledictus', (158, 230, 255)),
       'guardian': ('Guardian', (199, 125, 255)), 'ember': ('Ember', (255, 106, 43)), 'terra': ('Terra', (127, 211, 107)),
       'copper': ('Copper', (224, 123, 74)), 'iron': ('Iron', (216, 220, 228)), 'kinetic': ('Kinetic', (111, 227, 201)),
-      'lumber': ('Lumber', (184, 138, 78)), 'vein': ('Vein', (154, 167, 184)), 'harvest': ('Harvest', (232, 200, 74))}
+      'lumber': ('Lumber', (184, 138, 78)), 'vein': ('Vein', (154, 167, 184)), 'harvest': ('Harvest', (232, 200, 74)),
+      'gravity': ('Gravity', (184, 200, 240)), 'dust': ('Dust', (210, 105, 60)), 'acid': ('Acid', (155, 224, 74)), 'flare': ('Flare', (255, 178, 58))}
 BOSS = ('harbinger', 'ignis', 'leviathan', 'remnant', 'maledictus', 'guardian')
 FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less fall damage', 'Night Vision while held'),
       'martian': ('Sets the target on fire, +10% damage', 'Attackers catch fire', 'Haste II (a red-hot tool)'),
@@ -34,7 +35,11 @@ FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less
       'kinetic': ('Knocks the target back', 'Jump again in mid-air to dash forward (4 s), soft landing', 'Haste I'),
       'lumber': ('Axe only: fells the whole tree (sneak = one log)', '-', '-'),
       'vein': ('-', '-', 'Pickaxe only: mines the whole ore vein (sneak = one block)'),
-      'harvest': ('-', '-', 'Hoe only: ripe crops drop more (farming fortune)')}
+      'harvest': ('-', '-', 'Hoe only: ripe crops drop more (farming fortune)'),
+      'gravity': ('Throws the target into the air', 'Jump Boost III', 'Haste II'),
+      'dust': ('Blinds the target', 'Fire Resistance', 'Speed I'),
+      'acid': ('Poison II', 'Attackers are poisoned', 'Haste I'),
+      'flare': ('Sets on fire and makes the target glow', 'Regeneration in daylight', 'Night Vision')}
 
 # ---------------- lang ----------------
 lang = {"itemGroup.ctccore": "CtC Core", "block.ctccore.research_station": "Research Station", "block.ctccore.research_casing": "Research Casing",
@@ -291,3 +296,4 @@ print('ponder schematic', len(blocks), 'blocks')
 exec(open('tools/gen_materials.py').read())
 exec(open('tools/gen_armor.py').read())
 exec(open('tools/gen_where.py').read())
+exec(open('tools/gen_outposts.py').read())

@@ -27,7 +27,12 @@ public enum ChipType {
     KINETIC("kinetic", 0x6FE3C9, "create:andesite_alloy", false),
     LUMBER("lumber", 0xB88A4E, "minecraft:oak_log", false),
     VEIN("vein", 0x9AA7B8, "create:zinc_ingot", false),
-    HARVEST("harvest", 0xE8C84A, "minecraft:wheat", false);
+    HARVEST("harvest", 0xE8C84A, "minecraft:wheat", false),
+    // only from the planet minibosses in their outposts
+    GRAVITY("gravity", 0xB8C8F0, "ctccore:selenite", false),
+    DUST("dust", 0xD2693C, "ctccore:raw_rubrium", false),
+    ACID("acid", 0x9BE04A, "ctccore:sulfurite", false),
+    FLARE("flare", 0xFFB23A, "ctccore:solarite", false);
 
     /** Basic chips need no Research Station: a Smithing Table with redstone implants them. */
     public boolean basic() {

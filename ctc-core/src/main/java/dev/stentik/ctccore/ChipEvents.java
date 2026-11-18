@@ -81,6 +81,10 @@ public class ChipEvents {
                         case COPPER -> amount += 1.0f;
                         case IRON -> amount *= 1.10f;
                         case KINETIC -> target.knockback(1.2, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+                        case GRAVITY -> { target.setDeltaMovement(target.getDeltaMovement().add(0, 0.7, 0)); target.hurtMarked = true; }
+                        case DUST -> effect(target, MobEffects.BLINDNESS, 50, 0);
+                        case ACID -> effect(target, MobEffects.POISON, 80, 1);
+                        case FLARE -> { target.igniteForSeconds(5); effect(target, MobEffects.GLOWING, 100, 0); }
                     }
                 }
             }
@@ -109,6 +113,7 @@ public class ChipEvents {
                 if (armor.contains(ChipType.MARTIAN) || armor.contains(ChipType.IGNIS) || armor.contains(ChipType.EMBER)) attacker.igniteForSeconds(4);
                 if (armor.contains(ChipType.HARBINGER)) effect(attacker, MobEffects.WITHER, 60, 0);
                 if (armor.contains(ChipType.MALEDICTUS)) freeze(attacker);
+                if (armor.contains(ChipType.ACID)) effect(attacker, MobEffects.POISON, 60, 0);
             }
         }
         event.setAmount(amount);
@@ -125,6 +130,10 @@ public class ChipEvents {
         if (armor.contains(ChipType.LEVIATHAN)) { effect(player, MobEffects.WATER_BREATHING, 100, 0); effect(player, MobEffects.DOLPHINS_GRACE, 100, 0); }
         if (armor.contains(ChipType.REMNANT)) effect(player, MobEffects.REGENERATION, 100, 0);
         if (armor.contains(ChipType.COPPER)) effect(player, MobEffects.MOVEMENT_SPEED, 100, 0);
+        if (armor.contains(ChipType.GRAVITY)) effect(player, MobEffects.JUMP, 100, 2);
+        if (armor.contains(ChipType.DUST)) effect(player, MobEffects.FIRE_RESISTANCE, 100, 0);
+        if (armor.contains(ChipType.FLARE) && player.level().isDay() && player.level().canSeeSky(player.blockPosition()))
+            effect(player, MobEffects.REGENERATION, 100, 0);
         Armors.setBonus(player);
 
         ItemStack held = player.getMainHandItem();
@@ -140,7 +149,10 @@ public class ChipEvents {
                 case EMBER -> haste = Math.max(haste, 0);
                 case TERRA -> effect(player, MobEffects.LUCK, 100, 0);
                 case COPPER -> effect(player, MobEffects.MOVEMENT_SPEED, 100, 0);
-                case IRON, KINETIC -> haste = Math.max(haste, 0);
+                case IRON, KINETIC, ACID -> haste = Math.max(haste, 0);
+                case GRAVITY -> haste = Math.max(haste, 1);
+                case DUST -> effect(player, MobEffects.MOVEMENT_SPEED, 100, 0);
+                case FLARE -> effect(player, MobEffects.NIGHT_VISION, 320, 0);
                 case LEVIATHAN -> effect(player, MobEffects.CONDUIT_POWER, 100, 0);
                 case REMNANT -> { if (held.isDamaged()) held.setDamageValue(held.getDamageValue() - 1); }
             }
@@ -152,6 +164,7 @@ public class ChipEvents {
     public static void drops(LivingDropsEvent event) {
         LivingEntity entity = event.getEntity();
         ChipType chip = BOSS_CHIPS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
+        if (chip == null) chip = Outposts.chipOf(entity);
         if (chip == null) return;
         event.getDrops().add(new ItemEntity(entity.level(), entity.getX(), entity.getY() + 0.5, entity.getZ(),
                 new ItemStack(CtcCore.CHIP_ITEMS.get(chip).get())));
