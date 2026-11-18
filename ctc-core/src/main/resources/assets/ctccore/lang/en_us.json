@@ -171,5 +171,9 @@
   "item.ctccore.voidsteel_boots": "Voidsteel Boots",
   "ctccore.armor.voidsteel.bonus": "No fall damage",
   "ctccore.armor.martian.bonus": "Fire Resistance",
-  "item.ctccore.voidforge_template": "Voidforge Template"
+  "item.ctccore.voidforge_template": "Voidforge Template",
+  "filled_map.ctccore.ancient_factory": "Expedition Map: Ancient Factory",
+  "filled_map.ctccore.cursed_pyramid": "Expedition Map: Cursed Pyramid",
+  "filled_map.ctccore.frosted_prison": "Expedition Map: Frosted Prison",
+  "filled_map.ctccore.sunken_city": "Expedition Map: Sunken City"
 }

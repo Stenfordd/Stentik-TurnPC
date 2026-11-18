@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "entries": [
+    "ctccore:extra_early",
+    "ctccore:extra_late"
+  ]
+}

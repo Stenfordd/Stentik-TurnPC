@@ -28,15 +28,17 @@ ore(["ctc:voidsteel_ore", "ctc:raw_voidsteel"], "end", "Outer End islands only (
     "Does not smelt: melt it in a superheated mixer (Ponder)")
 # ---------- Space ----------
 ore(["ctccore:selenite_ore", "ctccore:selenite"], "moon", "Everywhere on the Moon", -64, 160, None, D, "For the Chip Socket")
-ore(["northstar:moon_titanium_ore", "northstar:moon_deep_titanium_ore", "northstar:raw_titanium_ore"], "moon", "Everywhere on the Moon", -64, 48, -8, D)
 ore(["northstar:lunar_sapphire_shard"], "moon", "Geodes deep under the Moon", -58, 5, None, D)
 ore(["ctccore:rubrium_ore", "ctccore:raw_rubrium"], "mars", "Everywhere on Mars", -64, 160, None, D, "Smelt into Rubrium Ingots, for AE2")
-ore(["northstar:mars_titanium_ore", "northstar:mars_deep_titanium_ore", "northstar:raw_titanium_ore"], "mars", "Everywhere on Mars", -64, 36, -64, D)
 ore(["ctccore:sulfurite_ore", "ctccore:sulfurite"], "venus", "Everywhere on Venus", -64, 160, None, D, "For the AE2 Inscriber")
-ore(["northstar:venus_titanium_ore", "northstar:venus_deep_titanium_ore", "northstar:raw_titanium_ore"], "venus", "Everywhere on Venus", -63, 60, None, D, "Lots of titanium")
 ore(["ctccore:solarite_ore", "ctccore:solarite"], "mercury", "Everywhere on Mercury", -64, 160, None, D, "For the Chip Socket")
-ore(["northstar:mercury_tungsten_ore", "northstar:mercury_deep_tungsten_ore", "northstar:raw_tungsten_ore"], "mercury", "Only on Mercury, deep down", -64, 46, -40, D,
-    "The only tungsten in the game")
+# ---------- everything else on the planets, read out of the Northstar jar (tools/extract_ores.py) ----------
+NAMES = {'moon': 'the Moon', 'mars': 'Mars', 'venus': 'Venus', 'mercury': 'Mercury'}
+NOTES = {'northstar:raw_tungsten_ore': 'The only tungsten in the game', 'northstar:raw_titanium_ore': 'Titanium: rockets, plates, tier 4 machines'}
+for a in json.load(open('tools/where_auto.json')):
+    hard = any(k in a['items'][-1] for k in ('titanium', 'tungsten', 'diamond'))
+    ore(a['items'], a['planet'], 'Everywhere on ' + NAMES[a['planet']], a['ymin'], a['ymax'], a['best'], D if hard else I, NOTES.get(a['items'][-1]))
+
 # ---------- Deposits (Create Ore Excavation) ----------
 ADV = "Drilling Machine with a diamond or netherite drill"
 NRM = "Drilling Machine with any drill"

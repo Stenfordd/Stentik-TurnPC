@@ -1,0 +1,398 @@
+[
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_zinc_ore",
+   "northstar:mars_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "ymin": -63,
+  "ymax": 70,
+  "best": null
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_diamond_ore",
+   "northstar:mars_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_quartz_ore",
+   "northstar:mars_quartz_ore",
+   "minecraft:quartz"
+  ],
+  "ymin": -50,
+  "ymax": 50,
+  "best": null
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_copper_ore",
+   "northstar:mars_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_gold_ore",
+   "northstar:mars_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_redstone_ore",
+   "northstar:mars_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "ymin": -64,
+  "ymax": 24,
+  "best": null
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_iron_ore",
+   "northstar:mars_iron_ore",
+   "northstar:raw_martian_iron_ore"
+  ],
+  "ymin": -64,
+  "ymax": 320,
+  "best": null
+ },
+ {
+  "planet": "mars",
+  "items": [
+   "northstar:mars_deep_titanium_ore",
+   "northstar:mars_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "ymin": -64,
+  "ymax": 36,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_zinc_ore",
+   "northstar:mercury_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "ymin": -63,
+  "ymax": 70,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_diamond_ore",
+   "northstar:mercury_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_lapis_ore",
+   "northstar:mercury_lapis_ore",
+   "minecraft:lapis_lazuli"
+  ],
+  "ymin": -50,
+  "ymax": 40,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_copper_ore",
+   "northstar:mercury_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_gold_ore",
+   "northstar:mercury_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_iron_ore",
+   "northstar:mercury_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "ymin": -64,
+  "ymax": 72,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_redstone_ore",
+   "northstar:mercury_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "ymin": -64,
+  "ymax": 24,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_glowstone_ore",
+   "northstar:mercury_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "ymin": 0,
+  "ymax": 40,
+  "best": 20
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_titanium_ore",
+   "northstar:mercury_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "ymin": -10,
+  "ymax": 10,
+  "best": null
+ },
+ {
+  "planet": "mercury",
+  "items": [
+   "northstar:mercury_deep_tungsten_ore",
+   "northstar:mercury_tungsten_ore",
+   "northstar:raw_tungsten_ore"
+  ],
+  "ymin": -64,
+  "ymax": 46,
+  "best": -64
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_zinc_ore",
+   "northstar:moon_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_diamond_ore",
+   "northstar:moon_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "ymin": -64,
+  "ymax": 16,
+  "best": -24
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_lapis_ore",
+   "northstar:moon_lapis_ore",
+   "minecraft:lapis_lazuli"
+  ],
+  "ymin": -50,
+  "ymax": -14,
+  "best": null
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_copper_ore",
+   "northstar:moon_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_gold_ore",
+   "northstar:moon_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_iron_ore",
+   "northstar:moon_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "ymin": -64,
+  "ymax": 72,
+  "best": 16
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_redstone_ore",
+   "northstar:moon_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "ymin": -64,
+  "ymax": 0,
+  "best": null
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_glowstone_ore",
+   "northstar:moon_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "ymin": -28,
+  "ymax": 112,
+  "best": 42
+ },
+ {
+  "planet": "moon",
+  "items": [
+   "northstar:moon_deep_titanium_ore",
+   "northstar:moon_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_zinc_ore",
+   "northstar:venus_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "ymin": -63,
+  "ymax": 70,
+  "best": null
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_diamond_ore",
+   "northstar:venus_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_quartz_ore",
+   "northstar:venus_quartz_ore",
+   "minecraft:quartz"
+  ],
+  "ymin": -64,
+  "ymax": 72,
+  "best": null
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_copper_ore",
+   "northstar:venus_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_gold_ore",
+   "northstar:venus_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_iron_ore",
+   "northstar:venus_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "ymin": -64,
+  "ymax": 72,
+  "best": null
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_redstone_ore",
+   "northstar:venus_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "ymin": -64,
+  "ymax": 15,
+  "best": null
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_glowstone_ore",
+   "northstar:venus_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "ymin": 10,
+  "ymax": 60,
+  "best": 35
+ },
+ {
+  "planet": "venus",
+  "items": [
+   "northstar:venus_deep_titanium_ore",
+   "northstar:venus_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "ymin": -63,
+  "ymax": 60,
+  "best": null
+ }
+]

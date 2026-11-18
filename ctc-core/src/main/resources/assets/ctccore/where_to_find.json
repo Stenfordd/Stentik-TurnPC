@@ -265,21 +265,6 @@
  },
  {
   "items": [
-   "northstar:moon_titanium_ore",
-   "northstar:moon_deep_titanium_ore",
-   "northstar:raw_titanium_ore"
-  ],
-  "place": "moon",
-  "where": "Everywhere on the Moon",
-  "ymin": -64,
-  "ymax": 48,
-  "best": -8,
-  "how": "Diamond pickaxe",
-  "note": null,
-  "deposit": false
- },
- {
-  "items": [
    "northstar:lunar_sapphire_shard"
   ],
   "place": "moon",
@@ -307,21 +292,6 @@
  },
  {
   "items": [
-   "northstar:mars_titanium_ore",
-   "northstar:mars_deep_titanium_ore",
-   "northstar:raw_titanium_ore"
-  ],
-  "place": "mars",
-  "where": "Everywhere on Mars",
-  "ymin": -64,
-  "ymax": 36,
-  "best": -64,
-  "how": "Diamond pickaxe",
-  "note": null,
-  "deposit": false
- },
- {
-  "items": [
    "ctccore:sulfurite_ore",
    "ctccore:sulfurite"
   ],
@@ -332,21 +302,6 @@
   "best": null,
   "how": "Diamond pickaxe",
   "note": "For the AE2 Inscriber",
-  "deposit": false
- },
- {
-  "items": [
-   "northstar:venus_titanium_ore",
-   "northstar:venus_deep_titanium_ore",
-   "northstar:raw_titanium_ore"
-  ],
-  "place": "venus",
-  "where": "Everywhere on Venus",
-  "ymin": -63,
-  "ymax": 60,
-  "best": null,
-  "how": "Diamond pickaxe",
-  "note": "Lots of titanium",
   "deposit": false
  },
  {
@@ -365,17 +320,542 @@
  },
  {
   "items": [
-   "northstar:mercury_tungsten_ore",
+   "northstar:mars_deep_zinc_ore",
+   "northstar:mars_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -63,
+  "ymax": 70,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_diamond_ore",
+   "northstar:mars_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_quartz_ore",
+   "northstar:mars_quartz_ore",
+   "minecraft:quartz"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -50,
+  "ymax": 50,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_copper_ore",
+   "northstar:mars_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_gold_ore",
+   "northstar:mars_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_redstone_ore",
+   "northstar:mars_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 24,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_iron_ore",
+   "northstar:mars_iron_ore",
+   "northstar:raw_martian_iron_ore"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 320,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mars_deep_titanium_ore",
+   "northstar:mars_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "mars",
+  "where": "Everywhere on Mars",
+  "ymin": -64,
+  "ymax": 36,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Titanium: rockets, plates, tier 4 machines",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_zinc_ore",
+   "northstar:mercury_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -63,
+  "ymax": 70,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_diamond_ore",
+   "northstar:mercury_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_lapis_ore",
+   "northstar:mercury_lapis_ore",
+   "minecraft:lapis_lazuli"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -50,
+  "ymax": 40,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_copper_ore",
+   "northstar:mercury_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_gold_ore",
+   "northstar:mercury_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_iron_ore",
+   "northstar:mercury_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -64,
+  "ymax": 72,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_redstone_ore",
+   "northstar:mercury_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -64,
+  "ymax": 24,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_glowstone_ore",
+   "northstar:mercury_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": 0,
+  "ymax": 40,
+  "best": 20,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:mercury_deep_titanium_ore",
+   "northstar:mercury_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "mercury",
+  "where": "Everywhere on Mercury",
+  "ymin": -10,
+  "ymax": 10,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Titanium: rockets, plates, tier 4 machines",
+  "deposit": false
+ },
+ {
+  "items": [
    "northstar:mercury_deep_tungsten_ore",
+   "northstar:mercury_tungsten_ore",
    "northstar:raw_tungsten_ore"
   ],
   "place": "mercury",
-  "where": "Only on Mercury, deep down",
+  "where": "Everywhere on Mercury",
   "ymin": -64,
   "ymax": 46,
-  "best": -40,
+  "best": -64,
   "how": "Diamond pickaxe",
   "note": "The only tungsten in the game",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_zinc_ore",
+   "northstar:moon_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_diamond_ore",
+   "northstar:moon_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 16,
+  "best": -24,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_lapis_ore",
+   "northstar:moon_lapis_ore",
+   "minecraft:lapis_lazuli"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -50,
+  "ymax": -14,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_copper_ore",
+   "northstar:moon_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_gold_ore",
+   "northstar:moon_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_iron_ore",
+   "northstar:moon_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 72,
+  "best": 16,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_redstone_ore",
+   "northstar:moon_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 0,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_glowstone_ore",
+   "northstar:moon_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -28,
+  "ymax": 112,
+  "best": 42,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:moon_deep_titanium_ore",
+   "northstar:moon_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "moon",
+  "where": "Everywhere on the Moon",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Diamond pickaxe",
+  "note": "Titanium: rockets, plates, tier 4 machines",
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_zinc_ore",
+   "northstar:venus_zinc_ore",
+   "create:raw_zinc"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -63,
+  "ymax": 70,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_diamond_ore",
+   "northstar:venus_diamond_ore",
+   "minecraft:diamond"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 16,
+  "best": -64,
+  "how": "Diamond pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_quartz_ore",
+   "northstar:venus_quartz_ore",
+   "minecraft:quartz"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 72,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_copper_ore",
+   "northstar:venus_deep_copper_ore",
+   "minecraft:raw_copper"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -16,
+  "ymax": 112,
+  "best": 48,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_gold_ore",
+   "northstar:venus_gold_ore",
+   "minecraft:raw_gold"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 48,
+  "best": -8,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_iron_ore",
+   "northstar:venus_iron_ore",
+   "minecraft:raw_iron"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 72,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_redstone_ore",
+   "northstar:venus_redstone_ore",
+   "minecraft:redstone"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -64,
+  "ymax": 15,
+  "best": null,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_glowstone_ore",
+   "northstar:venus_glowstone_ore",
+   "northstar:raw_glowstone_ore"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": 10,
+  "ymax": 60,
+  "best": 35,
+  "how": "Iron pickaxe",
+  "note": null,
+  "deposit": false
+ },
+ {
+  "items": [
+   "northstar:venus_deep_titanium_ore",
+   "northstar:venus_titanium_ore",
+   "northstar:raw_titanium_ore"
+  ],
+  "place": "venus",
+  "where": "Everywhere on Venus",
+  "ymin": -63,
+  "ymax": 60,
+  "best": null,
+  "how": "Diamond pickaxe",
+  "note": "Titanium: rockets, plates, tier 4 machines",
   "deposit": false
  },
  {
