@@ -15,6 +15,22 @@
     "ctccore:voidsteel_helmet",
     "ctccore:voidsteel_chestplate",
     "ctccore:voidsteel_leggings",
-    "ctccore:voidsteel_boots"
+    "ctccore:voidsteel_boots",
+    "ctccore:steel_pickaxe",
+    "ctccore:steel_axe",
+    "ctccore:steel_shovel",
+    "ctccore:steel_hoe",
+    "ctccore:titanium_pickaxe",
+    "ctccore:titanium_axe",
+    "ctccore:titanium_shovel",
+    "ctccore:titanium_hoe",
+    "ctccore:tungsten_pickaxe",
+    "ctccore:tungsten_axe",
+    "ctccore:tungsten_shovel",
+    "ctccore:tungsten_hoe",
+    "ctccore:voidsteel_pickaxe",
+    "ctccore:voidsteel_axe",
+    "ctccore:voidsteel_shovel",
+    "ctccore:voidsteel_hoe"
   ]
 }

@@ -37,6 +37,11 @@ public class ClientSetup {
             if (gear == Gear.NONE) return;
             List<Component> lines = event.getToolTip();
             Voidforge.tooltip(event.getItemStack(), lines);
+            boolean gathering = false;
+            for (ChipType t : ChipType.of(event.getItemStack())) if (t.gathering()) gathering = true;
+            if (gathering) lines.add(GatherEvents.off(event.getItemStack())
+                    ? Component.translatable("ctccore.chips.off").withStyle(ChatFormatting.RED)
+                    : Component.translatable("ctccore.chips.on").withStyle(ChatFormatting.DARK_GRAY));
             String bonus = Armors.bonusKey(event.getItemStack());
             if (bonus != null) lines.add(Component.translatable("ctccore.armor.set", Component.translatable(bonus)).withStyle(ChatFormatting.GOLD));
             lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(event.getItemStack())).withStyle(ChatFormatting.GRAY));

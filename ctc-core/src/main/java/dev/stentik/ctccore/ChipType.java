@@ -28,6 +28,7 @@ public enum ChipType {
     LUMBER("lumber", 0xB88A4E, "minecraft:oak_log", false),
     VEIN("vein", 0x9AA7B8, "create:zinc_ingot", false),
     HARVEST("harvest", 0xE8C84A, "minecraft:wheat", false),
+    QUARRY("quarry", 0xC9A35A, "create:precision_mechanism", false),
     // only from the planet minibosses in their outposts
     GRAVITY("gravity", 0xB8C8F0, "ctccore:selenite", false),
     DUST("dust", 0xD2693C, "ctccore:raw_rubrium", false),
@@ -37,15 +38,21 @@ public enum ChipType {
     /** Basic chips need no Research Station: a Smithing Table with redstone implants them. */
     public boolean basic() {
         return this == COPPER || this == IRON || this == EMBER || this == TERRA || this == KINETIC
-                || this == LUMBER || this == VEIN || this == HARVEST;
+                || this == LUMBER || this == VEIN || this == HARVEST || this == QUARRY;
     }
 
     /** Gathering chips only go into their own tool: Lumber into an axe, Vein into a pickaxe, Harvest into a hoe. */
+    /** Chips that change what a tool gathers; these can be switched off. */
+    public boolean gathering() {
+        return this == LUMBER || this == VEIN || this == HARVEST || this == QUARRY;
+    }
+
     public boolean fits(ItemStack gear) {
         return switch (this) {
             case LUMBER -> gear.is(net.minecraft.tags.ItemTags.AXES);
             case VEIN -> gear.is(net.minecraft.tags.ItemTags.PICKAXES);
             case HARVEST -> gear.is(net.minecraft.tags.ItemTags.HOES);
+            case QUARRY -> gear.is(net.minecraft.tags.ItemTags.PICKAXES) || gear.is(net.minecraft.tags.ItemTags.SHOVELS);
             default -> true;
         };
     }

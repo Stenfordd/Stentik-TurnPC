@@ -153,3 +153,64 @@ for (x, y) in ((7, 4), (8, 4), (6, 5), (9, 5), (6, 6), (9, 6), (7, 7), (8, 7), (
 save(im, A + 'textures/item/voidforge_template.png')
 w(A + 'models/item/voidforge_template.json', {"parent": "minecraft:item/generated", "textures": {"layer0": "ctccore:item/voidforge_template"}})
 print('voidforge ok')
+
+# ---------- tools from the tier metals + Quarry Chip ----------
+lang = json.load(open(lp))
+lang["ctccore.chips.off"] = "Gathering chips: OFF (right-click in inventory to switch on)"
+lang["ctccore.chips.on"] = "Right-click in inventory to switch gathering chips off"
+TOOLSETS = {k: v for k, v in SETS.items()}
+TOOLSETS['steel'] = SETS['steel']
+for n, (disp, col, acc, ingot) in TOOLSETS.items():
+    for t in ('pickaxe', 'axe', 'shovel', 'hoe'):
+        lang[f"item.ctccore.{n}_{t}"] = f"{disp} {t.capitalize()}"
+json.dump(lang, open(lp, 'w'), indent=2, ensure_ascii=False)
+TOOLSHAPE = {'pickaxe': ["XXX", " S ", " S "], 'axe': ["XX", "XS", " S"], 'shovel': ["X", "S", "S"], 'hoe': ["XX", " S", " S"]}
+for n, (disp, col, acc, ingot) in TOOLSETS.items():
+    for t, pat in TOOLSHAPE.items():
+        shaped(f'{n}_{t}', pat, {"X": ingot, "S": "#c:rods/wooden"}, f'ctccore:{n}_{t}', cat="equipment")
+shaped('quarry_chip', [" P ", "IRI", " P "], {"P": "create:precision_mechanism", "I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, 'ctccore:quarry_chip')
+TT = {'pickaxe': 'pickaxes', 'axe': 'axes', 'shovel': 'shovels', 'hoe': 'hoes'}
+for t, tag in TT.items():
+    ids = [f'ctccore:{n}_{t}' for n in TOOLSETS]
+    w(D + f'minecraft/tags/item/{tag}.json', {"values": ids})
+for tag in ('enchantable/mining', 'enchantable/mining_loot', 'enchantable/durability', 'enchantable/weapon_sharp'):
+    vals = [f'ctccore:{n}_{t}' for n in TOOLSETS for t in TT if not (tag == 'enchantable/weapon_sharp' and t != 'axe')]
+    p = D + f'minecraft/tags/item/{tag}.json'
+    old = json.load(open(p))['values'] if os.path.exists(p) else []
+    w(p, {"values": old + [v for v in vals if v not in old]})
+# icons: diagonal handle + head, drawn pixel by pixel with a dark outline (vanilla style)
+def tool_icon(kind, col, acc):
+    px = {}
+    for k in range(9):                                   # handle from bottom-left up to the head
+        px[(2 + k, 13 - k)] = 'h'
+    if kind == 'pickaxe':
+        for (x, y) in [(4, 3), (5, 2), (6, 2), (7, 2), (8, 2), (9, 3), (10, 3), (11, 4), (12, 5), (12, 6), (13, 7), (13, 8), (12, 9),
+                       (5, 3), (6, 3), (7, 3), (8, 3), (10, 4), (11, 5), (11, 6), (12, 7), (12, 8), (9, 4), (10, 5)]:
+            px[(x, y)] = 'X'
+    elif kind == 'axe':
+        for y in range(1, 8):
+            for x in range(8, 14):
+                if (x - 8) + (7 - y) >= 2 and not (x <= 9 and y >= 6): px[(x, y)] = 'X'
+    elif kind == 'shovel':
+        for y in range(1, 6):
+            for x in range(10, 15):
+                if (x - 12) ** 2 + (y - 3) ** 2 <= 5: px[(x, y)] = 'X'
+    elif kind == 'hoe':
+        for (x, y) in [(6, 2), (7, 2), (8, 2), (9, 2), (10, 2), (11, 3), (7, 3), (8, 3), (9, 3), (10, 3), (6, 3), (11, 4)]:
+            px[(x, y)] = 'X'
+    im = Image.new('RGBA', (16, 16), (0, 0, 0, 0)); p = im.load()
+    for (x, y), c in px.items():                         # outline
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = (x + dx, y + dy)
+            if q not in px and 0 <= q[0] < 16 and 0 <= q[1] < 16: p[q] = (30, 24, 28, 255)
+    for (x, y), c in px.items():
+        if c == 'h': p[x, y] = (122, 84, 50, 255) if (x + y) % 3 else (90, 60, 36, 255)
+        else: p[x, y] = shade(col, 1.45 - 0.06 * (x + y) / 2) if (x + y) < 15 else shade(col, 0.9)
+    for (x, y), c in px.items():                         # accent edge on the head
+        if c == 'X' and (x + 1, y - 1) not in px: p[x, y] = shade(acc, 1.15)
+    return im
+for n, (disp, col, acc, ingot) in TOOLSETS.items():
+    for t in ('pickaxe', 'axe', 'shovel', 'hoe'):
+        save(tool_icon(t, col, acc), A + f'textures/item/{n}_{t}.png')
+        w(A + f'models/item/{n}_{t}.json', {"parent": "minecraft:item/handheld", "textures": {"layer0": f"ctccore:item/{n}_{t}"}})
+print('tools ok')

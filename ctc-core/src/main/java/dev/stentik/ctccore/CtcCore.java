@@ -81,6 +81,10 @@ public class CtcCore {
     public static final Supplier<DataComponentType<Integer>> SOCKETS = COMPONENTS.register("sockets",
             () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
+    /** Gathering chips (Lumber, Vein, Quarry, Harvest) of this tool switched off: right-click it in the inventory. */
+    public static final Supplier<DataComponentType<Boolean>> CHIPS_OFF = COMPONENTS.register("chips_off",
+            () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
+
     /** Cataclysm armor upgraded with Voidsteel at a Smithing Table. */
     public static final Supplier<DataComponentType<Boolean>> VOIDFORGED = COMPONENTS.register("voidforged",
             () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
@@ -88,6 +92,7 @@ public class CtcCore {
     static {
         Materials.init();
         Armors.init();
+        Tools.init();
     }
 
     public static final Supplier<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()
@@ -101,6 +106,7 @@ public class CtcCore {
                 for (ChipType type : ChipType.values()) out.accept(CHIP_ITEMS.get(type).get());
                 for (var item : Materials.ALL) out.accept(item.get());
                 for (var item : Armors.ALL) out.accept(item.get());
+                for (var item : Tools.ALL) out.accept(item.get());
             }).build());
 
     public CtcCore(IEventBus modBus) {

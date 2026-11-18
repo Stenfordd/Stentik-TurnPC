@@ -16,7 +16,7 @@ CH = {'lunar': ('Lunar', (159, 196, 255)), 'martian': ('Martian', (232, 104, 60)
       'guardian': ('Guardian', (199, 125, 255)), 'ember': ('Ember', (255, 106, 43)), 'terra': ('Terra', (127, 211, 107)),
       'copper': ('Copper', (224, 123, 74)), 'iron': ('Iron', (216, 220, 228)), 'kinetic': ('Kinetic', (111, 227, 201)),
       'lumber': ('Lumber', (184, 138, 78)), 'vein': ('Vein', (154, 167, 184)), 'harvest': ('Harvest', (232, 200, 74)),
-      'gravity': ('Gravity', (184, 200, 240)), 'dust': ('Dust', (210, 105, 60)), 'acid': ('Acid', (155, 224, 74)), 'flare': ('Flare', (255, 178, 58))}
+      'quarry': ('Quarry', (201, 163, 90)), 'gravity': ('Gravity', (184, 200, 240)), 'dust': ('Dust', (210, 105, 60)), 'acid': ('Acid', (155, 224, 74)), 'flare': ('Flare', (255, 178, 58))}
 BOSS = ('harbinger', 'ignis', 'leviathan', 'remnant', 'maledictus', 'guardian')
 FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less fall damage', 'Night Vision while held'),
       'martian': ('Sets the target on fire, +10% damage', 'Attackers catch fire', 'Haste II (a red-hot tool)'),
@@ -36,6 +36,7 @@ FX = {'lunar': ('Launches the target into the air', 'Speed, Jump Boost, 60% less
       'lumber': ('Axe only: fells the whole tree (sneak = one log)', '-', '-'),
       'vein': ('-', '-', 'Pickaxe only: mines the whole ore vein (sneak = one block)'),
       'harvest': ('-', '-', 'Hoe only: ripe crops drop more (farming fortune)'),
+      'quarry': ('-', '-', 'Pickaxe or shovel only: digs 3x3'),
       'gravity': ('Throws the target into the air', 'Jump Boost III', 'Haste II'),
       'dust': ('Blinds the target', 'Fire Resistance', 'Speed I'),
       'acid': ('Poison II', 'Attackers are poisoned', 'Haste I'),
