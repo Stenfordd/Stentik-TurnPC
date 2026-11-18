@@ -37,3 +37,4 @@ lang.update({"filled_map.ctccore.ancient_factory": "Expedition Map: Ancient Fact
              "filled_map.ctccore.frosted_prison": "Expedition Map: Frosted Prison", "filled_map.ctccore.sunken_city": "Expedition Map: Sunken City"})
 json.dump(lang, open(lp, 'w'), indent=2, ensure_ascii=False)
 print('loot ok')
+
