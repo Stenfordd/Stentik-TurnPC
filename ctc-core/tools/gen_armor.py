@@ -134,6 +134,12 @@ for n, (disp, col, acc, ingot) in SETS.items():
                 elif ch in 'vc': p[x, y] = shade(acc, 1.2)
         save(im, A + f'textures/item/{n}_{piece}.png')
         w(A + f'models/item/{n}_{piece}.json', {"parent": "minecraft:item/generated", "textures": {"layer0": f"ctccore:item/{n}_{piece}"}})
+# AI concept art by David (Gemini), converted by tools: 48px icons and 4x worn layers override the procedural ones above
+import shutil
+for n in SETS:
+    for f, dst in [(f'{n}_{p}.png', f'textures/item/{n}_{p}.png') for p in PIECES] + \
+                  [(f'{n}_layer_{k}.png', f'textures/models/armor/{n}_layer_{k}.png') for k in (1, 2)]:
+        if os.path.exists(f'tools/art/armor/{f}'): shutil.copy(f'tools/art/armor/{f}', A + dst)
 print('armor ok')
 
 # ---------- Voidforging ----------
