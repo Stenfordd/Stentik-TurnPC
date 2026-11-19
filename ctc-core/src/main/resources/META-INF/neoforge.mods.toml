@@ -25,3 +25,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "ctccore.mixins.json"
+
+[[mixins]]
+config = "ctccore.creative.mixins.json"

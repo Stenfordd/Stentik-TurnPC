@@ -1,0 +1,8 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "dev.stentik.ctccore.mixin.creative",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["AdvancementsMixin", "QuestTaskMixin", "QuestKillMixin", "QuestDetectMixin", "QuestRewardMixin"],
+  "injectors": { "defaultRequire": 0 }
+}

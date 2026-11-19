@@ -127,7 +127,8 @@ public class CtcCore {
                     Class.forName("net.minecraft.world.inventory.AnvilMenu");
                     var recipes = e.getServer().getRecipeManager();
                     long ours = recipes.getRecipes().stream().filter(r -> r.id().getNamespace().equals(MODID)).count();
-                    org.slf4j.LoggerFactory.getLogger(MODID).info("CTC BOOT OK: {} ctccore recipes", ours);
+                    if (e.getServer().getLevel(CreativeWorld.DIM) == null) throw new IllegalStateException("creative dimension missing");
+                    org.slf4j.LoggerFactory.getLogger(MODID).info("CTC BOOT OK: {} ctccore recipes, creative world loaded", ours);
                 } catch (Throwable t) {
                     org.slf4j.LoggerFactory.getLogger(MODID).error("CTC BOOT FAILED", t);
                 }
