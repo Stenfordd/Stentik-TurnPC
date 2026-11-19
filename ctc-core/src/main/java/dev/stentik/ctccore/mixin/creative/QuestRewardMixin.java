@@ -19,7 +19,7 @@ public abstract class QuestRewardMixin {
             at = @At("HEAD"), cancellable = true, remap = false)
     private void ctccore$noCreative(ServerPlayer player, @Coerce Object reward, boolean notify, CallbackInfo ci) {
         if (CreativeWorld.isIn(player)) {
-            player.sendSystemMessage(Component.literal("§cOdměny si vyzvedni až v survivalu (/ctc survival)."));
+            player.sendSystemMessage(Component.literal("§cClaim quest rewards in survival (/ctc survival)."));
             ci.cancel();
         }
     }

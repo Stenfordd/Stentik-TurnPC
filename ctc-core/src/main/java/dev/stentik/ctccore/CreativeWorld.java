@@ -41,7 +41,6 @@ import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 /**
@@ -56,9 +55,6 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 @EventBusSubscriber(modid = CtcCore.MODID, bus = EventBusSubscriber.Bus.GAME)
 public final class CreativeWorld {
     public static final ResourceKey<Level> DIM = ResourceKey.create(Registries.DIMENSION, CtcCore.id("creative"));
-    /** Curios exposes all its slots as one item handler under this name; looked up by name, so no compile dependency. */
-    private static final EntityCapability<IItemHandler, Void> CURIOS =
-            EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "item_handler"), IItemHandler.class);
     private static final double SPAWN_Y = -60; // flat layers: bedrock, 2 dirt, grass from y -64
 
     private CreativeWorld() {}
@@ -78,25 +74,25 @@ public final class CreativeWorld {
     }
 
     private static int enter(ServerPlayer p) {
-        if (isIn(p)) { p.sendSystemMessage(Component.literal("§eUž jsi v kreativním světě. Zpátky: /ctc survival")); return 0; }
+        if (isIn(p)) { p.sendSystemMessage(Component.literal("§eYou are already in the creative world. Back: /ctc survival")); return 0; }
         String why = cantPack(p);
         if (why != null) { p.sendSystemMessage(Component.literal("§c" + why)); return 0; }
         ServerLevel dim = p.server.getLevel(DIM);
-        if (dim == null) { p.sendSystemMessage(Component.literal("§cKreativní svět se nenačetl.")); return 0; }
+        if (dim == null) { p.sendSystemMessage(Component.literal("§cThe creative world did not load.")); return 0; }
         p.stopRiding();
         if (!snapshot(p)) return 0;
         CompoundTag at = store(p.server).creativePos.get(p.getUUID());
         double x = 0.5, y = SPAWN_Y, z = 0.5; float yr = 0, xr = 0;
         if (at != null) { x = at.getDouble("x"); y = at.getDouble("y"); z = at.getDouble("z"); yr = at.getFloat("yr"); xr = at.getFloat("xr"); }
         p.teleportTo(dim, x, y, z, yr, xr);
-        p.sendSystemMessage(Component.literal("§aKreativní svět. Tvoje věci jsou bezpečně uložené. Zpátky: /ctc survival"));
-        p.sendSystemMessage(Component.literal("§7Stavbu si ulož Schematic and Quill a v survivalu ji postav Schematicannonem."));
+        p.sendSystemMessage(Component.literal("§aCreative world. Your survival things are stored safely. Back: /ctc survival"));
+        p.sendSystemMessage(Component.literal("§7Save a build with the Schematic and Quill, then build it in survival with a Schematicannon."));
         return 1;
     }
 
     private static int leave(ServerPlayer p) {
-        if (!isIn(p)) { p.sendSystemMessage(Component.literal("§eNejsi v kreativním světě.")); return 0; }
-        if (carrying(p)) { p.sendSystemMessage(Component.literal("§cNejdřív polož, co neseš (Carry On).")); return 0; }
+        if (!isIn(p)) { p.sendSystemMessage(Component.literal("§eYou are not in the creative world.")); return 0; }
+        if (carrying(p)) { p.sendSystemMessage(Component.literal("§cPut down what you are carrying first (Carry On).")); return 0; }
         Store s = store(p.server);
         CompoundTag snap = s.snaps.get(p.getUUID());
         CompoundTag here = new CompoundTag();
@@ -118,7 +114,7 @@ public final class CreativeWorld {
         p.stopRiding();
         restore(p); // before the trip, so nothing creative ever arrives in survival
         p.teleportTo(back, x, y, z, yr, xr);
-        p.sendSystemMessage(Component.literal("§aZpátky v survivalu, věci máš zpět."));
+        p.sendSystemMessage(Component.literal("§aBack in survival, your things are back."));
         return 1;
     }
 
@@ -137,7 +133,7 @@ public final class CreativeWorld {
             if (why != null) { p.sendSystemMessage(Component.literal("§c" + why)); event.setCanceled(true); return; }
             if (!snapshot(p)) event.setCanceled(true);
         } else if (from) {
-            if (carrying(p)) { p.sendSystemMessage(Component.literal("§cNejdřív polož, co neseš (Carry On).")); event.setCanceled(true); return; }
+            if (carrying(p)) { p.sendSystemMessage(Component.literal("§cPut down what you are carrying first (Carry On).")); event.setCanceled(true); return; }
             restore(p);
         }
     }
@@ -182,17 +178,17 @@ public final class CreativeWorld {
         Block b = event.getLevel().getBlockState(event.getPos()).getBlock();
         if (b instanceof EnderChestBlock || b instanceof BedBlock || b instanceof RespawnAnchorBlock) {
             event.setCanceled(true);
-            if (!event.getLevel().isClientSide) event.getEntity().sendSystemMessage(Component.literal("§cTohle v kreativním světě nefunguje."));
+            if (!event.getLevel().isClientSide) event.getEntity().sendSystemMessage(Component.literal("§cThat does not work in the creative world."));
         }
     }
 
     // ---------------------------------------------------------------- packing
 
     private static String cantPack(ServerPlayer p) {
-        if (carrying(p)) return "Nejdřív polož, co neseš (Carry On).";
-        if (ModList.get().isLoaded("curios") && !(p.getCapability(CURIOS) instanceof IItemHandlerModifiable))
-            return "Curios sloty nejdou uložit, kreativní svět je kvůli bezpečí vypnutý. Napiš Davidovi.";
-        if (p.isSleeping()) return "Nejdřív vstaň z postele.";
+        if (carrying(p)) return "Put down what you are carrying first (Carry On).";
+        if (curios(p) == null)
+            return "Curios slots can't be stored, so the creative world is locked for safety. Tell David.";
+        if (p.isSleeping()) return "Get out of bed first.";
         return null;
     }
 
@@ -213,17 +209,19 @@ public final class CreativeWorld {
         tidy(p);
         CompoundTag t = new CompoundTag();
         t.put("inv", p.getInventory().save(new ListTag()));
-        IItemHandler cur = p.getCapability(CURIOS);
+        Map<String, IItemHandlerModifiable> cur = curios(p);
+        if (cur == null) return false;
         ListTag curios = new ListTag();
-        if (cur != null) {
-            for (int i = 0; i < cur.getSlots(); i++) {
-                ItemStack s = cur.getStackInSlot(i);
-                if (s.isEmpty()) continue;
-                CompoundTag e = (CompoundTag) s.save(reg, new CompoundTag());
+        cur.forEach((key, h) -> {
+            for (int i = 0; i < h.getSlots(); i++) {
+                ItemStack st = h.getStackInSlot(i);
+                if (st.isEmpty()) continue;
+                CompoundTag e = (CompoundTag) st.save(reg, new CompoundTag());
+                e.putString("Key", key);
                 e.putInt("Slot", i);
                 curios.add(e);
             }
-        }
+        });
         t.put("curios", curios);
         ListTag fx = new ListTag();
         for (MobEffectInstance m : p.getActiveEffects()) fx.add(m.save());
@@ -248,7 +246,7 @@ public final class CreativeWorld {
 
         // empty the survival state, then hand back what they had in creative last time
         p.getInventory().clearContent();
-        if (cur instanceof IItemHandlerModifiable m) for (int i = 0; i < m.getSlots(); i++) m.setStackInSlot(i, ItemStack.EMPTY);
+        clearCurios(cur);
         p.removeAllEffects();
         CompoundTag kept = s.creativeInv.get(p.getUUID());
         if (kept != null) p.getInventory().load(kept.getList("inv", Tag.TAG_COMPOUND));
@@ -269,13 +267,14 @@ public final class CreativeWorld {
         s.creativeInv.put(p.getUUID(), kept);
 
         p.getInventory().load(t.getList("inv", Tag.TAG_COMPOUND)); // load() clears first
-        IItemHandler cur = p.getCapability(CURIOS);
-        if (cur instanceof IItemHandlerModifiable m) for (int i = 0; i < m.getSlots(); i++) m.setStackInSlot(i, ItemStack.EMPTY);
+        Map<String, IItemHandlerModifiable> cur = curios(p);
+        if (cur != null) clearCurios(cur); // creative curios are dropped, like the rest of the creative gear outside the inventory
         for (Tag raw : t.getList("curios", Tag.TAG_COMPOUND)) {
             CompoundTag e = (CompoundTag) raw;
             ItemStack st = ItemStack.parseOptional(reg, e);
             int slot = e.getInt("Slot");
-            if (cur instanceof IItemHandlerModifiable m && slot < m.getSlots() && m.getStackInSlot(slot).isEmpty()) m.setStackInSlot(slot, st);
+            IItemHandlerModifiable h = cur == null ? null : cur.get(e.getString("Key"));
+            if (h != null && slot < h.getSlots() && h.getStackInSlot(slot).isEmpty()) h.setStackInSlot(slot, st);
             else p.getInventory().placeItemBackInInventory(st); // slot gone: never lose the item
         }
         p.removeAllEffects();
@@ -296,6 +295,38 @@ public final class CreativeWorld {
         s.snaps.remove(p.getUUID());
         s.setDirty();
         s.saveNow(p.server);
+    }
+
+    /**
+     * Every Curios slot (equipped and cosmetic) by "slotType/stacks|cosmetic", through the Curios API looked up by
+     * name (no compile dependency). Empty map without Curios or without slots; null when it can't be read safely.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Map<String, IItemHandlerModifiable> curios(ServerPlayer p) {
+        Map<String, IItemHandlerModifiable> out = new java.util.TreeMap<>();
+        if (!ModList.get().isLoaded("curios")) return out;
+        try {
+            Class<?> api = Class.forName("top.theillusivec4.curios.api.type.capability.ICuriosItemHandler");
+            Class<?> stacks = Class.forName("top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler");
+            EntityCapability cap = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "inventory"), api);
+            Object inv = p.getCapability(cap);
+            if (inv == null) return out;
+            Map<String, ?> all = (Map<String, ?>) api.getMethod("getCurios").invoke(inv);
+            for (var en : all.entrySet()) {
+                for (String part : new String[]{"getStacks", "getCosmeticStacks"}) {
+                    Object h = stacks.getMethod(part).invoke(en.getValue());
+                    if (!(h instanceof IItemHandlerModifiable m)) return null;
+                    out.put(en.getKey() + "/" + part, m);
+                }
+            }
+            return out;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private static void clearCurios(Map<String, IItemHandlerModifiable> cur) {
+        for (IItemHandlerModifiable h : cur.values()) for (int i = 0; i < h.getSlots(); i++) h.setStackInSlot(i, ItemStack.EMPTY);
     }
 
     private static boolean has(ServerPlayer p) {
