@@ -23,7 +23,11 @@ public class ClientSetup {
         @SubscribeEvent
         public static void layers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions event) {
             event.registerLayerDefinition(dev.stentik.ctccore.client.VoidHeraldRenderer.LAYER, dev.stentik.ctccore.client.VoidHeraldModel::createBodyLayer);
-            event.registerLayerDefinition(dev.stentik.ctccore.client.HornedHelmet.LAYER, dev.stentik.ctccore.client.HornedHelmet::create);
+            for (String tier : dev.stentik.ctccore.client.ArmorModels.TIERS)
+                for (int layer = 1; layer <= 2; layer++) {
+                    final int l = layer;
+                    event.registerLayerDefinition(dev.stentik.ctccore.client.ArmorModels.layer(tier, l), () -> dev.stentik.ctccore.client.ArmorModels.create(tier, l));
+                }
         }
 
         @SubscribeEvent
@@ -31,21 +35,25 @@ public class ClientSetup {
             event.registerEntityRenderer(CtcCore.VOID_HERALD.get(), dev.stentik.ctccore.client.VoidHeraldRenderer::new);
         }
 
-        private static net.minecraft.client.model.HumanoidModel<?> horned;
+        private static final java.util.Map<String, net.minecraft.client.model.HumanoidModel<?>> ARMOR_MODELS = new java.util.HashMap<>();
 
+        /** 2.0: steel, titanium, tungsten and VoidSteel armor render with their 3D parts (client/ArmorModels). */
         @SubscribeEvent
         public static void extensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
-            event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
-                @Override
-                public net.minecraft.client.model.HumanoidModel<?> getHumanoidArmorModel(net.minecraft.world.entity.LivingEntity entity,
-                        net.minecraft.world.item.ItemStack stack, net.minecraft.world.entity.EquipmentSlot slot,
-                        net.minecraft.client.model.HumanoidModel<?> original) {
-                    if (slot != net.minecraft.world.entity.EquipmentSlot.HEAD) return original;
-                    if (horned == null) horned = new net.minecraft.client.model.HumanoidModel<>(
-                            net.minecraft.client.Minecraft.getInstance().getEntityModels().bakeLayer(dev.stentik.ctccore.client.HornedHelmet.LAYER));
-                    return horned;
-                }
-            }, Armors.SETS.get("voidsteel")[0].get());
+            for (String tier : dev.stentik.ctccore.client.ArmorModels.TIERS) {
+                var items = Armors.SETS.get(tier);
+                if (items == null) continue;
+                event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+                    @Override
+                    public net.minecraft.client.model.HumanoidModel<?> getHumanoidArmorModel(net.minecraft.world.entity.LivingEntity entity,
+                            net.minecraft.world.item.ItemStack stack, net.minecraft.world.entity.EquipmentSlot slot,
+                            net.minecraft.client.model.HumanoidModel<?> original) {
+                        int layer = slot == net.minecraft.world.entity.EquipmentSlot.LEGS ? 2 : 1;
+                        return ARMOR_MODELS.computeIfAbsent(tier + layer, k -> new net.minecraft.client.model.HumanoidModel<>(
+                                net.minecraft.client.Minecraft.getInstance().getEntityModels().bakeLayer(dev.stentik.ctccore.client.ArmorModels.layer(tier, layer))));
+                    }
+                }, items[0].get(), items[1].get(), items[2].get(), items[3].get());
+            }
         }
 
         @SubscribeEvent

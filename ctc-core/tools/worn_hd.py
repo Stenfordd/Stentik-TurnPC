@@ -105,7 +105,12 @@ def depink(t):
     if NOWINGS:   # VoidSteel is purple itself: only the obvious key colour
         pink = (t[..., 3] > 0) & (r - g > 45) & (b - g > 45) & (np.abs(r - b) < 60)
     else:
-        pink = (t[..., 3] > 0) & (r > g * 1.35 + 8) & (b > g * 1.35 + 8) & (np.abs(r - b) < 0.35 * np.maximum(r, b) + 10)
+        pink = (t[..., 3] > 0) & (((r > g * 1.35 + 8) & (b > g * 1.35 + 8) & (np.abs(r - b) < 0.35 * np.maximum(r, b) + 10)) | ((r - g > 22) & (b - g > 22) & (np.abs(r - b) < 45)))
+    if not NOWINGS:   # faint lavender cast from the key on light metal: make it neutral
+        lav = (t[..., 3] > 0) & ~pink & (b > g + 8) & (r > g + 4)
+        lum = (r * 3 + g * 6 + b) // 10
+        t = t.copy()
+        for i in range(3): t[..., i] = np.where(lav, np.clip(lum + (2 if i == 2 else 0), 0, 255), t[..., i])
     if not pink.any(): return t
     good = (t[..., 3] > 0) & ~pink
     idx = ndimage.distance_transform_edt(~good, return_distances=False, return_indices=True)
