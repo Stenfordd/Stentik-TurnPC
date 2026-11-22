@@ -4,6 +4,7 @@ render_armor3d.py out.png tier [tier...]   (reads textures from resources and cu
 import math, re, sys
 import numpy as np
 from PIL import Image, ImageDraw
+RES = 1
 TEX = 'src/main/resources/assets/ctccore/textures/models/armor/'
 J = open('src/main/java/dev/stentik/ctccore/client/ArmorModels.java').read()
 PIV = {'head': (0, 0, 0), 'body': (0, 0, 0), 'right_arm': (-5, 2, 0), 'left_arm': (5, 2, 0), 'right_leg': (-1.9, 12, 0), 'left_leg': (1.9, 12, 0)}
@@ -16,10 +17,11 @@ def extras(tier, layer):
     out = []
     if not m: return out
     for line in m.group(1).splitlines():
-        r = re.search(r'getChild\("(\w+)"\).*texOffs\((\d+), (\d+)\)(\.mirror\(\))?\.addBox\(([-\d.]+)f, ([-\d.]+)f, ([-\d.]+)f, ([\d.]+)f, ([\d.]+)f, ([\d.]+)f, new CubeDeformation\(([-\d.]+)f, ([-\d.]+)f, ([-\d.]+)f\)', line)
+        r = re.search(r'getChild\("(\w+)"\).*texOffs\((\d+), (\d+)\)(\.mirror\(\))?\.addBox\(([-\d.]+)f, ([-\d.]+)f, ([-\d.]+)f, ([\d.]+)f, ([\d.]+)f, ([\d.]+)f, new CubeDeformation\(([-\d.]+)f(?:, ([-\d.]+)f, ([-\d.]+)f)?\)', line)
         if r:
             g = r.groups()
-            out.append((g[0], int(g[1]), int(g[2]), [float(x) for x in g[4:10]], [float(x) for x in g[10:13]], bool(g[3])))
+            gr = [float(g[10])] * 3 if g[11] is None else [float(x) for x in g[10:13]]
+            out.append((g[0], int(g[1]), int(g[2]), [float(x) for x in g[4:10]], gr, bool(g[3])))
     return out
 
 def cube_faces(u, v, x, y, z, w, h, d, grow, mirror):
@@ -64,15 +66,15 @@ def render(tier, yaw, pitch, scale=7):
         if layer == 1 and part in ('right_leg', 'left_leg'):   # boots only: lower third of the leg
             pass
         for (fu, fv, fw, fh), pt in cube_faces(u, v, x, y, z, w, h, d, grow, mirror):
-            n = max(1, int(round(fw * 4))), max(1, int(round(fh * 4)))
+            n = max(1, int(round(fw * RES))), max(1, int(round(fh * RES)))
             for i in range(n[0]):
                 for j in range(n[1]):
                     s0, s1, t0, t1 = i / n[0], (i + 1) / n[0], j / n[1], (j + 1) / n[1]
                     if layer is None:
                         col = (150, 120, 100, 255)
                     else:
-                        tu = fu + (fw - (i + 0.5) / 4 if mirror else (i + 0.5) / 4)
-                        tv = fv + (j + 0.5) / 4
+                        tu = fu + (fw - (i + 0.5) / RES if mirror else (i + 0.5) / RES)
+                        tv = fv + (j + 0.5) / RES
                         a = px[layer]
                         X, Y = int(tu * tw[layer]), int(tv * th[layer])
                         if not (0 <= X < a.shape[1] and 0 <= Y < a.shape[0]): continue

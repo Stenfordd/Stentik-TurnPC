@@ -33,6 +33,24 @@ FB, ST = load(fb_path), load(st_path)
 front_b, back_b = figures(FB, 2)
 side_b, side2_b, top_b = figures(ST, 3)
 
+def majority(a, w, h):
+    """One texel per Gemini cell: the most common colour in the middle of each cell (crisp, no blending)."""
+    from collections import Counter
+    H_, W_ = a.shape[:2]
+    out = np.zeros((h, w, 4), np.uint8)
+    for j in range(h):
+        for i in range(w):
+            y0, y1 = int(j * H_ / h), int((j + 1) * H_ / h)
+            x0, x1 = int(i * W_ / w), int((i + 1) * W_ / w)
+            my, mx = max(1, (y1 - y0) // 4), max(1, (x1 - x0) // 4)
+            cell = a[y0 + my:max(y0 + my + 1, y1 - my), x0 + mx:max(x0 + mx + 1, x1 - mx)].reshape(-1, 4)
+            cell = cell[cell[:, 3] > 100]
+            if len(cell) < 2: continue
+            q = cell[:, :3] // 10
+            k = Counter(map(tuple, q)).most_common(1)[0][0]
+            out[j, i, :3] = cell[(q == k).all(1)][:, :3].mean(0); out[j, i, 3] = 255
+    return out
+
 def grab(a, box, units_w, units_h, ux, uy, uw, uh, mirror=False, anchor='center', horns_cut=0):
     """Model-unit rectangle of a figure -> (uh*S, uw*S) RGBA, resampled with a box filter (keeps shading)."""
     x0, y0, x1, y1 = box
@@ -42,8 +60,7 @@ def grab(a, box, units_w, units_h, ux, uy, uw, uh, mirror=False, anchor='center'
     fx0 = cx - units_w / 2 * ppu
     l, t = fx0 + ux * ppu, y0 + uy * ppu
     crop = Image.fromarray(a).crop((int(round(l)), int(round(t)), int(round(l + uw * ppu)), int(round(t + uh * ppu))))
-    crop = crop.resize((uw * S, uh * S), Image.BOX)
-    r = np.array(crop)
+    r = majority(np.array(crop), uw * S, uh * S) if S == 1 else np.array(crop.resize((uw * S, uh * S), Image.BOX))
     r[..., 3] = np.where(r[..., 3] > 100, 255, 0)
     return r[:, ::-1] if mirror else r
 
