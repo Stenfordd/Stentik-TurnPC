@@ -232,9 +232,21 @@ def build(tier):
     Image.fromarray(t1.a).save(f'{OUT}{tier}_layer_1.png'); Image.fromarray(t2.a).save(f'{OUT}{tier}_layer_2.png')
     return java
 
+# Sets drawn by hand in Pixelwright (tools/art/pixel/<tier>_layer_N.png) replace the generated ones; their 3D parts:
+HAND = {'titanium': {
+    1: [('right_arm', 'pauldron_r', 0, 32, '', (-5, -4, -4, 6, 3, 8), 0.0), ('left_arm', 'pauldron_l', 0, 32, '.mirror()', (-1, -4, -4, 6, 3, 8), 0.0),
+        ('body', 'breast', 28, 32, '', (-3, 1, -4, 6, 6, 1), 0.0), ('head', 'brim', 42, 32, '', (-5, -7, -6, 10, 1, 1), 0.0)],
+    2: [('right_leg', 'knee_r', 0, 32, '', (-2, 4, -3, 4, 3, 1), 0.15), ('left_leg', 'knee_l', 0, 32, '.mirror()', (-2, 4, -3, 4, 3, 1), 0.15)]}}
+import os, shutil
+
 blocks = []
 for tier in RAMPS:
     j = build(tier)
+    if tier in HAND and os.path.exists(f'tools/art/pixel/{tier}_layer_1.png'):
+        for k in (1, 2): shutil.copy(f'tools/art/pixel/{tier}_layer_{k}.png', f'{OUT}{tier}_layer_{k}.png')
+        j = {k: [f'            root.getChild("{part}").addOrReplaceChild("{name}", CubeListBuilder.create().texOffs({u}, {v}){m}'
+                 f'.addBox({x}f, {y}f, {z}f, {w}f, {h}f, {d}f, new CubeDeformation({g}f)), PartPose.ZERO);'
+                 for part, name, u, v, m, (x, y, z, w, h, d), g in HAND[tier][k]] for k in (1, 2)}
     for layer in (1, 2):
         blocks.append(f'        case "{tier}_{layer}" -> {{\n' + '\n'.join(j[layer]) + '\n        }')
 src = open('src/main/java/dev/stentik/ctccore/client/ArmorModels.java').read()
