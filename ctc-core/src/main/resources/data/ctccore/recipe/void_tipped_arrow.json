@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "AAA",
+    "AVA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "V": {
+      "item": "ctc:voidsteel_ingot"
+    }
+  },
+  "result": {
+    "id": "ctccore:void_tipped_arrow",
+    "count": 8
+  }
+}

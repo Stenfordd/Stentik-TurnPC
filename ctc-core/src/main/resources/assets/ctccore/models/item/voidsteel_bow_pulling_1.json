@@ -1,0 +1,6 @@
+{
+  "parent": "ctccore:item/voidsteel_bow",
+  "textures": {
+    "layer0": "ctccore:item/voidsteel_bow_pulling_1"
+  }
+}

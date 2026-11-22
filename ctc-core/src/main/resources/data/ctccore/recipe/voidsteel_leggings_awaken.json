@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "ctccore:voidforge_template"
+  },
+  "base": {
+    "item": "ctccore:cracked_voidsteel_leggings"
+  },
+  "addition": {
+    "item": "ctccore:tidal_pearl"
+  },
+  "result": {
+    "id": "ctccore:voidsteel_leggings",
+    "count": 1
+  }
+}

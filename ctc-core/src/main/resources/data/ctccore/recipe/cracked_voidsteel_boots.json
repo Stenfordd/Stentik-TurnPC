@@ -3,15 +3,18 @@
   "category": "equipment",
   "pattern": [
     "X X",
-    "X X"
+    "XRX"
   ],
   "key": {
     "X": {
       "item": "ctc:voidsteel_ingot"
+    },
+    "R": {
+      "item": "ctccore:infernal_rivet"
     }
   },
   "result": {
-    "id": "ctccore:voidsteel_boots",
+    "id": "ctccore:cracked_voidsteel_boots",
     "count": 1
   }
 }

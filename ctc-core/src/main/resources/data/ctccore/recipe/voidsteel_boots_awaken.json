@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "ctccore:voidforge_template"
+  },
+  "base": {
+    "item": "ctccore:cracked_voidsteel_boots"
+  },
+  "addition": {
+    "item": "ctccore:wither_core"
+  },
+  "result": {
+    "id": "ctccore:voidsteel_boots",
+    "count": 1
+  }
+}

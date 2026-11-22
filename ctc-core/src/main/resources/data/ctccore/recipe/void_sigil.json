@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "EVE",
+    "VSV",
+    "EVE"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "V": {
+      "item": "ctc:voidsteel_ingot"
+    },
+    "S": {
+      "item": "ctccore:dragon_scale"
+    }
+  },
+  "result": {
+    "id": "ctccore:void_sigil",
+    "count": 1
+  }
+}

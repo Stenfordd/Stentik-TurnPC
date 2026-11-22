@@ -1,0 +1,6 @@
+{
+  "parent": "ctccore:item/titanium_bow",
+  "textures": {
+    "layer0": "ctccore:item/titanium_bow_pulling_1"
+  }
+}

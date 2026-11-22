@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " XS",
+    "P S",
+    " XS"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "result": {
+    "id": "ctccore:titanium_bow",
+    "count": 1
+  }
+}

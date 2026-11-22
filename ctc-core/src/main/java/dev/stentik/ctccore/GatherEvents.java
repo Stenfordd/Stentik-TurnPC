@@ -37,12 +37,17 @@ public class GatherEvents {
         if (off(tool)) return;
         BlockState state = event.getState();
         BlockPos origin = event.getPos();
+        if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state) && VoidsteelGear.active(tool, ChipType.HARVEST)) {
+            event.setCanceled(true);
+            HarvestRows.harvest(player, origin, tool);
+            return;
+        }
         List<BlockPos> extra;
-        if (state.is(BlockTags.LOGS) && ChipType.has(tool, ChipType.LUMBER) && ChipType.LUMBER.fits(tool)) {
+        if (state.is(BlockTags.LOGS) && VoidsteelGear.active(tool, ChipType.LUMBER)) {
             extra = tree(player, origin);
-        } else if (state.is(ORES) && ChipType.has(tool, ChipType.VEIN) && ChipType.VEIN.fits(tool)) {
+        } else if (state.is(ORES) && VoidsteelGear.active(tool, ChipType.VEIN)) {
             extra = vein(player, origin, state.getBlock());
-        } else if (ChipType.has(tool, ChipType.QUARRY) && ChipType.QUARRY.fits(tool) && tool.isCorrectToolForDrops(state)) {
+        } else if (VoidsteelGear.active(tool, ChipType.QUARRY) && tool.isCorrectToolForDrops(state)) {
             extra = quarry(player, origin, state, tool);
         } else {
             return;
@@ -93,10 +98,12 @@ public class GatherEvents {
         // empty cursor, right-click on the tool in its slot
         if (event.getClickAction() != net.minecraft.world.inventory.ClickAction.SECONDARY || !event.getCarriedItem().isEmpty()) return;
         ItemStack tool = event.getStackedOnItem();
-        boolean any = false;
+        boolean any = VoidsteelGear.hasBuiltins(tool);
         for (ChipType t : ChipType.of(tool)) if (t.gathering()) any = true;
         if (!any) return;
-        if (off(tool)) tool.remove(CtcCore.CHIPS_OFF.get());
+        if (VoidsteelGear.hasBuiltins(tool)) {
+            VoidsteelGear.notify(event.getPlayer(), VoidsteelGear.cycle(tool));
+        } else if (off(tool)) tool.remove(CtcCore.CHIPS_OFF.get());
         else tool.set(CtcCore.CHIPS_OFF.get(), true);
         event.getPlayer().playSound(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK.value(), 0.4f, off(tool) ? 0.7f : 1.3f);
         event.setCanceled(true);
@@ -154,7 +161,7 @@ public class GatherEvents {
     @SubscribeEvent
     public static void onDrops(BlockDropsEvent event) {
         ItemStack tool = event.getTool();
-        if (!ChipType.has(tool, ChipType.HARVEST) || !ChipType.HARVEST.fits(tool) || off(tool)) return;
+        if (!VoidsteelGear.active(tool, ChipType.HARVEST) || off(tool)) return;
         if (!(event.getState().getBlock() instanceof CropBlock crop) || !crop.isMaxAge(event.getState())) return;
         var random = event.getLevel().getRandom();
         for (ItemEntity drop : event.getDrops()) {

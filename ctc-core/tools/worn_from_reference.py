@@ -14,7 +14,7 @@ def skin(c):
     if v > .85 and s < .12: return True                      # white halo / eye whites
     return 0.025 < h < 0.11 and 0.2 < s < 0.75 and 0.07 < v < 0.86 and r - b > 25 and not (s > .7 and v > .8)   # skin, hair, beard; keeps the bright gem
 PAD = len(sys.argv) > 4 and sys.argv[4] == 'pad'
-NOSKIN = PAD
+NOSKIN = PAD or (len(sys.argv) > 4 and sys.argv[4] == 'noskin')
 def pad(c):                        # neutral grey undershirt Gemini drew under the plates: let the player's skin show
     r, g, b = c; lum = (r + g + b) / 3
     return max(c) - min(c) < 18 and 55 < lum < 150
@@ -87,7 +87,10 @@ def crown(a, rows=1):                  # top of the helmet: Gemini's outline/hai
 def forehead(a):
     top = dehair(a[:3 * S])
     a = a.copy(); a[:3 * S] = solidify(top); return a
-put(L1, hf['front'], crown(fill_specks(forehead(visor(sample(F, 4, 0, 8, 8)))))); put(L1, hf['back'], crown(solidify(dehair(sample(B, 4, 0, 8, 8))), 2))
+if NOSKIN and not PAD:                # closed helmet: keep the visor glow as drawn
+    put(L1, hf['front'], sample(F, 4, 0, 8, 8)); put(L1, hf['back'], solidify(sample(B, 4, 0, 8, 8)))
+else:
+    put(L1, hf['front'], crown(fill_specks(forehead(visor(sample(F, 4, 0, 8, 8)))))); put(L1, hf['back'], crown(solidify(dehair(sample(B, 4, 0, 8, 8))), 2))
 side = sample(B, 4, 0, 8, 8)
 side = crown(solidify(dehair(side)))
 put(L1, hf['right'], side); put(L1, hf['left'], side[:, ::-1])

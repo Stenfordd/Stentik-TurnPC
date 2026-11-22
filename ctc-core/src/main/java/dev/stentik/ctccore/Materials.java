@@ -51,6 +51,27 @@ public final class Materials {
     public static final DeferredItem<Item> DESERT_RELIC = item("desert_relic");     // Ancient Remnant, Cursed Pyramid
     public static final DeferredItem<Item> CRYO_CORE = item("cryo_core");           // Maledictus, Frosted Prison
 
+    // 2.0: trophies of the bosses that awaken Cracked VoidSteel, and the sigil that calls the Void Herald
+    private static DeferredItem<Item> rare(String name, net.minecraft.world.item.Rarity rarity, int stack) {
+        DeferredItem<Item> item = CtcCore.ITEMS.registerSimpleItem(name, new Item.Properties().rarity(rarity).stacksTo(stack));
+        ALL.add(item);
+        return item;
+    }
+    public static final DeferredItem<Item> DRAGON_SCALE = rare("dragon_scale", net.minecraft.world.item.Rarity.EPIC, 16);      // Ender Dragon
+    public static final DeferredItem<Item> WITHER_CORE = rare("wither_core", net.minecraft.world.item.Rarity.EPIC, 16);        // Wither
+    public static final DeferredItem<Item> TIDAL_PEARL = rare("tidal_pearl", net.minecraft.world.item.Rarity.RARE, 16);        // Scylla
+    public static final DeferredItem<Item> INFERNAL_RIVET = rare("infernal_rivet", net.minecraft.world.item.Rarity.RARE, 16);  // Netherite Monstrosity
+    public static final DeferredItem<Item> VOID_HEART = rare("void_heart", net.minecraft.world.item.Rarity.EPIC, 16);          // Void Herald
+    public static final DeferredItem<VoidHerald.SigilItem> VOID_SIGIL = CtcCore.ITEMS.register("void_sigil",
+            () -> new VoidHerald.SigilItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC).stacksTo(1)));
+    public static final String[] PIECES = { "helmet", "chestplate", "leggings", "boots" };
+    @SuppressWarnings("unchecked")
+    public static final DeferredItem<Item>[] CRACKED = new DeferredItem[4];
+    static {
+        ALL.add(VOID_SIGIL);
+        for (int i = 0; i < 4; i++) CRACKED[i] = rare("cracked_voidsteel_" + PIECES[i], net.minecraft.world.item.Rarity.UNCOMMON, 1);
+    }
+
     // the third chip slot
     public static final DeferredItem<Item> CHIP_SOCKET = item("chip_socket");
     public static final DeferredItem<Item> VOIDFORGE_TEMPLATE = item("voidforge_template");

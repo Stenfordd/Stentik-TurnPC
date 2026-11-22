@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "ctccore:voidforge_template"
+  },
+  "base": {
+    "item": "ctccore:cracked_voidsteel_helmet"
+  },
+  "addition": {
+    "item": "ctccore:dragon_scale"
+  },
+  "result": {
+    "id": "ctccore:voidsteel_helmet",
+    "count": 1
+  }
+}

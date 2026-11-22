@@ -38,6 +38,11 @@ public class CtcCore {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MODID);
     public static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
+    public static final DeferredRegister<net.minecraft.world.entity.EntityType<?>> ENTITY_TYPES =
+            DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
+    public static final Supplier<net.minecraft.world.entity.EntityType<VoidHerald>> VOID_HERALD = ENTITY_TYPES.register("void_herald",
+            () -> net.minecraft.world.entity.EntityType.Builder.<VoidHerald>of(VoidHerald::new, net.minecraft.world.entity.MobCategory.MONSTER)
+                    .sized(1.1f, 4.2f).fireImmune().clientTrackingRange(10).build("void_herald"));
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> SERIALIZERS =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
@@ -85,6 +90,10 @@ public class CtcCore {
     public static final Supplier<DataComponentType<Boolean>> CHIPS_OFF = COMPONENTS.register("chips_off",
             () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
 
+    /** VoidSteel pickaxe: which built-in gathering mode is on (0 = Vein + Quarry, 1 = Vein, 2 = Quarry). */
+    public static final Supplier<DataComponentType<Integer>> TOOL_MODE = COMPONENTS.register("tool_mode",
+            () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
     /** Cataclysm armor upgraded with Voidsteel at a Smithing Table. */
     public static final Supplier<DataComponentType<Boolean>> VOIDFORGED = COMPONENTS.register("voidforged",
             () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
@@ -93,6 +102,7 @@ public class CtcCore {
         Materials.init();
         Armors.init();
         Tools.init();
+        Ranged.init();
     }
 
     public static final Supplier<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()
@@ -117,6 +127,9 @@ public class CtcCore {
         COMPONENTS.register(modBus);
         TABS.register(modBus);
         SERIALIZERS.register(modBus);
+        ENTITY_TYPES.register(modBus);
+        modBus.addListener((net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent e) ->
+                e.put(VOID_HERALD.get(), VoidHerald.attributes().build()));
         Armors.MATERIALS.register(modBus);
         modBus.addListener(CtcCore::registerPayloads);
         modBus.addListener(CtcCore::registerCapabilities);

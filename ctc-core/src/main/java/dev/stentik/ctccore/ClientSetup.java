@@ -21,7 +21,45 @@ public class ClientSetup {
         }
 
         @SubscribeEvent
+        public static void layers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions event) {
+            event.registerLayerDefinition(dev.stentik.ctccore.client.VoidHeraldRenderer.LAYER, dev.stentik.ctccore.client.VoidHeraldModel::createBodyLayer);
+            event.registerLayerDefinition(dev.stentik.ctccore.client.HornedHelmet.LAYER, dev.stentik.ctccore.client.HornedHelmet::create);
+        }
+
+        @SubscribeEvent
+        public static void renderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(CtcCore.VOID_HERALD.get(), dev.stentik.ctccore.client.VoidHeraldRenderer::new);
+        }
+
+        private static net.minecraft.client.model.HumanoidModel<?> horned;
+
+        @SubscribeEvent
+        public static void extensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+            event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+                @Override
+                public net.minecraft.client.model.HumanoidModel<?> getHumanoidArmorModel(net.minecraft.world.entity.LivingEntity entity,
+                        net.minecraft.world.item.ItemStack stack, net.minecraft.world.entity.EquipmentSlot slot,
+                        net.minecraft.client.model.HumanoidModel<?> original) {
+                    if (slot != net.minecraft.world.entity.EquipmentSlot.HEAD) return original;
+                    if (horned == null) horned = new net.minecraft.client.model.HumanoidModel<>(
+                            net.minecraft.client.Minecraft.getInstance().getEntityModels().bakeLayer(dev.stentik.ctccore.client.HornedHelmet.LAYER));
+                    return horned;
+                }
+            }, Armors.SETS.get("voidsteel")[0].get());
+        }
+
+        @SubscribeEvent
         public static void setup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                for (var bow : new net.minecraft.world.item.Item[] { Ranged.TITANIUM_BOW.get(), Ranged.VOIDSTEEL_BOW.get() }) {
+                    net.minecraft.client.renderer.item.ItemProperties.register(bow, net.minecraft.resources.ResourceLocation.withDefaultNamespace("pull"),
+                            (stack, level, entity, seed) -> entity == null || entity.getUseItem() != stack ? 0.0f
+                                    : (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0f
+                                            * (bow == Ranged.TITANIUM_BOW.get() ? Ranged.TitaniumBow.SPEED : 1.0f));
+                    net.minecraft.client.renderer.item.ItemProperties.register(bow, net.minecraft.resources.ResourceLocation.withDefaultNamespace("pulling"),
+                            (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0f : 0.0f);
+                }
+            });
             // Ponder comes with Create; without it the pack still works, just without the scenes
             if (ModList.get().isLoaded("ponder")) event.enqueueWork(dev.stentik.ctccore.ponder.CtcPonderPlugin::register);
         }
@@ -33,6 +71,16 @@ public class ClientSetup {
         @SubscribeEvent
         public static void tooltip(ItemTooltipEvent event) {
             List<ChipType> chips = ChipType.of(event.getItemStack());
+            String path = VoidsteelGear.path(event.getItemStack());
+            if (path.startsWith("cracked_voidsteel_")) {
+                event.getToolTip().add(Component.translatable("ctccore.cracked.tip").withStyle(ChatFormatting.GRAY));
+                event.getToolTip().add(Component.translatable("ctccore.cracked.needs." + path.substring(18)).withStyle(ChatFormatting.DARK_PURPLE));
+            }
+            if (VoidsteelGear.hasBuiltins(event.getItemStack())) {
+                event.getToolTip().add(Component.translatable("ctccore.builtin." + path).withStyle(ChatFormatting.LIGHT_PURPLE));
+                event.getToolTip().add(Component.translatable("ctccore.voidsteel.mode." + VoidsteelGear.modeKey(event.getItemStack()))
+                        .withStyle(ChatFormatting.DARK_GRAY));
+            }
             Gear gear = Gear.of(event.getItemStack());
             if (gear == Gear.NONE) return;
             List<Component> lines = event.getToolTip();

@@ -31,6 +31,8 @@
     "ctccore:voidsteel_pickaxe",
     "ctccore:voidsteel_axe",
     "ctccore:voidsteel_shovel",
-    "ctccore:voidsteel_hoe"
+    "ctccore:voidsteel_hoe",
+    "ctccore:titanium_bow",
+    "ctccore:voidsteel_bow"
   ]
 }
