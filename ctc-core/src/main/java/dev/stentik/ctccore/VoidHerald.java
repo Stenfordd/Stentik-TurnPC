@@ -66,6 +66,13 @@ public class VoidHerald extends Monster {
         this.setPersistenceRequired();
     }
 
+    /** No levitation, no slow falling: the Herald stays on the ground (Lunar/Gravity chips, shulker bullets). */
+    @Override
+    public boolean canBeAffected(net.minecraft.world.effect.MobEffectInstance effect) {
+        if (effect.is(net.minecraft.world.effect.MobEffects.LEVITATION) || effect.is(net.minecraft.world.effect.MobEffects.SLOW_FALLING)) return false;
+        return super.canBeAffected(effect);
+    }
+
     public static AttributeSupplier.Builder attributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 500.0)

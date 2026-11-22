@@ -1,5 +1,7 @@
 package dev.stentik.ctccore;
 
+import net.minecraft.network.chat.Component;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -103,8 +105,12 @@ public class GatherEvents {
         if (!any) return;
         if (VoidsteelGear.hasBuiltins(tool)) {
             VoidsteelGear.notify(event.getPlayer(), VoidsteelGear.cycle(tool));
-        } else if (off(tool)) tool.remove(CtcCore.CHIPS_OFF.get());
-        else tool.set(CtcCore.CHIPS_OFF.get(), true);
+        } else {
+            if (off(tool)) tool.remove(CtcCore.CHIPS_OFF.get());
+            else tool.set(CtcCore.CHIPS_OFF.get(), true);
+            event.getPlayer().displayClientMessage(Component.translatable(off(tool) ? "ctccore.chips.off" : "ctccore.chips.on.msg")
+                    .withStyle(off(tool) ? net.minecraft.ChatFormatting.RED : net.minecraft.ChatFormatting.GREEN), true);
+        }
         event.getPlayer().playSound(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK.value(), 0.4f, off(tool) ? 0.7f : 1.3f);
         event.setCanceled(true);
     }

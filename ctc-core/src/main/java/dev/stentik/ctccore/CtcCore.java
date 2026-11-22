@@ -1,5 +1,7 @@
 package dev.stentik.ctccore;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -133,6 +135,7 @@ public class CtcCore {
         Armors.MATERIALS.register(modBus);
         modBus.addListener(CtcCore::registerPayloads);
         modBus.addListener(CtcCore::registerCapabilities);
+        modBus.addListener(CtcCore::unbreakableVoidsteel);
         if (System.getenv("CTC_CI_BOOT") != null) {
             // CI only: the server came up with the mod, recipes and mixins loaded -> say so and shut down
             net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> {
@@ -147,6 +150,18 @@ public class CtcCore {
                 }
                 e.getServer().halt(false);
             });
+        }
+    }
+
+    /** 2.0: all VoidSteel gear (CtC Core and the KubeJS weapons) never breaks and shows no durability bar. */
+    private static void unbreakableVoidsteel(net.neoforged.neoforge.event.ModifyDefaultComponentsEvent event) {
+        for (var item : BuiltInRegistries.ITEM) {
+            var key = BuiltInRegistries.ITEM.getKey(item);
+            if ((key.getNamespace().equals(MODID) || key.getNamespace().equals("ctc")) && key.getPath().startsWith("voidsteel_")
+                    && item.components().has(net.minecraft.core.component.DataComponents.MAX_DAMAGE)) {
+                event.modify(item, b -> b.set(net.minecraft.core.component.DataComponents.UNBREAKABLE,
+                        new net.minecraft.world.item.component.Unbreakable(false)));
+            }
         }
     }
 

@@ -162,7 +162,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         boolean socket = chip.is(Materials.CHIP_SOCKET.get());
         if (!socket && !(chip.getItem() instanceof ChipItem)) return NO_CHIP;
         if (!socket && !((ChipItem) chip.getItem()).type.fits(gear)) return NO_GEAR;
-        if (socket ? Gear.socketed(gear) : ChipType.has(gear, ((ChipItem) chip.getItem()).type)) return HAS_CHIP;
+        if (socket ? Gear.socketed(gear) : !ChipType.canAdd(gear, ((ChipItem) chip.getItem()).type)) return HAS_CHIP;
         if (fuelRequired() && items.getStackInSlot(SLOT_FUEL).isEmpty()) return NO_FUEL;
         if (energy.getEnergyStored() < ENERGY_PER_IMPLANT && !running) return NO_ENERGY;
         if (!items.getStackInSlot(SLOT_OUT).isEmpty()) return OUT_FULL;

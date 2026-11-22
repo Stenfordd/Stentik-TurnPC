@@ -93,6 +93,38 @@ public enum ChipType {
         return out;
     }
 
+    /** 2.0: how many of the same chip still add up (in one piece of gear; armor counts all four pieces together). */
+    public int cap() {
+        return switch (this) {
+            case MERCURY, TERRA, IRON -> 4;
+            case COPPER, VOID, EMBER, KINETIC, ACID -> 3;
+            case MARTIAN, IGNIS, HARBINGER, LEVIATHAN, REMNANT, GUARDIAN, LUNAR, GRAVITY, DUST, FLARE -> 2;
+            default -> 1;   // Maledictus and the gathering chips do not stack
+        };
+    }
+
+    /** How many of this chip the stack holds. */
+    public static int count(ItemStack stack, ChipType type) {
+        List<String> ids = stack.get(CtcCore.CHIPS.get());
+        if (ids == null) return 0;
+        int n = 0;
+        for (String s : ids) if (s.equals(type.id)) n++;
+        return n;
+    }
+
+    /** One more of this chip still counts in that gear. */
+    public static boolean canAdd(ItemStack stack, ChipType type) {
+        return count(stack, type) < type.cap();
+    }
+
+    /** Chip -> count, each capped at its stack limit. */
+    public static java.util.EnumMap<ChipType, Integer> counts(Iterable<ChipType> chips) {
+        java.util.EnumMap<ChipType, Integer> out = new java.util.EnumMap<>(ChipType.class);
+        for (ChipType t : chips) out.merge(t, 1, Integer::sum);
+        out.replaceAll((t, n) -> Math.min(n, t.cap()));
+        return out;
+    }
+
     public static boolean has(ItemStack stack, ChipType type) {
         List<String> ids = stack.get(CtcCore.CHIPS.get());
         return ids != null && ids.contains(type.id);

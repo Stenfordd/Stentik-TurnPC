@@ -68,7 +68,7 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
                 if (menu.chip().is(Materials.CHIP_SOCKET.get())) {
                     lines.add(Component.translatable("ctccore.station.socket")); colors.add(GOOD);
                 }
-                if (menu.chip().getItem() instanceof ChipItem chipItem && !chips.contains(chipItem.type)) {
+                if (menu.chip().getItem() instanceof ChipItem chipItem && ChipType.canAdd(gearStack, chipItem.type)) {
                     ChipType t = chipItem.type;
                     lines.add(Component.literal("+ ").append(Component.translatable("ctccore.chip." + t.id + "." + gear.name().toLowerCase()))); colors.add(GOOD);
                     if (chips.size() >= Gear.slots(gearStack)) {

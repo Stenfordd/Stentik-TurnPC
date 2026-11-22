@@ -64,7 +64,13 @@ public final class VoidsteelGear {
         } else {
             tool.set(CtcCore.CHIPS_OFF.get(), true);
         }
-        return Component.translatable("ctccore.voidsteel.mode." + modeKey(tool));
+        return modeLine(tool);
+    }
+
+    /** The mode line, coloured: violet while on, red when off. */
+    public static Component modeLine(ItemStack tool) {
+        return Component.translatable("ctccore.voidsteel.mode." + modeKey(tool))
+                .withStyle(GatherEvents.off(tool) ? net.minecraft.ChatFormatting.RED : net.minecraft.ChatFormatting.LIGHT_PURPLE);
     }
 
     public static String modeKey(ItemStack tool) {

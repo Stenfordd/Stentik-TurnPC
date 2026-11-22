@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 
-/** Smithing Table: basic chip (template) + gear (base) + redstone (addition) = the gear with that chip. Needs a free slot. */
+/** Smithing Table: basic chip (template) + gear (base) + redstone (addition) = the gear with that chip. Needs a free slot. The same chip may go in again up to its stack limit (ChipType.cap). */
 public class ChipSmithingRecipe implements SmithingRecipe {
     public static final ChipSmithingRecipe INSTANCE = new ChipSmithingRecipe();
 
@@ -44,7 +44,7 @@ public class ChipSmithingRecipe implements SmithingRecipe {
         ItemStack gear = input.base();
         if (Gear.of(gear) == Gear.NONE) return false;
         ChipType type = ((ChipItem) input.template().getItem()).type;
-        return type.fits(gear) && !ChipType.has(gear, type) && ChipType.of(gear).size() < Gear.slots(gear);
+        return type.fits(gear) && ChipType.canAdd(gear, type) && ChipType.of(gear).size() < Gear.slots(gear);
     }
 
     @Override
