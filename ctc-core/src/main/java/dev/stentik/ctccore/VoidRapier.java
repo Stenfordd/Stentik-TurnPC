@@ -61,7 +61,7 @@ public final class VoidRapier {
     }
 
     /** Tooltip line: current range and cooldown. */
-    public static Component info(ItemStack stack) {
+    public static net.minecraft.network.chat.MutableComponent info(ItemStack stack) {
         return Component.translatable("ctccore.rapier.info", range(stack), String.format(java.util.Locale.ROOT, "%.2f", cooldown(stack) / 20.0));
     }
 }
