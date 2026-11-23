@@ -4,6 +4,10 @@
  * Nothing to configure here: the PC agent pairs itself on its first start and sets the panel
  * password. Deploy -> Web app, Execute as "Me", Who has access "Anyone".
  * To pair a different PC: Project Settings -> Script properties -> delete AGENT_KEY.
+ *
+ * Access requests: the CtC launcher has a "Request access" button. David gets an e-mail with Approve / Deny
+ * links (and sees the requests in the web panel); an approved launcher then works without the password.
+ * After updating this file: Deploy -> Manage deployments -> edit -> New version (and allow sending e-mail).
  */
 
 var CACHE = CacheService.getScriptCache();
@@ -12,7 +16,9 @@ var ONLINE_SECONDS = 35;
 var PENDING_SECONDS = 600;
 var LOG_SIZE = 15;
 
-function doGet() {
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  if (p.a && p.t) return decideLink_(p);
   return json_({ ok: true, name: 'Stentik server panel API', paired: !!PROPS.getProperty('AGENT_KEY') });
 }
 
@@ -33,6 +39,9 @@ function doPost(e) {
       case 'agent': return json_(agent_(req));
       case 'register': return json_(register_(req));
       case 'console': return json_(console_(req));
+      case 'requestAccess': return json_(requestAccess_(req));
+      case 'accessStatus': return json_(accessStatus_(req));
+      case 'access': return json_(access_(req));
     }
     return json_({ ok: false, error: 'unknown action' });
   } finally {
@@ -77,13 +86,23 @@ function checkPassword_(pw) {
   return '';
 }
 
+// A launcher that was approved sends its device token instead of the password.
+function auth_(req) {
+  if (req.token) {
+    var a = getAccess_().approved[String(req.token)];
+    if (a) { req.by = a.name; return ''; }
+    return 'Access not approved (anymore). Request it again.';
+  }
+  return checkPassword_(req.password);
+}
+
 function login_(req) {
   var err = checkPassword_(req.password);
   return err ? { ok: false, error: err } : { ok: true };
 }
 
 function command_(req) {
-  var err = checkPassword_(req.password);
+  var err = auth_(req);
   if (err) return { ok: false, error: err };
   var cmd = String(req.cmd || '');
   if (['start', 'stop', 'restart', 'shutdown'].indexOf(cmd) < 0) return { ok: false, error: 'unknown command' };
@@ -108,7 +127,7 @@ function command_(req) {
 
 // Live console: only for logged-in users (the log contains player IPs).
 function console_(req) {
-  var err = checkPassword_(req.password);
+  var err = auth_(req);
   if (err) return { ok: false, error: err };
   var server = String(req.server || '');
   CACHE.put('watch', server, 30); // the agent sends the console while someone is watching
@@ -122,6 +141,120 @@ function console_(req) {
   }
   var c = getJson_('console') || {};
   return { ok: true, server: c.server || '', lines: c.server === server ? (c.lines || []) : [], at: c.at || 0 };
+}
+
+// ---------- access requests (CtC launcher) ----------
+
+function getAccess_() {
+  var v = PROPS.getProperty('ACCESS');
+  var a = v ? JSON.parse(v) : {};
+  a.pending = a.pending || {};
+  a.approved = a.approved || {};
+  return a;
+}
+
+function putAccess_(a) { PROPS.setProperty('ACCESS', JSON.stringify(a)); }
+
+function cleanName_(n) { return String(n || 'someone').replace(/[^\w .\-]/g, '').slice(0, 24) || 'someone'; }
+
+function secret_() {
+  var s = PROPS.getProperty('ADMIN_SECRET');
+  if (!s) { s = Utilities.getUuid() + Utilities.getUuid(); PROPS.setProperty('ADMIN_SECRET', s); }
+  return s;
+}
+
+function sign_(action, token) {
+  var b = Utilities.computeHmacSha256Signature(action + ':' + token, secret_());
+  return Utilities.base64EncodeWebSafe(b).replace(/=+$/, '').slice(0, 32);
+}
+
+function requestAccess_(req) {
+  var token = String(req.token || '');
+  if (token.length < 24 || token.length > 80) return { ok: false, error: 'bad token' };
+  var a = getAccess_();
+  if (a.approved[token]) return { ok: true, state: 'approved' };
+  var name = cleanName_(req.name);
+  var prev = a.pending[token];
+  if (Object.keys(a.pending).length >= 20 && !prev) return { ok: false, error: 'Too many open requests, ask David.' };
+  a.pending[token] = { name: name, at: Date.now() };
+  putAccess_(a);
+  // one e-mail per launcher every 10 minutes
+  if (!CACHE.get('mailed_' + token)) {
+    CACHE.put('mailed_' + token, '1', 600);
+    addLog_(name + ' requested access');
+    try {
+      var url = ScriptApp.getService().getUrl();
+      var link = function (act) { return url + '?a=' + act + '&t=' + encodeURIComponent(token) + '&s=' + sign_(act, token); };
+      MailApp.sendEmail({
+        to: Session.getEffectiveUser().getEmail(),
+        subject: 'CtC server: ' + name + ' wants access',
+        htmlBody: '<p><b>' + name + '</b> pressed <i>Request access</i> in the Cogs to Cosmos launcher.</p>' +
+          '<p>With access they can start, restart and stop the server and use the console.</p>' +
+          '<p><a href="' + link('approve') + '" style="font-size:18px">Approve</a> &nbsp; · &nbsp; ' +
+          '<a href="' + link('deny') + '" style="font-size:18px">Deny</a></p>' +
+          '<p style="color:#888">You can also decide, or take access away later, in the web panel.</p>'
+      });
+    } catch (err) {
+      addLog_('access e-mail failed: ' + err);
+    }
+  }
+  return { ok: true, state: 'pending' };
+}
+
+function accessStatus_(req) {
+  var token = String(req.token || '');
+  var a = getAccess_();
+  if (a.approved[token]) return { ok: true, state: 'approved', name: a.approved[token].name };
+  if (a.pending[token]) return { ok: true, state: 'pending' };
+  if (CACHE.get('denied_' + token)) return { ok: true, state: 'denied' };
+  return { ok: true, state: 'none' };
+}
+
+function decide_(act, token) {
+  var a = getAccess_();
+  var r = a.pending[token] || a.approved[token];
+  if (!r) return null;
+  delete a.pending[token];
+  if (act === 'approve') {
+    a.approved[token] = { name: r.name, at: Date.now() };
+    addLog_(r.name + ' got access');
+  } else {
+    delete a.approved[token];
+    CACHE.put('denied_' + token, '1', 21600);
+    addLog_(r.name + (act === 'revoke' ? ' lost access' : ' was denied'));
+  }
+  putAccess_(a);
+  return r.name;
+}
+
+// the Approve / Deny links from the e-mail
+function decideLink_(p) {
+  var act = p.a === 'approve' ? 'approve' : 'deny';
+  var ok = String(p.s || '') === sign_(act, String(p.t));
+  var lock = LockService.getScriptLock();
+  lock.waitLock(8000);
+  var name;
+  try { name = ok ? decide_(act, String(p.t)) : null; } finally { lock.releaseLock(); }
+  var msg = !ok ? 'This link is not valid.'
+    : !name ? 'This request was already handled.'
+    : act === 'approve' ? name + ' now has access to the server. 👍' : name + ' was denied.';
+  return HtmlService.createHtmlOutput('<div style="font:18px sans-serif;padding:40px;text-align:center">' + msg + '</div>')
+    .setTitle('CtC server access');
+}
+
+// web panel (password): list, approve, deny, revoke
+function access_(req) {
+  var err = checkPassword_(req.password);
+  if (err) return { ok: false, error: err };
+  var t = String(req.target || '');
+  if (req.op === 'approve' || req.op === 'deny' || req.op === 'revoke') {
+    if (!decide_(req.op, t)) return { ok: false, error: 'unknown request' };
+  }
+  var a = getAccess_();
+  var list = function (o, state) {
+    return Object.keys(o).map(function (k) { return { id: k, name: o[k].name, at: o[k].at, state: state }; });
+  };
+  return { ok: true, pending: list(a.pending, 'pending'), approved: list(a.approved, 'approved') };
 }
 
 // ---------- PC agent ----------

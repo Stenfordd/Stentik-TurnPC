@@ -113,6 +113,13 @@
     <div class="msg" id="conMsg"></div>
   </div>
 
+  <div class="card hidden" id="accCard">
+    <div class="label">Launcher access</div>
+    <div class="muted" style="margin-top:4px">Friends press <i>Request access</i> in the CtC launcher. Approved launchers can start/stop the servers and use the console without the password.</div>
+    <ul class="log" id="accList"></ul>
+    <div class="msg" id="accMsg"></div>
+  </div>
+
   <div class="card">
     <div class="label">Recent activity</div>
     <ul class="log" id="log"></ul>
@@ -300,8 +307,34 @@ async function conSend() {
 $('conSend').onclick = conSend;
 $('conInput').addEventListener('keydown', e => { if (e.key === 'Enter') conSend(); });
 
+// ---------- launcher access requests ----------
+let accTimer = null;
+async function accLoad(op, target) {
+  if (!session) return;
+  try {
+    const r = await api({ action: 'access', password: session.password, op: op || '', target: target || '' });
+    if (!r.ok) { $('accMsg').className = 'msg err'; $('accMsg').textContent = r.error; return; }
+    $('accMsg').textContent = '';
+    const rows = r.pending.map(x => '<li><b>' + esc(x.name) + '</b> <span>wants access</span>' +
+        '<span><button data-op="approve" data-id="' + esc(x.id) + '" style="padding:5px 12px">Approve</button> ' +
+        '<button class="ghost" data-op="deny" data-id="' + esc(x.id) + '" style="padding:5px 12px">Deny</button></span></li>')
+      .concat(r.approved.map(x => '<li><b>' + esc(x.name) + '</b> <span>has access</span>' +
+        '<span><button class="ghost" data-op="revoke" data-id="' + esc(x.id) + '" style="padding:5px 12px">Remove</button></span></li>'));
+    $('accList').innerHTML = rows.length ? rows.join('') : '<li><span>No requests yet.</span></li>';
+    $('accList').querySelectorAll('button').forEach(b => b.onclick = () => {
+      if (b.dataset.op === 'revoke' && !confirm('Take access away?')) return;
+      accLoad(b.dataset.op, b.dataset.id);
+    });
+  } catch (e) { $('accMsg').className = 'msg err'; $('accMsg').textContent = 'Cannot reach the panel API.'; }
+}
+function updateAccCard() {
+  $('accCard').classList.toggle('hidden', !session);
+  if (session && !accTimer) { accLoad(); accTimer = setInterval(accLoad, 20000); }
+  if (!session && accTimer) { clearInterval(accTimer); accTimer = null; }
+}
+
 const _render = render;
-render = s => { _render(s); updateConsoleCard(); };
+render = s => { _render(s); updateConsoleCard(); updateAccCard(); };
 
 showAuth();
 poll();
