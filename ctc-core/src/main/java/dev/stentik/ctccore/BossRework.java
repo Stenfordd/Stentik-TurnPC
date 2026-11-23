@@ -83,6 +83,16 @@ public final class BossRework {
             hp.addPermanentModifier(new AttributeModifier(CtcCore.id("boss_scale"), mult - 1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             boss.setHealth(boss.getMaxHealth());
         }
+        // 2.0: the bosses fight with chips (Elites.hit through ChipEvents); a third one at half health
+        Elites.equip(boss, boss instanceof EnderDragon ? List.of(ChipType.VOID, ChipType.LUNAR) : List.of(ChipType.EMBER, ChipType.ACID), false);
+    }
+
+    private static void equipMore(LivingEntity boss, ChipType chip, String who) {
+        Elites.equip(boss, List.of(chip), false);
+        for (Player p : boss.level().getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(300)))
+            p.sendSystemMessage(Component.translatable("ctccore.boss.equips", Component.translatable(who),
+                    Component.translatable("item.ctccore." + chip.id + "_chip")).withStyle(s -> s.withColor(chip.color)));
+        boss.level().playSound(null, boss.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 4.0f, 0.6f);
     }
 
     /** Remember who hit a trophy boss (stored on the boss, so it survives restarts). */
@@ -108,7 +118,14 @@ public final class BossRework {
             if (p instanceof ServerPlayer sp && sp.distanceToSqr(boss) < 256 * 256) got.add(sp);
         }
         if (event.getSource().getEntity() instanceof ServerPlayer killer && !got.contains(killer)) got.add(killer);
+        var bossChips = new ArrayList<>(Elites.chips(boss).keySet());
         for (ServerPlayer p : got) {
+            if (!bossChips.isEmpty() && boss.getRandom().nextFloat() < 0.15f) {
+                ChipType c = bossChips.get(boss.getRandom().nextInt(bossChips.size()));
+                ItemStack chip = new ItemStack(CtcCore.CHIP_ITEMS.get(c).get());
+                p.sendSystemMessage(Component.translatable("ctccore.boss.chip", chip.getHoverName()).withStyle(st -> st.withColor(c.color)));
+                if (!p.getInventory().add(chip)) p.drop(chip, false);
+            }
             ItemStack stack = new ItemStack(trophy.get());
             p.sendSystemMessage(Component.translatable("ctccore.boss.trophy", stack.getHoverName()));
             if (!p.getInventory().add(stack)) p.drop(stack, false);
@@ -152,6 +169,7 @@ public final class BossRework {
             }
             level.playSound(null, dragon.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.HOSTILE, 6.0f, 0.7f);
             tell(dragon, "ctccore.boss.dragon.half", 300);
+            equipMore(dragon, ChipType.GRAVITY, "entity.minecraft.ender_dragon");
         }
         if (dragon.tickCount % 200 == 0) {
             Player target = level.getNearestPlayer(dragon, 128);
@@ -182,6 +200,7 @@ public final class BossRework {
                 p.hurtMarked = true;
             }
             tell(wither, "ctccore.boss.wither.half", 64);
+            equipMore(wither, ChipType.KINETIC, "entity.minecraft.wither");
         }
         if (ratio <= 0.5f && wither.tickCount % 50 == 0 && wither.getTarget() != null) {
             LivingEntity t = wither.getTarget();

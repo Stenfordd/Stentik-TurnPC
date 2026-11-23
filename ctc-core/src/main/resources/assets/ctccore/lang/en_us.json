@@ -259,5 +259,7 @@
   "ctccore.hud.blink_ready": "Blink ready",
   "block.ctccore.creeper_totem": "Creeper Totem",
   "ctccore.creeper_totem.area": "Creeper Totem protects X %s..%s, Z %s..%s from creeper blasts",
-  "ctccore.creeper_totem.tip": "Creepers exploding within 16 x 16 chunks around it break no blocks or items. Right-click shows the area."
+  "ctccore.creeper_totem.tip": "Creepers exploding within 16 x 16 chunks around it break no blocks or items. Right-click shows the area.",
+  "ctccore.boss.equips": "%s equips a %s!",
+  "ctccore.boss.chip": "The boss dropped a %s for you!"
 }

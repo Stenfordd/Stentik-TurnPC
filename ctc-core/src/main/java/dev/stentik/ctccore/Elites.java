@@ -75,7 +75,7 @@ public final class Elites {
         for (ChipType c : chips) list.add(StringTag.valueOf(c.id));
         e.getPersistentData().put(CHIPS, list);
         e.addTag(TAG);
-        if (!buff) return;
+        if (!buff) return;   // bosses keep their own name and health
         int n = list.size();
         var hp = e.getAttribute(Attributes.MAX_HEALTH);
         if (hp != null) {
