@@ -62,6 +62,11 @@ public class CtcCore {
                     .requiresCorrectToolForDrops().sound(SoundType.METAL)
                     .lightLevel(state -> state.getValue(ResearchCasingBlock.FORMED) ? 7 : 0)));
     public static final DeferredItem<?> CASING_ITEM = ITEMS.registerSimpleBlockItem(CASING);
+    /** Stops creeper explosions from breaking blocks and items in the 16 x 16 chunks around it. */
+    public static final DeferredBlock<CreeperTotem> CREEPER_TOTEM = BLOCKS.register("creeper_totem",
+            () -> new CreeperTotem(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(3.0f, 1200.0f)
+                    .requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion().lightLevel(state -> 6)));
+    public static final DeferredItem<?> CREEPER_TOTEM_ITEM = ITEMS.registerSimpleBlockItem(CREEPER_TOTEM);
 
     public static final Supplier<BlockEntityType<ResearchStationBlockEntity>> STATION_BE = BLOCK_ENTITIES.register("research_station",
             () -> BlockEntityType.Builder.of(ResearchStationBlockEntity::new, STATION.get()).build(null));
@@ -113,6 +118,7 @@ public class CtcCore {
             .displayItems((params, out) -> {
                 out.accept(STATION_ITEM.get());
                 out.accept(CASING_ITEM.get());
+                out.accept(CREEPER_TOTEM_ITEM.get());
                 out.accept(BLANK_CHIP.get());
                 out.accept(CHIP_SCRAP.get());
                 for (ChipType type : ChipType.values()) out.accept(CHIP_ITEMS.get(type).get());

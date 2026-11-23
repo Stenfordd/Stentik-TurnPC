@@ -256,5 +256,8 @@
   "ctccore.hud.on": "ON",
   "ctccore.hud.off": "OFF",
   "ctccore.hud.toggle": "(right-click in inventory)",
-  "ctccore.hud.blink_ready": "Blink ready"
+  "ctccore.hud.blink_ready": "Blink ready",
+  "block.ctccore.creeper_totem": "Creeper Totem",
+  "ctccore.creeper_totem.area": "Creeper Totem protects X %s..%s, Z %s..%s from creeper blasts",
+  "ctccore.creeper_totem.tip": "Creepers exploding within 16 x 16 chunks around it break no blocks or items. Right-click shows the area."
 }

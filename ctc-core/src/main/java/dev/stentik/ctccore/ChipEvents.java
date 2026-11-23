@@ -58,6 +58,36 @@ public class ChipEvents {
         effect(entity, MobEffects.MOVEMENT_SLOWDOWN, 50, 3);
     }
 
+    /** What weapon chips do on a hit; also used for elite mobs and bosses. Returns the new damage. */
+    public static float hit(java.util.Map<ChipType, Integer> counts, LivingEntity attacker, LivingEntity target, float amount) {
+        for (var e : counts.entrySet()) {
+            int n = e.getValue();
+            switch (e.getKey()) {
+                case LUNAR -> effect(target, MobEffects.LEVITATION, 30 * n, 1);
+                case MARTIAN -> { target.igniteForSeconds(5); amount *= 1 + 0.10f * n; }
+                case MERCURY -> amount *= 1 + 0.20f * n;
+                case VOID -> amount += 3.0f * n;
+                case HARBINGER -> effect(target, MobEffects.WITHER, 100, n);
+                case IGNIS -> { target.igniteForSeconds(8); amount *= 1 + 0.15f * n; }
+                case LEVIATHAN -> { effect(target, MobEffects.MOVEMENT_SLOWDOWN, 60, 1 + n); effect(target, MobEffects.WEAKNESS, 60, n - 1); }
+                case REMNANT -> attacker.heal(amount * 0.15f * n);
+                case MALEDICTUS -> freeze(target);
+                case GUARDIAN -> amount *= 1 + 0.35f * n;
+                case EMBER -> target.igniteForSeconds(3 * n);
+                case TERRA -> amount += 1.5f * n;
+                case COPPER -> amount += 1.0f * n;
+                case IRON -> amount *= 1 + 0.10f * n;
+                case KINETIC -> target.knockback(1.2 * n, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+                case GRAVITY -> { target.setDeltaMovement(target.getDeltaMovement().add(0, 0.7 * n, 0)); target.hurtMarked = true; }
+                case DUST -> effect(target, MobEffects.BLINDNESS, 50 * n, 0);
+                case ACID -> effect(target, MobEffects.POISON, 80, n);
+                case FLARE -> { target.igniteForSeconds(5 * n); effect(target, MobEffects.GLOWING, 100, 0); }
+                default -> { }
+            }
+        }
+        return amount;
+    }
+
     @SubscribeEvent
     public static void damage(LivingIncomingDamageEvent event) {
         LivingEntity target = event.getEntity();
@@ -68,34 +98,10 @@ public class ChipEvents {
         // weapon chips: only real melee hits
         if (attacker != null && event.getSource().getDirectEntity() == attacker) {
             ItemStack weapon = attacker.getMainHandItem();
-            if (Gear.of(weapon) == Gear.WEAPON) {
-                for (var e : ChipType.counts(ChipType.of(weapon)).entrySet()) {
-                    int n = e.getValue();
-                    switch (e.getKey()) {
-                        case LUNAR -> effect(target, MobEffects.LEVITATION, 30 * n, 1);
-                        case MARTIAN -> { target.igniteForSeconds(5); amount *= 1 + 0.10f * n; }
-                        case MERCURY -> amount *= 1 + 0.20f * n;
-                        case VOID -> amount += 3.0f * n;
-                        case HARBINGER -> effect(target, MobEffects.WITHER, 100, n);
-                        case IGNIS -> { target.igniteForSeconds(8); amount *= 1 + 0.15f * n; }
-                        case LEVIATHAN -> { effect(target, MobEffects.MOVEMENT_SLOWDOWN, 60, 1 + n); effect(target, MobEffects.WEAKNESS, 60, n - 1); }
-                        case REMNANT -> attacker.heal(amount * 0.15f * n);
-                        case MALEDICTUS -> freeze(target);
-                        case GUARDIAN -> amount *= 1 + 0.35f * n;
-                        case EMBER -> target.igniteForSeconds(3 * n);
-                        case TERRA -> amount += 1.5f * n;
-                        case COPPER -> amount += 1.0f * n;
-                        case IRON -> amount *= 1 + 0.10f * n;
-                        case KINETIC -> target.knockback(1.2 * n, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
-                        case GRAVITY -> { target.setDeltaMovement(target.getDeltaMovement().add(0, 0.7 * n, 0)); target.hurtMarked = true; }
-                        case DUST -> effect(target, MobEffects.BLINDNESS, 50 * n, 0);
-                        case ACID -> effect(target, MobEffects.POISON, 80, n);
-                        case FLARE -> { target.igniteForSeconds(5 * n); effect(target, MobEffects.GLOWING, 100, 0); }
-                        default -> { }
-                    }
-                }
-            }
+            if (Gear.of(weapon) == Gear.WEAPON) amount = hit(ChipType.counts(ChipType.of(weapon)), attacker, target, amount);
         }
+        // elite mobs and the reworked bosses carry chips too (melee, arrows, fireballs)
+        if (attacker != null && attacker != target && Elites.is(attacker)) amount = hit(Elites.chips(attacker), attacker, target, amount);
 
         // a Kinetic dash cushions the landing: up to 3 hearts of fall damage are absorbed for 3 s after a dash
         if (event.getSource().is(DamageTypeTags.IS_FALL) && target instanceof Player p
