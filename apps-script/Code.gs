@@ -8,6 +8,11 @@
  * Access requests: the CtC launcher has a "Request access" button. David gets an e-mail with Approve / Deny
  * links (and sees the requests in the web panel); an approved launcher then works without the password.
  * After updating this file: Deploy -> Manage deployments -> edit -> New version (and allow sending e-mail).
+ *
+ * Wake-on-LAN: Apps Script can't send the UDP magic packet itself, so an approved launcher asks for "wake" and sends
+ * the packet from the friend's own PC to the router (port forward UDP 9 -> the PC). The router address and the PC's
+ * MAC are not in this public repo: set WOL_HOST and WOL_MAC in Project Settings -> Script properties
+ * (or fill WOL_DEFAULT in the copy you paste into the editor).
  */
 
 var CACHE = CacheService.getScriptCache();
@@ -15,6 +20,8 @@ var PROPS = PropertiesService.getScriptProperties();
 var ONLINE_SECONDS = 35;
 var PENDING_SECONDS = 600;
 var LOG_SIZE = 15;
+var WAKE_SECONDS = 240;   // "waking up" shown this long after a wake
+var WOL_DEFAULT = { host: '', mac: '', port: 9 };
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
@@ -42,6 +49,7 @@ function doPost(e) {
       case 'requestAccess': return json_(requestAccess_(req));
       case 'accessStatus': return json_(accessStatus_(req));
       case 'access': return json_(access_(req));
+      case 'wake': return json_(wake_(req));
     }
     return json_({ ok: false, error: 'unknown action' });
   } finally {
@@ -70,8 +78,54 @@ function status_() {
       };
     }),
     pending: getJson_('pending'),
+    waking: !online && !!CACHE.get('wakeAt'),
+    afterWake: !online ? (getJson_('afterWake') || null) : null,
+    canWake: !!wolConfig_(),
     log: getJson_('log') || []
   };
+}
+
+// ---------- Wake-on-LAN ----------
+
+function wolConfig_() {
+  var host = PROPS.getProperty('WOL_HOST') || WOL_DEFAULT.host;
+  var mac = PROPS.getProperty('WOL_MAC') || WOL_DEFAULT.mac;
+  if (!host || !mac) return null;
+  return { host: host, mac: mac, port: Number(PROPS.getProperty('WOL_PORT') || WOL_DEFAULT.port || 9) };
+}
+
+// Approved launcher (or the panel password): returns where to send the magic packet. With then:'start' the
+// server is started as soon as the PC's agent checks in after booting.
+function wake_(req) {
+  var err = auth_(req);
+  if (err) return { ok: false, error: err };
+  var cfg = wolConfig_();
+  if (!cfg) return { ok: false, error: 'Wake-on-LAN is not set up in the panel yet.' };
+  var st = status_();
+  if (st.pc === 'online') return { ok: true, online: true };
+  var by = cleanName_(req.by);
+  if (req.then === 'start') {
+    putJson_('afterWake', { server: String(req.server || ''), by: by, at: Date.now() }, 900);
+  }
+  if (!CACHE.get('wakeAt')) addLog_(by + ': powered on the PC' + (req.then === 'start' ? ' + server' : ''));
+  CACHE.put('wakeAt', String(Date.now()), WAKE_SECONDS);
+  return { ok: true, host: cfg.host, port: cfg.port, mac: cfg.mac };
+}
+
+// The first check-in after a wake: queue the server start that was asked for.
+function afterWake_(st) {
+  var w = getJson_('afterWake');
+  if (!w || getJson_('pending')) return;
+  var list = st.servers || [], srv = null;
+  list.forEach(function (s) { if (s.id === w.server) srv = s; });
+  if (!srv) list.forEach(function (s) { if (!srv && /cogs|ctc|cosmos/i.test(s.id + ' ' + s.name)) srv = s; });
+  if (!srv) srv = list[0];
+  CACHE.remove('afterWake');
+  if (!srv) return;
+  if (srv.state === 'running' || srv.state === 'starting') return;
+  var p = { id: Utilities.getUuid().slice(0, 8), cmd: 'start', server: srv.id, name: srv.name, by: w.by, at: Date.now() };
+  putJson_('pending', p, PENDING_SECONDS);
+  addLog_(w.by + ': start ' + srv.name + ' (after power on)');
 }
 
 function checkPassword_(pw) {
@@ -283,6 +337,8 @@ function agent_(req) {
   (st.servers || []).forEach(function (s) {
     if (before[s.id] && before[s.id] !== s.state && (s.state === 'running' || s.state === 'stopped')) addLog_(s.name + ' ' + s.state);
   });
+  CACHE.remove('wakeAt');
+  afterWake_(st);
   if (req.console && req.console.server) {
     putJson_('console', { server: req.console.server, lines: req.console.lines || [], at: Date.now() }, 120);
   }
