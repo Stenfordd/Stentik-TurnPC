@@ -101,7 +101,10 @@ public class ChipEvents {
             if (Gear.of(weapon) == Gear.WEAPON) amount = hit(ChipType.counts(ChipType.of(weapon)), attacker, target, amount);
         }
         // elite mobs and the reworked bosses carry chips too (melee, arrows, fireballs)
-        if (attacker != null && attacker != target && Elites.is(attacker)) amount = hit(Elites.chips(attacker), attacker, target, amount);
+        if (attacker != null && attacker != target && Elites.is(attacker)) {
+            amount = hit(Elites.chips(attacker), attacker, target, amount);
+            Elites.onHit(attacker, target);
+        }
 
         // a Kinetic dash cushions the landing: up to 3 hearts of fall damage are absorbed for 3 s after a dash
         if (event.getSource().is(DamageTypeTags.IS_FALL) && target instanceof Player p

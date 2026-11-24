@@ -3,6 +3,13 @@
   "minVersion": "0.8",
   "package": "dev.stentik.ctccore.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["AnvilMenuMixin"],
-  "injectors": { "defaultRequire": 1 }
+  "mixins": [
+    "AnvilMenuMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "DragonGlowMixin"
+  ]
 }

@@ -43,7 +43,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
  * 2.0 boss rework.
- * Ender Dragon and Wither: twice the health, +50% for every extra player nearby, and a second half with new moves.
+ * Ender Dragon (1.5x health) and Wither (2x): +50% for every extra player nearby, and a second half with new moves.
+ * Players hit the dragon 50% harder (vanilla cuts every hit on its body and wings to a quarter).
  * Dragon below 50%: two crystals come back once, arrows do half damage, volleys of three fireballs.
  * Wither: three Wither Skeleton guards at 75% and 25%, a shockwave at 50%, blue skulls in the second half.
  * Every player who hit the boss gets its trophy: Dragon Scale, Wither Core; Scylla gives a Tidal Pearl and the
@@ -76,7 +77,7 @@ public final class BossRework {
         if (data.getBoolean(SCALED)) return;
         data.putBoolean(SCALED, true);
         int players = playersNear(boss, boss instanceof EnderDragon ? 200 : 64);
-        double mult = 2.0 * (1.0 + 0.5 * (players - 1));
+        double mult = (boss instanceof EnderDragon ? 1.5 : 2.0) * (1.0 + 0.5 * (players - 1));
         var hp = boss.getAttribute(Attributes.MAX_HEALTH);
         if (hp != null) {
             hp.removeModifier(CtcCore.id("boss_scale"));
@@ -160,12 +161,16 @@ public final class BossRework {
             List<SpikeFeature.EndSpike> spikes = new ArrayList<>(SpikeFeature.getSpikesForLevel(level));
             java.util.Collections.shuffle(spikes, new java.util.Random(dragon.getRandom().nextLong()));
             for (int i = 0; i < Math.min(2, spikes.size()); i++) {
+                // on top of whatever pillar stands there (End mods like YUNG's rebuild the pillars taller)
                 SpikeFeature.EndSpike s = spikes.get(i);
-                EndCrystal crystal = new EndCrystal(level, s.getCenterX() + 0.5, s.getHeight() + 1, s.getCenterZ() + 0.5);
-                crystal.setShowBottom(true);
-                level.setBlockAndUpdate(new net.minecraft.core.BlockPos(s.getCenterX(), s.getHeight(), s.getCenterZ()),
-                        net.minecraft.world.level.block.Blocks.BEDROCK.defaultBlockState());
+                int x = s.getCenterX(), z = s.getCenterZ();
+                level.getChunk(x >> 4, z >> 4);
+                int top = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z);
+                if (top <= level.getMinBuildHeight() + 1) top = s.getHeight() + 1;
+                EndCrystal crystal = new EndCrystal(level, x + 0.5, top, z + 0.5);
+                crystal.setShowBottom(false);
                 level.addFreshEntity(crystal);
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, x + 0.5, top + 1, z + 0.5, 40, 0.5, 1.5, 0.5, 0.05);
             }
             level.playSound(null, dragon.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.HOSTILE, 6.0f, 0.7f);
             tell(dragon, "ctccore.boss.dragon.half", 300);
@@ -225,12 +230,13 @@ public final class BossRework {
         tell(wither, "ctccore.boss.wither.guards", 64);
     }
 
-    /** Dragon second half: arrows only do half damage. */
+    /** Players hit the dragon 50% harder; in its second half arrows do a quarter less. */
     @SubscribeEvent
     public static void arrows(LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof EnderDragon dragon && event.getSource().getDirectEntity() instanceof AbstractArrow
-                && dragon.getHealth() <= dragon.getMaxHealth() * 0.5f) {
-            event.setAmount(event.getAmount() * 0.5f);
-        }
+        if (!(event.getEntity() instanceof EnderDragon dragon)) return;
+        float amount = event.getAmount();
+        if (event.getSource().getEntity() instanceof Player) amount *= 1.5f;
+        if (event.getSource().getDirectEntity() instanceof AbstractArrow && dragon.getHealth() <= dragon.getMaxHealth() * 0.5f) amount *= 0.75f;
+        event.setAmount(amount);
     }
 }

@@ -185,6 +185,34 @@ public final class Elites {
         }
     }
 
+    // ---------------------------------------------------------------- hits you can see
+
+    /**
+     * An elite's hit shows which chips did it: a burst in each chip's colour and a sound. The chips that only add
+     * damage on a weapon get a small extra on elites so you can tell them apart: Copper shocks (slows), Iron dents
+     * your armor (weakness), Terra roots you (heavy slow).
+     */
+    static void onHit(LivingEntity elite, LivingEntity target) {
+        if (!(target.level() instanceof ServerLevel level) || elite instanceof EnderDragon || elite instanceof WitherBoss) return;
+        Map<ChipType, Integer> chips = chips(elite);
+        for (var e : chips.entrySet()) {
+            int rgb = e.getKey().color;
+            level.sendParticles(new DustParticleOptions(new Vector3f((rgb >> 16 & 255) / 255f, (rgb >> 8 & 255) / 255f, (rgb & 255) / 255f), 1.4f),
+                    target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 14, 0.35, 0.4, 0.35, 0);
+            int n = e.getValue();
+            switch (e.getKey()) {
+                case COPPER -> {
+                    target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 30 * n, 0));
+                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + 1, target.getZ(), 12, 0.3, 0.5, 0.3, 0.2);
+                }
+                case IRON -> target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 60 * n, 0));
+                case TERRA -> target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 25 * n, 2));
+                default -> { }
+            }
+        }
+        level.playSound(null, target.blockPosition(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_HIT, net.minecraft.sounds.SoundSource.HOSTILE, 1.0f, 0.7f);
+    }
+
     // ---------------------------------------------------------------- rewards
 
     @SubscribeEvent

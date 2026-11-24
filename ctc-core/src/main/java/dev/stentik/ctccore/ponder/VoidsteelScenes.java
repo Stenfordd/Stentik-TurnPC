@@ -78,7 +78,7 @@ public class VoidsteelScenes {
         scene.world().showSection(util.select().fromTo(7, 4, 3, 7, 5, 3), Direction.DOWN);
         scene.idle(10);
         scene.overlay().showText(90)
-                .text("Over a superheated burner (Blaze Cake) an ingot melts into 90 mB of Molten Voidsteel")
+                .text("Over a superheated burner (Blaze Cake) an ingot melts into 100 mB of Molten Voidsteel")
                 .pointAt(util.vector().centerOf(7, 2, 3)).placeNearTarget().attachKeyFrame();
         drop(scene, util, 7, 3, 3, "ctc:voidsteel_ingot");
         scene.idle(100);
@@ -88,7 +88,7 @@ public class VoidsteelScenes {
                 .pointAt(util.vector().topOf(7, 2, 3)).placeNearTarget();
         scene.idle(100);
         scene.overlay().showText(70)
-                .text("A Mechanical Press over the basin turns 90 mB back into an ingot")
+                .text("A Mechanical Press over the basin turns 100 mB back into an ingot")
                 .pointAt(util.vector().topOf(7, 4, 3)).placeNearTarget();
         scene.idle(80);
         scene.markAsFinished();
