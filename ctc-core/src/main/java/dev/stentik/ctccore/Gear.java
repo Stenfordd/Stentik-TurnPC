@@ -42,10 +42,28 @@ public enum Gear {
         return extra != null && extra > 0;
     }
 
-    /** Chip slots of this piece: 1 or 2 by quality, one more after a Chip Socket. */
+    /** Chip slots of this piece: 1 or 2 by quality, one more after a Chip Socket (Voidforging adds an upgrade slot since 3.0). */
     public static int slots(ItemStack stack) {
         Integer extra = stack.get(CtcCore.SOCKETS.get());
-        return base(stack) + (extra == null ? 0 : extra) + (Voidforge.is(stack) ? 1 : 0);
+        return base(stack) + (extra == null ? 0 : extra);
+    }
+
+    public static final TagKey<Item> THREE_UPGRADES = TagKey.create(Registries.ITEM, CtcCore.id("three_upgrade_slots"));
+
+    /**
+     * 3.0 upgrade slots for Amplifiers: 1 for 1-chip gear, 2 for diamond / titanium / netherite, 3 for the top tier
+     * (tungsten, Martian steel, voidsteel, Cataclysm gear); Voidforging adds one.
+     */
+    public static int upgradeSlots(ItemStack stack) {
+        int n = base(stack) <= 1 ? 1 : top(stack) ? 3 : 2;
+        return n + (Voidforge.is(stack) ? 1 : 0);
+    }
+
+    private static boolean top(ItemStack stack) {
+        if (stack.is(THREE_UPGRADES)) return true;
+        var key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        String p = key.getPath();
+        return key.getNamespace().equals("cataclysm") || p.contains("tungsten") || p.contains("martian") || p.contains("voidsteel");
     }
 
     public static Gear of(ItemStack stack) {

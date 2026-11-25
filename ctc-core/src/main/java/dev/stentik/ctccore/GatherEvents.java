@@ -101,7 +101,7 @@ public class GatherEvents {
         if (event.getClickAction() != net.minecraft.world.inventory.ClickAction.SECONDARY || !event.getCarriedItem().isEmpty()) return;
         ItemStack tool = event.getStackedOnItem();
         boolean any = VoidsteelGear.hasBuiltins(tool);
-        for (ChipType t : ChipType.of(tool)) if (t.gathering()) any = true;
+        for (ChipType t : ChipType.of(tool)) if (t.switchable(Gear.of(tool))) any = true;
         if (!any) return;
         if (VoidsteelGear.hasBuiltins(tool)) {
             VoidsteelGear.notify(event.getPlayer(), VoidsteelGear.cycle(tool));

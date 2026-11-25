@@ -24,12 +24,13 @@ public class ChipItem extends Item {
             lines.add(Component.translatable("ctccore.chip." + type.id + "." + g).withStyle(s -> s.withColor(type.color)));
             return;
         }
-        for (Gear gear : new Gear[] { Gear.WEAPON, Gear.ARMOR, Gear.TOOL }) {
-            lines.add(Component.translatable("ctccore.gear." + gear.name().toLowerCase()).withStyle(ChatFormatting.GRAY)
+        String[] parts = type.leveled() ? new String[] { "weapon", "helmet", "chest", "legs", "boots", "tool" } : new String[] { "weapon", "armor", "tool" };
+        for (String part : parts) {
+            lines.add(Component.translatable("ctccore.gear." + part).withStyle(ChatFormatting.GRAY)
                     .append(Component.literal(": "))
-                    .append(Component.translatable("ctccore.chip." + type.id + "." + gear.name().toLowerCase())
-                            .withStyle(s -> s.withColor(type.color))));
+                    .append(Component.translatable("ctccore.chip." + type.id + "." + part).withStyle(s -> s.withColor(type.color))));
         }
+        if (type.leveled()) lines.add(Component.translatable("ctccore.chip.stack_hint").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     @Override

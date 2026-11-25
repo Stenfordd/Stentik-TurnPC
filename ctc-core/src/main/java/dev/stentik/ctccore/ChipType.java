@@ -93,7 +93,7 @@ public enum ChipType {
         return out;
     }
 
-    /** 2.0: how many of the same chip still add up (in one piece of gear; armor counts all four pieces together). */
+    /** How many of the same chip add up on elite mobs and bosses (players use levels since 3.0). */
     public int cap() {
         return switch (this) {
             case MERCURY, TERRA, IRON -> 4;
@@ -112,9 +112,19 @@ public enum ChipType {
         return n;
     }
 
-    /** One more of this chip still counts in that gear. */
+    /** 3.0: a chip goes into a piece only once (it gets stronger with Amplifiers instead). */
     public static boolean canAdd(ItemStack stack, ChipType type) {
-        return count(stack, type) < type.cap();
+        return count(stack, type) == 0;
+    }
+
+    /** Chips that take Amplifiers: the plain ones. Boss chips do one strong thing, gathering chips just switch on. */
+    public boolean leveled() {
+        return !boss && !gathering();
+    }
+
+    /** Ember on a tool can be switched off like the gathering chips. */
+    public boolean switchable(Gear gear) {
+        return gathering() || this == EMBER && gear == Gear.TOOL;
     }
 
     /** Chip -> count, each capped at its stack limit. */

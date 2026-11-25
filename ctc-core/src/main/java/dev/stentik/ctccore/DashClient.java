@@ -10,7 +10,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /** Watches the jump key: pressed again while in the air (and released since leaving the ground) = dash. */
 @EventBusSubscriber(modid = CtcCore.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class DashClient {
-    private static boolean released, used;
+    private static boolean released;
+    private static int used;
 
     @SubscribeEvent
     public static void tick(ClientTickEvent.Post event) {
@@ -20,15 +21,17 @@ public class DashClient {
         boolean down = mc.options.keyJump.isDown();
         if (player.onGround() || player.isInWater() || player.getAbilities().flying || player.isPassenger() || player.isFallFlying()) {
             released = false;
-            used = false;
+            used = 0;
             return;
         }
         if (!down) {
             released = true;
             return;
         }
-        if (released && !used && ChipEvents.armorChips(player).contains(ChipType.KINETIC)) {
-            used = true;
+        int lvl = Chips.worn(player, net.minecraft.world.entity.EquipmentSlot.FEET, ChipType.KINETIC);
+        if (released && used < (lvl >= 3 ? 2 : 1) && lvl > 0) {
+            used++;
+            released = false;   // the second dash needs another press
             PacketDistributor.sendToServer(DashPayload.INSTANCE);
         }
     }

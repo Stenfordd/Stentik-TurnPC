@@ -15,7 +15,7 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
     private static final ResourceLocation TEXTURE = CtcCore.id("textures/gui/research_station.png");
     private static final int INFO_X = 48, INFO_Y = 18, INFO_W = 96, INFO_H = 60;
     private static final int TEXT = 0xD9DCF2, DIM = 0x8C92B8, GOOD = 0x6FE39B, BAD = 0xFF8A80, GOLD = 0xF0C060;
-    private Button button;
+    private Button button, arrow;
 
     public StationScreen(StationMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -29,7 +29,12 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
         super.init();
         button = addRenderableWidget(Button.builder(Component.translatable("ctccore.station.implant"), b -> {
             if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0);
-        }).bounds(leftPos + INFO_X, topPos + 88, INFO_W, 16).build());
+        }).bounds(leftPos + INFO_X, topPos + 88, INFO_W - 18, 16).build());
+        // with an Amplifier in the chip slot: which chip of the gear it goes to
+        arrow = addRenderableWidget(Button.builder(Component.literal("\u25B6"), b -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 1);
+        }).bounds(leftPos + INFO_X + INFO_W - 16, topPos + 88, 16, 16).tooltip(net.minecraft.client.gui.components.Tooltip.create(
+                Component.translatable("ctccore.station.target"))).build());
     }
 
     @Override
@@ -61,16 +66,30 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
         } else {
             if (gear != Gear.NONE) {
                 List<ChipType> chips = ChipType.of(gearStack);
-                lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(gearStack))); colors.add(TEXT);
-                for (ChipType c : chips) {
-                    lines.add(Component.literal("◆ ").append(Component.translatable("item.ctccore." + c.id + "_chip"))); colors.add(c.color);
+                lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(gearStack))
+                        .append("  ").append(Component.translatable("ctccore.upgrades", Chips.amps(gearStack).size(), Gear.upgradeSlots(gearStack)))); colors.add(TEXT);
+                boolean amp = menu.chip().getItem() instanceof AmplifierItem;
+                for (int i = 0; i < chips.size(); i++) {
+                    ChipType c = chips.get(i);
+                    int lvl = Chips.level(gearStack, c);
+                    boolean aimed = amp && !chips.isEmpty() && Math.floorMod(menu.target(), chips.size()) == i;
+                    lines.add(Component.literal(aimed ? "\u25B6 " : "\u25C6 ").append(Component.translatable("item.ctccore." + c.id + "_chip"))
+                            .append(c.leveled() ? " " + Chips.ROMAN[lvl] : "")); colors.add(c.color);
+                }
+                if (menu.chip().getItem() instanceof AmplifierItem a && !chips.isEmpty()) {
+                    ChipType t = chips.get(Math.floorMod(menu.target(), chips.size()));
+                    int lvl = Chips.level(gearStack, t);
+                    if (Chips.canAmplify(gearStack, t, a.tier)) {
+                        lines.add(Component.translatable("ctccore.station.amp", Component.translatable("item.ctccore." + t.id + "_chip"),
+                                Chips.ROMAN[lvl], Chips.ROMAN[lvl + 1])); colors.add(GOOD);
+                    }
                 }
                 if (menu.chip().is(Materials.CHIP_SOCKET.get())) {
                     lines.add(Component.translatable("ctccore.station.socket")); colors.add(GOOD);
                 }
                 if (menu.chip().getItem() instanceof ChipItem chipItem && ChipType.canAdd(gearStack, chipItem.type)) {
                     ChipType t = chipItem.type;
-                    lines.add(Component.literal("+ ").append(Component.translatable("ctccore.chip." + t.id + "." + gear.name().toLowerCase()))); colors.add(GOOD);
+                    lines.add(Component.literal("+ ").append(Component.translatable(Chips.effectKey(t, gearStack)))); colors.add(GOOD);
                     if (chips.size() >= Gear.slots(gearStack)) {
                         lines.add(Component.translatable("ctccore.station.replaces", Component.translatable("item.ctccore." + chips.get(0).id + "_chip"),
                                 chips.get(0).refund().getHoverName())); colors.add(GOLD);
@@ -94,6 +113,8 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         button.active = menu.status() == ResearchStationBlockEntity.OK;
+        arrow.visible = menu.chip().getItem() instanceof AmplifierItem;
+        button.setMessage(Component.translatable(arrow.visible ? "ctccore.station.amplify" : "ctccore.station.implant"));
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         if (mouseX >= leftPos + 8 && mouseX < leftPos + 18 && mouseY >= topPos + 19 && mouseY < topPos + 93) {

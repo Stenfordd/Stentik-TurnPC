@@ -79,6 +79,17 @@ public class CtcCore {
             () -> DataComponentType.<List<String>>builder().persistent(Codec.STRING.listOf())
                     .networkSynchronized(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())).build());
 
+    /** 3.0: Amplifiers installed into the gear, one "chip:tier" entry each (see {@link Chips}). */
+    public static final Supplier<DataComponentType<List<String>>> AMPS = COMPONENTS.register("amps",
+            () -> DataComponentType.<List<String>>builder().persistent(Codec.STRING.listOf())
+                    .networkSynchronized(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())).build());
+
+    /** Amplifiers: tier 1 Brass, 2 Titanium, 3 Voidsteel. */
+    public static final DeferredItem<AmplifierItem> BRASS_AMP = ITEMS.register("brass_amplifier", () -> new AmplifierItem(1, new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<AmplifierItem> TITANIUM_AMP = ITEMS.register("titanium_amplifier", () -> new AmplifierItem(2, new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<AmplifierItem> VOIDSTEEL_AMP = ITEMS.register("voidsteel_amplifier",
+            () -> new AmplifierItem(3, new Item.Properties().stacksTo(16).rarity(net.minecraft.world.item.Rarity.EPIC)));
+
     public static final DeferredItem<Item> BLANK_CHIP = ITEMS.registerSimpleItem("blank_chip");
     public static final DeferredItem<Item> CHIP_SCRAP = ITEMS.registerSimpleItem("chip_scrap");
     public static final Map<ChipType, DeferredItem<ChipItem>> CHIP_ITEMS = new EnumMap<>(ChipType.class);
@@ -121,6 +132,9 @@ public class CtcCore {
                 out.accept(CREEPER_TOTEM_ITEM.get());
                 out.accept(BLANK_CHIP.get());
                 out.accept(CHIP_SCRAP.get());
+                out.accept(BRASS_AMP.get());
+                out.accept(TITANIUM_AMP.get());
+                out.accept(VOIDSTEEL_AMP.get());
                 for (ChipType type : ChipType.values()) out.accept(CHIP_ITEMS.get(type).get());
                 for (var item : Materials.ALL) out.accept(item.get());
                 for (var item : Armors.ALL) out.accept(item.get());

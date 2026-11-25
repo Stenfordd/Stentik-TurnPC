@@ -39,20 +39,25 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     public static final ResourceLocation FUEL = ResourceLocation.fromNamespaceAndPath("createnuclear", "uranium_rod");
 
     /** Status shown in the screen. */
-    public static final int OK = 0, NO_GEAR = 1, NO_CHIP = 2, HAS_CHIP = 3, NO_FUEL = 4, NO_ENERGY = 5, OUT_FULL = 6, WORKING = 7, NOT_FORMED = 8;
+    public static final int OK = 0, NO_GEAR = 1, NO_CHIP = 2, HAS_CHIP = 3, NO_FUEL = 4, NO_ENERGY = 5, OUT_FULL = 6, WORKING = 7, NOT_FORMED = 8, CANT_AMP = 9;
 
     public final ItemStackHandler items = new ItemStackHandler(5) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
             if (slot == SLOT_GEAR || slot == SLOT_CHIP) running = false;   // taking the gear out cancels the job
+            if (slot == SLOT_GEAR) {                                       // a new piece: aim at its first chip that takes Amplifiers
+                target = 0;
+                List<ChipType> chips = ChipType.of(getStackInSlot(SLOT_GEAR));
+                for (int i = 0; i < chips.size(); i++) if (chips.get(i).leveled()) { target = i; break; }
+            }
         }
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return switch (slot) {
                 case SLOT_GEAR -> Gear.of(stack) != Gear.NONE;
-                case SLOT_CHIP -> stack.getItem() instanceof ChipItem || stack.is(Materials.CHIP_SOCKET.get());
+                case SLOT_CHIP -> stack.getItem() instanceof ChipItem || stack.getItem() instanceof AmplifierItem || stack.is(Materials.CHIP_SOCKET.get());
                 case SLOT_FUEL -> isFuel(stack);
                 default -> false;
             };
@@ -64,6 +69,8 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
     private int progress;
     private boolean running;
     private int missing = FRAME_BLOCKS;
+    /** Which chip of the gear an Amplifier goes to (index into its chip list). */
+    private int target;
 
     public final ContainerData data = new ContainerData() {
         @Override
@@ -73,6 +80,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
                 case 1 -> energy.getEnergyStored() / 100;      // synced as a short: hundreds of FE
                 case 2 -> status();
                 case 3 -> missing;
+                case 4 -> target;
                 default -> 0;
             };
         }
@@ -83,7 +91,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     };
 
@@ -159,6 +167,14 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         if (missing > 0) return NOT_FORMED;
         ItemStack gear = items.getStackInSlot(SLOT_GEAR), chip = items.getStackInSlot(SLOT_CHIP);
         if (Gear.of(gear) == Gear.NONE) return NO_GEAR;
+        Chips.migrate(gear);
+        if (chip.getItem() instanceof AmplifierItem amp) {
+            if (!Chips.canAmplify(gear, targetChip(), amp.tier)) return CANT_AMP;
+            if (fuelRequired() && items.getStackInSlot(SLOT_FUEL).isEmpty()) return NO_FUEL;
+            if (energy.getEnergyStored() < ENERGY_PER_IMPLANT && !running) return NO_ENERGY;
+            if (!items.getStackInSlot(SLOT_OUT).isEmpty()) return OUT_FULL;
+            return running ? WORKING : OK;
+        }
         boolean socket = chip.is(Materials.CHIP_SOCKET.get());
         if (!socket && !(chip.getItem() instanceof ChipItem)) return NO_CHIP;
         if (!socket && !((ChipItem) chip.getItem()).type.fits(gear)) return NO_GEAR;
@@ -172,6 +188,27 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
             if (!out.isEmpty() && (!ItemStack.isSameItemSameComponents(out, refund) || out.getCount() >= out.getMaxStackSize())) return OUT_FULL;
         }
         return running ? WORKING : OK;
+    }
+
+    /** The chip an Amplifier in the chip slot would go to. */
+    public ChipType targetChip() {
+        List<ChipType> chips = ChipType.of(items.getStackInSlot(SLOT_GEAR));
+        if (chips.isEmpty()) return null;
+        return chips.get(Math.floorMod(target, chips.size()));
+    }
+
+    /** The arrow button: the next chip that can take an Amplifier. */
+    public void cycleTarget() {
+        List<ChipType> chips = ChipType.of(items.getStackInSlot(SLOT_GEAR));
+        if (chips.isEmpty()) return;
+        for (int i = 1; i <= chips.size(); i++) {
+            int t = Math.floorMod(target + i, chips.size());
+            if (chips.get(t).leveled()) {
+                target = t;
+                break;
+            }
+        }
+        setChanged();
     }
 
     /** The button in the screen. */
@@ -217,6 +254,11 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
 
     private void finish(Level level, BlockPos pos) {
         ItemStack gear = items.getStackInSlot(SLOT_GEAR).copy();
+        if (items.getStackInSlot(SLOT_CHIP).getItem() instanceof AmplifierItem amp) {
+            Chips.addAmp(gear, targetChip(), amp.tier);
+            done(level, pos, gear);
+            return;
+        }
         if (items.getStackInSlot(SLOT_CHIP).is(Materials.CHIP_SOCKET.get())) {
             gear.set(CtcCore.SOCKETS.get(), 1);
             done(level, pos, gear);
@@ -262,6 +304,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         tag.putInt("energy", energy.getEnergyStored());
         tag.putInt("progress", progress);
         tag.putBoolean("running", running);
+        tag.putInt("target", target);
     }
 
     @Override
@@ -275,6 +318,7 @@ public class ResearchStationBlockEntity extends BlockEntity implements MenuProvi
         energy.set(tag.getInt("energy"));
         progress = tag.getInt("progress");
         running = tag.getBoolean("running");
+        target = tag.getInt("target");
     }
 
     @Override

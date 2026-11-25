@@ -22,7 +22,7 @@ public class StationMenu extends AbstractContainerMenu {
 
     /** Client side. */
     public StationMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
-        this(id, inventory, (ResearchStationBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(4));
+        this(id, inventory, (ResearchStationBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(5));
     }
 
     /** Server side. */
@@ -63,6 +63,10 @@ public class StationMenu extends AbstractContainerMenu {
         return data.get(3);
     }
 
+    public int target() {
+        return data.get(4);
+    }
+
     public ItemStack gear() {
         return slots.get(0).getItem();
     }
@@ -75,6 +79,10 @@ public class StationMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int id) {
         if (id == 0) {
             station.start();
+            return true;
+        }
+        if (id == 1) {
+            station.cycleTarget();
             return true;
         }
         return false;

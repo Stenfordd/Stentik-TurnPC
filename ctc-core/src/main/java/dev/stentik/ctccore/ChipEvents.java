@@ -35,25 +35,18 @@ public class ChipEvents {
             "cataclysm:maledictus", ChipType.MALEDICTUS,
             "cataclysm:ender_guardian", ChipType.GUARDIAN);
 
+    /** Chips in all worn armor pieces (any level). */
     static Set<ChipType> armorChips(LivingEntity entity) {
-        return armorCounts(entity).keySet();
+        Set<ChipType> out = EnumSet.noneOf(ChipType.class);
+        for (EquipmentSlot slot : ARMOR) out.addAll(ChipType.of(Chips.piece(entity, slot)));
+        return out;
     }
 
-    /** Chips in all worn armor pieces together, each capped at its stack limit. */
-    static java.util.EnumMap<ChipType, Integer> armorCounts(LivingEntity entity) {
-        java.util.List<ChipType> all = new java.util.ArrayList<>();
-        for (EquipmentSlot slot : ARMOR) {
-            ItemStack stack = entity.getItemBySlot(slot);
-            if (Gear.of(stack) == Gear.ARMOR) all.addAll(ChipType.of(stack));
-        }
-        return ChipType.counts(all);
-    }
-
-    private static void effect(LivingEntity entity, Holder<MobEffect> effect, int ticks, int amplifier) {
+    static void effect(LivingEntity entity, Holder<MobEffect> effect, int ticks, int amplifier) {
         entity.addEffect(new MobEffectInstance(effect, ticks, amplifier, true, false, true));
     }
 
-    private static void freeze(LivingEntity entity) {
+    static void freeze(LivingEntity entity) {
         entity.setTicksFrozen(Math.max(entity.getTicksFrozen(), 300));
         effect(entity, MobEffects.MOVEMENT_SLOWDOWN, 50, 3);
     }
@@ -98,7 +91,8 @@ public class ChipEvents {
         // weapon chips: only real melee hits
         if (attacker != null && event.getSource().getDirectEntity() == attacker) {
             ItemStack weapon = attacker.getMainHandItem();
-            if (Gear.of(weapon) == Gear.WEAPON) amount = hit(ChipType.counts(ChipType.of(weapon)), attacker, target, amount);
+            if (Gear.of(weapon) == Gear.WEAPON) amount = hit(Chips.levels(weapon), attacker, target, amount);
+            if (attacker instanceof Player hitter && hitter != target) ArmorChips.onPlayerHit(hitter, target);
         }
         // elite mobs and the reworked bosses carry chips too (melee, arrows, fireballs)
         if (attacker != null && attacker != target && Elites.is(attacker)) {
@@ -113,27 +107,9 @@ public class ChipEvents {
             if (amount <= 0) { event.setCanceled(true); return; }
         }
 
-        // armor chips of the one being hit
-        var armor = armorCounts(target);
-        if (!armor.isEmpty()) {
-            int n;
-            if ((n = armor.getOrDefault(ChipType.VOID, 0)) > 0 && target.getRandom().nextFloat() < 0.12f * n) {
-                event.setCanceled(true);
-                return;
-            }
-            if ((n = armor.getOrDefault(ChipType.LUNAR, 0)) > 0 && event.getSource().is(DamageTypeTags.IS_FALL)) amount *= 1 - 0.3f * n;
-            amount *= (float) Math.pow(0.85, armor.getOrDefault(ChipType.MERCURY, 0));
-            amount *= (float) Math.pow(0.92, armor.getOrDefault(ChipType.TERRA, 0));
-            if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)) amount *= (float) Math.pow(0.8, armor.getOrDefault(ChipType.IRON, 0));
-            amount *= (float) Math.pow(0.75, armor.getOrDefault(ChipType.GUARDIAN, 0));
-            if (attacker != null && attacker != target) {
-                int fire = armor.getOrDefault(ChipType.MARTIAN, 0) + armor.getOrDefault(ChipType.IGNIS, 0) + armor.getOrDefault(ChipType.EMBER, 0);
-                if (fire > 0) attacker.igniteForSeconds(3 + fire);
-                if ((n = armor.getOrDefault(ChipType.HARBINGER, 0)) > 0) effect(attacker, MobEffects.WITHER, 60, n - 1);
-                if (armor.containsKey(ChipType.MALEDICTUS)) freeze(attacker);
-                if ((n = armor.getOrDefault(ChipType.ACID, 0)) > 0) effect(attacker, MobEffects.POISON, 60, n - 1);
-            }
-        }
+        // armor chips of the one being hit (per piece since 3.0)
+        amount = ArmorChips.hurt(event, target, attacker, amount);
+        if (event.isCanceled()) return;
         event.setAmount(amount);
     }
 
@@ -142,34 +118,20 @@ public class ChipEvents {
         Player player = event.getEntity();
         if (player.level().isClientSide || player.tickCount % 40 != 0) return;
 
-        var armor = armorCounts(player);
-        int n;
-        if ((n = armor.getOrDefault(ChipType.LUNAR, 0)) > 0) { effect(player, MobEffects.MOVEMENT_SPEED, 100, n - 1); effect(player, MobEffects.JUMP, 100, n); }
-        if (armor.containsKey(ChipType.IGNIS)) effect(player, MobEffects.FIRE_RESISTANCE, 100, 0);
-        if (armor.containsKey(ChipType.LEVIATHAN)) { effect(player, MobEffects.WATER_BREATHING, 100, 0); effect(player, MobEffects.DOLPHINS_GRACE, 100, armor.get(ChipType.LEVIATHAN) - 1); }
-        if ((n = armor.getOrDefault(ChipType.REMNANT, 0)) > 0) effect(player, MobEffects.REGENERATION, 100, n - 1);
-        if ((n = armor.getOrDefault(ChipType.COPPER, 0)) > 0) effect(player, MobEffects.MOVEMENT_SPEED, 100, n - 1);
-        if ((n = armor.getOrDefault(ChipType.GRAVITY, 0)) > 0) effect(player, MobEffects.JUMP, 100, 1 + n);
-        if (armor.containsKey(ChipType.DUST)) effect(player, MobEffects.FIRE_RESISTANCE, 100, 0);
-        if ((n = armor.getOrDefault(ChipType.FLARE, 0)) > 0 && player.level().isDay() && player.level().canSeeSky(player.blockPosition()))
-            effect(player, MobEffects.REGENERATION, 100, n - 1);
+        ArmorChips.tick40(player);
         Armors.setBonus(player);
 
+        // boss chips in tools keep their old effects (the plain chips work through ToolChips)
         ItemStack held = player.getMainHandItem();
         if (Gear.of(held) != Gear.TOOL) return;
         int haste = -1;
-        for (var e : ChipType.counts(ChipType.of(held)).entrySet()) {
-            int k = e.getValue() - 1;   // every extra copy of the same chip adds one level
-            switch (e.getKey()) {
-                case LUNAR, FLARE -> effect(player, MobEffects.NIGHT_VISION, 320, 0);
-                case MARTIAN, IGNIS, GRAVITY -> haste = Math.max(haste, 1 + k);
-                case MERCURY, HARBINGER, MALEDICTUS, EMBER, IRON, KINETIC, ACID -> haste = Math.max(haste, k);
-                case GUARDIAN -> haste = Math.max(haste, 2 + k);
-                case VOID -> effect(player, MobEffects.LUCK, 100, 1 + k);
-                case TERRA -> effect(player, MobEffects.LUCK, 100, k);
-                case COPPER, DUST -> effect(player, MobEffects.MOVEMENT_SPEED, 100, k);
+        for (ChipType t : ChipType.of(held)) {
+            switch (t) {
+                case IGNIS -> haste = Math.max(haste, 1);
+                case HARBINGER, MALEDICTUS -> haste = Math.max(haste, 0);
+                case GUARDIAN -> haste = Math.max(haste, 2);
                 case LEVIATHAN -> effect(player, MobEffects.CONDUIT_POWER, 100, 0);
-                case REMNANT -> { if (held.isDamaged()) held.setDamageValue(Math.max(0, held.getDamageValue() - 1 - k)); }
+                case REMNANT -> { if (held.isDamaged()) held.setDamageValue(Math.max(0, held.getDamageValue() - 1)); }
                 default -> { }
             }
         }

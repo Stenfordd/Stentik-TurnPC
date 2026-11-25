@@ -28,11 +28,11 @@ public final class VoidRapier {
     }
 
     public static int range(ItemStack stack) {
-        return 10 + 4 * Math.min(ChipType.count(stack, ChipType.KINETIC), ChipType.KINETIC.cap());
+        return 10 + 4 * Chips.level(stack, ChipType.KINETIC);
     }
 
     public static int cooldown(ItemStack stack) {
-        return 100 - 25 * Math.min(ChipType.count(stack, ChipType.VOID), ChipType.VOID.cap());
+        return 100 - 25 * Chips.level(stack, ChipType.VOID);
     }
 
     @SubscribeEvent

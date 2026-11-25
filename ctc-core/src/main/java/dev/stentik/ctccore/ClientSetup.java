@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -93,24 +94,23 @@ public class ClientSetup {
             List<Component> lines = event.getToolTip();
             Voidforge.tooltip(event.getItemStack(), lines);
             boolean gathering = false;
-            for (ChipType t : ChipType.of(event.getItemStack())) if (t.gathering()) gathering = true;
+            for (ChipType t : ChipType.of(event.getItemStack())) if (t.switchable(gear)) gathering = true;
             if (gathering) lines.add(GatherEvents.off(event.getItemStack())
                     ? Component.translatable("ctccore.chips.off").withStyle(ChatFormatting.RED)
                     : Component.translatable("ctccore.chips.on").withStyle(ChatFormatting.GREEN));
             String bonus = Armors.bonusKey(event.getItemStack());
             if (bonus != null) lines.add(Component.translatable("ctccore.armor.set", Component.translatable(bonus)).withStyle(ChatFormatting.GOLD));
-            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(event.getItemStack())).withStyle(ChatFormatting.GRAY));
-            if (VoidRapier.is(event.getItemStack())) lines.add(VoidRapier.info(event.getItemStack()).withStyle(ChatFormatting.LIGHT_PURPLE));
-            java.util.Map<ChipType, Integer> raw = new java.util.EnumMap<>(ChipType.class);
-            for (ChipType c : chips) raw.merge(c, 1, Integer::sum);
-            for (var en : raw.entrySet()) {
+            ItemStack st = event.getItemStack();
+            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(st))
+                    .append("  ").append(Component.translatable("ctccore.upgrades", Chips.amps(st).size(), Gear.upgradeSlots(st))).withStyle(ChatFormatting.GRAY));
+            if (VoidRapier.is(st)) lines.add(VoidRapier.info(st).withStyle(ChatFormatting.LIGHT_PURPLE));
+            for (var en : Chips.levels(st).entrySet()) {
                 ChipType chip = en.getKey();
-                int n = en.getValue();
-                String mult = chip.cap() > 1 ? " ×" + n + "/" + chip.cap() : "";
-                lines.add(Component.literal(" ◆ ").withStyle(s -> s.withColor(chip.color))
-                        .append(Component.translatable("item.ctccore." + chip.id + "_chip").append(mult).withStyle(s -> s.withColor(chip.color)))
+                String lvl = chip.leveled() ? " " + Chips.ROMAN[en.getValue()] : "";
+                lines.add(Component.literal(" \u25C6 ").withStyle(s -> s.withColor(chip.color))
+                        .append(Component.translatable("item.ctccore." + chip.id + "_chip").append(lvl).withStyle(s -> s.withColor(chip.color)))
                         .append(Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY))
-                        .append(Component.translatable("ctccore.chip." + chip.id + "." + gear.name().toLowerCase()).withStyle(ChatFormatting.GRAY)));
+                        .append(Component.translatable(Chips.effectKey(chip, st)).withStyle(ChatFormatting.GRAY)));
             }
         }
     }

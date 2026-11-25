@@ -58,8 +58,8 @@ public final class Armors {
 
     static {
         set("steel", 2, 7, 5, 2, 0.5f, 0.0f, 22, "createnuclear:steel_ingot");
-        set("titanium", 3, 8, 6, 3, 2.0f, 0.0f, 30, "#c:ingots/titanium");
-        set("tungsten", 3, 9, 7, 3, 3.0f, 0.15f, 38, "northstar:tungsten_ingot");
+        set("titanium", 3, 8, 7, 3, 2.5f, 0.0f, 30, "#c:ingots/titanium");
+        set("tungsten", 3, 9, 8, 3, 3.5f, 0.15f, 38, "northstar:tungsten_ingot");
         set("voidsteel", 4, 9, 7, 4, 3.5f, 0.1f, 40, "ctc:voidsteel_ingot");
     }
 

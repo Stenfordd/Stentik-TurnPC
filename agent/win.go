@@ -106,3 +106,20 @@ func powerOff() {
 	hide(c)
 	c.Run()
 }
+
+// launchTray starts the tray icon (a PowerShell Windows Forms script) for the PC owner.
+// No console window, but not HideWindow either: that would hide the console form it opens.
+func launchTray() {
+	p := filepath.Join(dataDir, "tray.ps1")
+	if err := os.WriteFile(p, append([]byte{0xEF, 0xBB, 0xBF}, trayPS...), 0o644); err != nil {
+		log.Printf("tray: %v", err)
+		return
+	}
+	c := exec.Command("powershell.exe", "-NoProfile", "-STA", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", p)
+	c.SysProcAttr = &syscall.SysProcAttr{CreationFlags: createNoWindow}
+	if err := c.Start(); err != nil {
+		log.Printf("tray: %v", err)
+		return
+	}
+	go c.Wait()
+}

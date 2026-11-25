@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	version    = "2.3"
+	version    = "2.4"
 	defaultAPI = "https://script.google.com/macros/s/AKfycbx4XO5fIneyf4_Zb8sal9cAHtoVXo8vMankC1wGpRP39US6x7d4t4j2fzIDwwsMKX-C/exec"
 	panelURL   = "https://stenfordd.github.io/Stentik-TurnPC/"
 )
@@ -58,6 +58,7 @@ type srv struct {
 	stdin     io.WriteCloser
 	lastList  time.Time
 	wantStart string // start once the port is free (switching servers / restart)
+	startedBy string
 	con       tail
 	seen      int // console lines already scanned for joins/leaves
 }
@@ -401,12 +402,15 @@ func runLoop() {
 		time.Sleep(30 * time.Second)
 	}
 	buildServers()
+	startLocal()
+	launchTray()
 	fast := time.Time{}
 	for {
 		if st, err := os.Stat(cfgPath()); err == nil && st.ModTime().After(cfgTime) && loadCfg() {
 			buildServers()
 		}
 		refreshAll()
+		takeSnapshot()
 		if c := report(); c != nil {
 			fast = time.Now().Add(3 * time.Minute)
 			run(c)
@@ -419,12 +423,15 @@ func runLoop() {
 				busy = true
 			}
 		}
-		if watch != "" {
-			time.Sleep(2 * time.Second)
+		snapMu.Lock()
+		trayOn := time.Since(trayAt) < 6*time.Second
+		snapMu.Unlock()
+		if watch != "" || trayOn {
+			wait(2 * time.Second)
 		} else if busy || time.Now().Before(fast) {
-			time.Sleep(3 * time.Second)
+			wait(3 * time.Second)
 		} else {
-			time.Sleep(10 * time.Second)
+			wait(10 * time.Second)
 		}
 	}
 }
@@ -831,6 +838,7 @@ func start(s *srv, by string) {
 		return
 	}
 	s.proc, s.stdin = cmd, in
+	s.startedBy = by
 	go func() { cmd.Wait(); lf.Close() }()
 	s.set("starting")
 	log.Printf("%s start (by %s): %v", s.Name, by, cmd.Args)

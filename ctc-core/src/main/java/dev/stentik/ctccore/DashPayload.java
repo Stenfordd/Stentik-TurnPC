@@ -11,12 +11,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Kinetic Chip in armor: jumping again in mid-air dashes forward (4 s cooldown). The client asks, the server checks and moves. */
+/** Kinetic Chip in boots: jumping again in mid-air dashes forward (cooldown by level, two dashes at level 3). The client asks, the server checks and moves. */
 public record DashPayload() implements CustomPacketPayload {
     public static final Type<DashPayload> TYPE = new Type<>(CtcCore.id("dash"));
     public static final DashPayload INSTANCE = new DashPayload();
     public static final StreamCodec<ByteBuf, DashPayload> CODEC = StreamCodec.unit(INSTANCE);
-    public static final int COOLDOWN = 80;
+    /** 4 s, 3 s, 2 s (level 1, 2, 3+). */
+    public static int cooldown(int lvl) {
+        return lvl >= 3 ? 40 : lvl == 2 ? 60 : 80;
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
@@ -26,11 +29,16 @@ public record DashPayload() implements CustomPacketPayload {
     public static void handle(DashPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) return;
-            if (!ChipEvents.armorChips(player).contains(ChipType.KINETIC) || player.onGround() || player.isPassenger()) return;
+            int lvl = Chips.worn(player, net.minecraft.world.entity.EquipmentSlot.FEET, ChipType.KINETIC);
+            if (lvl <= 0 || player.onGround() || player.isPassenger()) return;
             long now = player.level().getGameTime();
-            long last = player.getPersistentData().getLong("ctcDash");
-            if (now - last < COOLDOWN) return;
-            player.getPersistentData().putLong("ctcDash", now);
+            var data = player.getPersistentData();
+            long last = data.getLong("ctcDash");
+            // level 3+: a second dash right after the first one (before landing)
+            boolean second = lvl >= 3 && data.getInt("ctcDashN") == 1 && now - last >= 6 && now - last < 40;
+            if (now - last < cooldown(lvl) && !second) return;
+            data.putInt("ctcDashN", second ? 2 : 1);
+            data.putLong("ctcDash", now);
             Vec3 look = player.getLookAngle();
             Vec3 flat = new Vec3(look.x, 0, look.z);
             if (flat.lengthSqr() < 1.0e-4) flat = new Vec3(0, 0, 1);
