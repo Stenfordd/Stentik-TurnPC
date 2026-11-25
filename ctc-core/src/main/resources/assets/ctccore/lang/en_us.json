@@ -293,7 +293,7 @@
   "ctccore.chip.gravity.helmet": "Pulls items to you (3 + 2/level blocks)",
   "ctccore.chip.gravity.chest": "Throws attackers into the air",
   "ctccore.chip.gravity.legs": "+0.5 block reach per level",
-  "ctccore.chip.gravity.boots": "Sneak while falling: ground pound that hurts everything around",
+  "ctccore.chip.gravity.boots": "Sneak while falling: ground pound that hurts everything around, 75% less fall damage",
   "ctccore.chip.martian.helmet": "Immune to Hunger and Nausea",
   "ctccore.chip.martian.chest": "Attackers get Weakness",
   "ctccore.chip.martian.legs": "+1 attack damage per level",

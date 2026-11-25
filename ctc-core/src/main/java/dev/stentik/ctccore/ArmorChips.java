@@ -181,7 +181,7 @@ public final class ArmorChips {
         var data = e.getPersistentData();
         int n;
         if (data.getBoolean("ctcPound") && lvl(e, FEET, ChipType.GRAVITY) > 0) {
-            event.setDamageMultiplier(0);   // a ground pound never hurts you; the smash itself happens on landing (tick)
+            event.setDamageMultiplier(event.getDamageMultiplier() * 0.25f);   // a ground pound takes 75% off your fall damage; the smash happens on landing (tick)
         }
         if ((n = lvl(e, FEET, ChipType.ACID)) > 0 && event.getDistance() > 1.5f) {
             for (LivingEntity m : e.level().getEntitiesOfClass(LivingEntity.class, e.getBoundingBox().inflate(1.5, 0.5, 1.5),
@@ -330,7 +330,6 @@ public final class ArmorChips {
         if ((n = lvl(p, FEET, ChipType.GRAVITY)) > 0) {
             if (data.getBoolean("ctcPound")) {
                 data.putFloat("ctcPoundH", Math.max(data.getFloat("ctcPoundH"), p.fallDistance));
-                p.resetFallDistance();   // no fall damage from a pound
                 if (p.onGround() || p.isInWater()) smash(p, n, data.getFloat("ctcPoundH"));
                 else if (p.getDeltaMovement().y > -1.5) {
                     p.setDeltaMovement(p.getDeltaMovement().x * 0.5, -2.0, p.getDeltaMovement().z * 0.5);
