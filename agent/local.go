@@ -9,6 +9,8 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -31,6 +33,7 @@ type srvSnap struct {
 	By      string   `json:"by"`
 	Detail  string   `json:"detail"`
 	Lines   []string `json:"lines,omitempty"`
+	LogAge  int64    `json:"logAge"` // seconds since logs/latest.log was written
 }
 
 var (
@@ -52,6 +55,10 @@ func takeSnapshot() {
 	out := []srvSnap{}
 	for _, s := range servers {
 		x := srvSnap{ID: s.ID, Name: s.Name, Dir: s.Dir, State: s.state, Players: s.players, Max: s.max, By: s.startedBy, Detail: s.detail}
+		x.LogAge = 1 << 30
+		if st, err := os.Stat(filepath.Join(s.Dir, "logs", "latest.log")); err == nil {
+			x.LogAge = int64(time.Since(st.ModTime()).Seconds())
+		}
 		if x.Players == nil {
 			x.Players = []string{}
 		}

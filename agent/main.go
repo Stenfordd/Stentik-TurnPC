@@ -551,6 +551,23 @@ func owner(port string) *srv {
 	return nil
 }
 
+// logActive: the server's log was written in the last minute and does not end with a shutdown, i.e. it is booting.
+func logActive(s *srv) bool {
+	st, err := os.Stat(filepath.Join(s.Dir, "logs", "latest.log"))
+	if err != nil || time.Since(st.ModTime()) > time.Minute {
+		return false
+	}
+	s.con.poll(s.Dir)
+	n := len(s.con.lines)
+	for i := n - 1; i >= 0 && i >= n-15; i-- {
+		l := s.con.lines[i]
+		if strings.Contains(l, "Stopping the server") || strings.Contains(l, "All dimensions are saved") || strings.Contains(l, "Stopping server") {
+			return false
+		}
+	}
+	return true
+}
+
 func refreshAll() {
 	ports := map[string]bool{}
 	for _, s := range servers {
@@ -579,8 +596,10 @@ func refreshAll() {
 			s.set("running")
 		case up && s.state == "stopping" && time.Since(s.stateAt) > 3*time.Minute:
 			s.set("running")
-		case !up && s.state == "starting" && s.alive() && time.Since(s.stateAt) < 8*time.Minute:
+		case !up && s.state == "starting" && (s.alive() || logActive(s)) && time.Since(s.stateAt) < 8*time.Minute:
 			// still booting
+		case !up && s.state == "stopped" && !s.alive() && logActive(s):
+			s.set("starting") // started by hand or by an older agent: its log is being written
 		case !up && s.state == "starting":
 			s.set("stopped")
 			if s.detail == "" {

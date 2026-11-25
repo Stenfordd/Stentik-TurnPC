@@ -77,7 +77,7 @@ function global:Open-Console($s) {
     if (-not $st) { return }
     $me = $st.servers | Where-Object { $_.id -eq $id }
     if (-not $me) { return }
-    $f.Text = "Console - " + $me.name + "  (" + $me.state + ", " + @($me.players).Count + " players)"
+    $f.Text = $me.name + " - " + $me.state + $(if ($me.state -eq 'running') { ", " + @($me.players).Count + " players" } else { '' })
     $txt = ($me.lines -join "` + "`r`n" + `")
     if ($txt -ne $seen.t) {
       $seen.t = $txt
@@ -122,7 +122,7 @@ $global:ni.Add_DoubleClick({
   $st = $global:last
   if ($st -and $st.servers) {
     $s = $st.servers | Where-Object { $_.state -eq 'running' -or $_.state -eq 'starting' } | Select-Object -First 1
-    if (-not $s) { $s = $st.servers[0] }
+    if (-not $s) { $s = $st.servers | Sort-Object { [int64]$_.logAge } | Select-Object -First 1 }
     Open-Console $s
   }
 })
