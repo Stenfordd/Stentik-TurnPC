@@ -180,21 +180,8 @@ public final class ArmorChips {
         LivingEntity e = event.getEntity();
         var data = e.getPersistentData();
         int n;
-        if (data.getBoolean("ctcPound") && (n = lvl(e, FEET, ChipType.GRAVITY)) > 0) {
-            data.remove("ctcPound");
-            float dmg = Math.min(event.getDistance(), 20) * 0.5f + 2 * n;
-            for (LivingEntity m : e.level().getEntitiesOfClass(LivingEntity.class, e.getBoundingBox().inflate(3 + n, 1, 3 + n),
-                    x -> x != e && x.isAlive() && !(x instanceof Player))) {
-                m.hurt(e instanceof Player p ? e.damageSources().playerAttack(p) : e.damageSources().mobAttack(e), dmg);
-                m.setDeltaMovement(m.getDeltaMovement().add(0, 0.4, 0));
-                m.hurtMarked = true;
-            }
-            if (e.level() instanceof ServerLevel s) {
-                s.sendParticles(ParticleTypes.EXPLOSION, e.getX(), e.getY(), e.getZ(), 1, 0, 0, 0, 0);
-                s.sendParticles(ParticleTypes.CLOUD, e.getX(), e.getY() + 0.1, e.getZ(), 30, 2, 0.1, 2, 0.05);
-            }
-            e.level().playSound(null, e.blockPosition(), SoundEvents.MACE_SMASH_GROUND_HEAVY, SoundSource.PLAYERS, 1.0f, 0.9f);
-            event.setDamageMultiplier(event.getDamageMultiplier() * 0.5f);
+        if (data.getBoolean("ctcPound") && lvl(e, FEET, ChipType.GRAVITY) > 0) {
+            event.setDamageMultiplier(0);   // a ground pound never hurts you; the smash itself happens on landing (tick)
         }
         if ((n = lvl(e, FEET, ChipType.ACID)) > 0 && event.getDistance() > 1.5f) {
             for (LivingEntity m : e.level().getEntitiesOfClass(LivingEntity.class, e.getBoundingBox().inflate(1.5, 0.5, 1.5),
@@ -340,12 +327,21 @@ public final class ArmorChips {
         boolean air = !p.onGround() && !p.isInWater() && !p.getAbilities().flying && !p.isPassenger() && !p.isFallFlying();
 
         if (lvl(p, CHEST, ChipType.LUNAR) > 0 && air && p.isShiftKeyDown() && p.getDeltaMovement().y < -0.1) fx(p, MobEffects.SLOW_FALLING, 10, 0);
-        if (lvl(p, FEET, ChipType.GRAVITY) > 0) {
-            if (p.onGround()) data.remove("ctcPound");
-            else if (air && p.isShiftKeyDown() && p.fallDistance > 2 && !data.getBoolean("ctcPound")) {
+        if ((n = lvl(p, FEET, ChipType.GRAVITY)) > 0) {
+            if (data.getBoolean("ctcPound")) {
+                data.putFloat("ctcPoundH", Math.max(data.getFloat("ctcPoundH"), p.fallDistance));
+                p.resetFallDistance();   // no fall damage from a pound
+                if (p.onGround() || p.isInWater()) smash(p, n, data.getFloat("ctcPoundH"));
+                else if (p.getDeltaMovement().y > -1.5) {
+                    p.setDeltaMovement(p.getDeltaMovement().x * 0.5, -2.0, p.getDeltaMovement().z * 0.5);
+                    p.hurtMarked = true;
+                }
+            } else if (air && p.isShiftKeyDown() && p.fallDistance > 1.5f) {
                 data.putBoolean("ctcPound", true);
+                data.putFloat("ctcPoundH", p.fallDistance);
                 p.setDeltaMovement(p.getDeltaMovement().x * 0.2, -2.0, p.getDeltaMovement().z * 0.2);
                 p.hurtMarked = true;
+                p.level().playSound(null, p.blockPosition(), SoundEvents.PHANTOM_SWOOP, SoundSource.PLAYERS, 0.6f, 0.6f);
             }
         }
         // legs Kinetic: sprinting costs less food; legs Flare: no hunger in daylight
@@ -378,6 +374,31 @@ public final class ArmorChips {
         }
         if ((n = lvl(p, FEET, ChipType.MARTIAN)) > 0 && !p.isInLava()) coolLava(p, 1 + Math.min(n, 3));
         if (p.tickCount % 5 == 0 && lvl(p, FEET, ChipType.FLARE) > 0) lightTrail(p);
+    }
+
+    /** Boots Gravity: landing from a pound hurts and lifts everything around (more from higher up). */
+    private static void smash(Player p, int n, float height) {
+        var data = p.getPersistentData();
+        data.remove("ctcPound");
+        data.remove("ctcPoundH");
+        float dmg = 4 + 2 * n + Math.min(height, 24) * 0.5f;
+        double r = 2.5 + n;
+        for (LivingEntity m : p.level().getEntitiesOfClass(LivingEntity.class, p.getBoundingBox().inflate(r, 1.5, r),
+                x -> x != p && x.isAlive() && !(x instanceof Player) && !(x instanceof net.minecraft.world.entity.TamableAnimal t && t.isTame()))) {
+            m.hurt(p.damageSources().playerAttack(p), dmg);
+            Vec3 away = m.position().subtract(p.position()).multiply(1, 0, 1);
+            away = away.lengthSqr() < 1e-4 ? new Vec3(0, 0, 0) : away.normalize().scale(0.6);
+            m.setDeltaMovement(m.getDeltaMovement().add(away.x, 0.5, away.z));
+            m.hurtMarked = true;
+        }
+        if (p.level() instanceof ServerLevel s) {
+            s.sendParticles(ParticleTypes.EXPLOSION, p.getX(), p.getY() + 0.2, p.getZ(), 2, 0.5, 0, 0.5, 0);
+            s.sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY() + 0.1, p.getZ(), 40, r * 0.6, 0.1, r * 0.6, 0.08);
+            BlockState under = p.level().getBlockState(p.blockPosition().below());
+            if (!under.isAir())
+                s.sendParticles(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, under), p.getX(), p.getY() + 0.1, p.getZ(), 60, r * 0.5, 0.1, r * 0.5, 0.15);
+        }
+        p.level().playSound(null, p.blockPosition(), SoundEvents.MACE_SMASH_GROUND_HEAVY, SoundSource.PLAYERS, 1.2f, 0.8f);
     }
 
     /** Helmet Copper: a monster that is after you and that you are not looking at clicks and lights up. */

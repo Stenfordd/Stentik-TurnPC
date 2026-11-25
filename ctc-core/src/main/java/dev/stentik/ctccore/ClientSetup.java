@@ -101,16 +101,17 @@ public class ClientSetup {
             String bonus = Armors.bonusKey(event.getItemStack());
             if (bonus != null) lines.add(Component.translatable("ctccore.armor.set", Component.translatable(bonus)).withStyle(ChatFormatting.GOLD));
             ItemStack st = event.getItemStack();
-            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(st))
-                    .append("  ").append(Component.translatable("ctccore.upgrades", Chips.amps(st).size(), Gear.upgradeSlots(st))).withStyle(ChatFormatting.GRAY));
             if (VoidRapier.is(st)) lines.add(VoidRapier.info(st).withStyle(ChatFormatting.LIGHT_PURPLE));
+            // compact chip block: a header with the free slots, then each chip with its level and, under it, what it does here
+            lines.add(Component.translatable("ctccore.chips", chips.size(), Gear.slots(st)).withStyle(ChatFormatting.DARK_AQUA)
+                    .append(Component.literal("  \u00B7  ").withStyle(ChatFormatting.DARK_GRAY))
+                    .append(Component.translatable("ctccore.upgrades", Chips.amps(st).size(), Gear.upgradeSlots(st)).withStyle(ChatFormatting.DARK_AQUA)));
             for (var en : Chips.levels(st).entrySet()) {
                 ChipType chip = en.getKey();
                 String lvl = chip.leveled() ? " " + Chips.ROMAN[en.getValue()] : "";
                 lines.add(Component.literal(" \u25C6 ").withStyle(s -> s.withColor(chip.color))
-                        .append(Component.translatable("item.ctccore." + chip.id + "_chip").append(lvl).withStyle(s -> s.withColor(chip.color)))
-                        .append(Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY))
-                        .append(Component.translatable(Chips.effectKey(chip, st)).withStyle(ChatFormatting.GRAY)));
+                        .append(Component.translatable("ctccore.chipname." + chip.id).append(lvl).withStyle(s -> s.withColor(chip.color).withBold(true))));
+                lines.add(Component.literal("    ").append(Component.translatable(Chips.effectKey(chip, st))).withStyle(ChatFormatting.GRAY));
             }
         }
     }
